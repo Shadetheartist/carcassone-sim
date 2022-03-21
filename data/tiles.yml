@@ -1,0 +1,104 @@
+tiles: 
+    castleEndCap:
+        image: CastleEndCap.bmp
+        features:
+            - id: 1
+              type: castle
+        edges: 
+            north: 1
+
+    castleDoubleEndCapNorthEast:
+        image: CastleDoubleEndCapNorthEast.bmp
+        features:
+            - id: 1
+              type: castle
+            - id: 2
+              type: castle
+        edges: 
+            north: 1
+            west: 2
+
+    castleRiverRoad:
+        image: CastleRiverRoad.bmp
+        features:
+            - id: 1
+              type: castle
+            - id: 2
+              type: river
+            - id: 3
+              type: road
+        edges: 
+            north: 1
+            west: 2
+            east: 2
+            south: 3
+            
+    cloisterRiverRoad:
+        image: CloisterRiverRoad.bmp
+        features:
+            - id: 1
+              type: cloister
+            - id: 2
+              type: river
+            - id: 3
+              type: road
+        edges: 
+            south: 3
+            east: 2
+            west: 2
+
+    RiverStraight:
+        image: RiverStraight.bmp
+        features:
+            - id: 1
+              type: river
+        edges: 
+            west: 1
+            east: 1
+
+    RiverCurve:
+        image: RiverCurve.bmp
+        features:
+            - id: 1
+              type: river
+        edges: 
+            west: 1
+            south: 1
+
+    RiverTerminus:
+        image: RiverTerminus.bmp
+        features:
+            - id: 1
+              type: river
+        edges: 
+            south: 1
+
+    RiverRoadCurve:
+        image: RiverRoadCurve.bmp
+        features:
+            - id: 1
+              type: river
+            - id: 2
+              type: road
+        edges: 
+            north: 2
+            east: 2
+            south: 1
+            west: 1
+
+    RiverRoad:
+        image: RiverRoad.bmp
+        features:
+            - id: 1
+              type: river
+            - id: 2
+              type: road
+        edges: 
+            north: 2
+            south: 2
+            east: 1
+            west: 1
+
+
+deck:
+    cloisterRiverRoad: 1
