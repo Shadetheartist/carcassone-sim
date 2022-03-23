@@ -1,104 +1,426 @@
 tiles: 
-    castleEndCap:
-        image: CastleEndCap.bmp
-        features:
-            - id: 1
-              type: castle
-        edges: 
-            north: 1
+    CastleEndCap:
+      image: CastleEndCap.bmp
+      features:
+          1:
+            type: castle
+      edges: 
+          north: 1
 
-    castleDoubleEndCapNorthEast:
-        image: CastleDoubleEndCapNorthEast.bmp
-        features:
-            - id: 1
-              type: castle
-            - id: 2
-              type: castle
-        edges: 
-            north: 1
-            west: 2
 
-    castleRiverRoad:
-        image: CastleRiverRoad.bmp
-        features:
-            - id: 1
-              type: castle
-            - id: 2
-              type: river
-            - id: 3
-              type: road
-        edges: 
-            north: 1
-            west: 2
-            east: 2
-            south: 3
+    CastleRiverRoad:
+      image: CastleRiverRoad.bmp
+      features:
+          1:
+            type: castle
+          2:
+            type: river
+          3:
+            type: road
+      edges: 
+          north: 1
+          west: 2
+          east: 2
+          south: 3
+
+    DoubleCastleRiver:
+      image: DoubleCastleRiver.bmp
+      features:
+          1:
+            type: castle
+          2:
+            type: castle
+          3:
+            type: river
+      edges: 
+          north: 1
+          west: 3
+          east: 3
+          south: 2
+
+    CornerCastleRiver:
+      image: CornerCastleRiver.bmp
+      features:
+          1:
+            type: castle
+          2:
+            type: river
+            curve: true
+
+      edges: 
+          north: 1
+          east: 1
+          west: 2
+          south: 2
             
-    cloisterRiverRoad:
-        image: CloisterRiverRoad.bmp
-        features:
-            - id: 1
-              type: cloister
-            - id: 2
-              type: river
-            - id: 3
-              type: road
-        edges: 
-            south: 3
-            east: 2
-            west: 2
+    CloisterRiverRoad:
+      image: CloisterRiverRoad.bmp
+      features:
+          1:
+            type: cloister
+          2:
+            type: river
+          3:
+            type: road
+      edges: 
+          south: 3
+          east: 2
+          west: 2
 
     RiverStraight:
-        image: RiverStraight.bmp
-        features:
-            - id: 1
-              type: river
-        edges: 
-            west: 1
-            east: 1
+      image: RiverStraight.bmp
+      features:
+          1:
+            type: river
+      edges: 
+          west: 1
+          east: 1
 
     RiverCurve:
-        image: RiverCurve.bmp
-        features:
-            - id: 1
-              type: river
-        edges: 
-            west: 1
-            south: 1
+      image: RiverCurve.bmp
+      features:
+          1:
+            type: river
+            curve: true
+      edges: 
+          west: 1
+          south: 1
 
     RiverTerminus:
-        image: RiverTerminus.bmp
-        features:
-            - id: 1
-              type: river
-        edges: 
-            south: 1
+      image: RiverTerminus.bmp
+      features:
+          1:
+            type: river
+      edges: 
+          south: 1
 
     RiverRoadCurve:
-        image: RiverRoadCurve.bmp
-        features:
-            - id: 1
-              type: river
-            - id: 2
-              type: road
-        edges: 
-            north: 2
-            east: 2
-            south: 1
-            west: 1
+      image: RiverRoadCurve.bmp
+      features:
+          1:
+            type: river
+            curve: true
+          2:
+            type: road
+      edges: 
+          north: 2
+          east: 2
+          south: 1
+          west: 1
 
     RiverRoad:
-        image: RiverRoad.bmp
-        features:
-            - id: 1
-              type: river
-            - id: 2
-              type: road
-        edges: 
-            north: 2
-            south: 2
-            east: 1
-            west: 1
+      image: RiverRoad.bmp
+      features:
+          1:
+            type: river
+          2:
+            type: road
+      edges: 
+          north: 2
+          south: 2
+          east: 1
+          west: 1
 
+    Cloister:
+      image: Cloister.bmp
+      features:
+          1:
+            type: cloister
+
+    CloisterRoad:
+      image: CloisterRoad.bmp
+      features:
+          1:
+            type: cloister
+          2:
+            type: road
+      edges: 
+          south: 1
+
+    RoadStraight:
+      image: RoadStraight.bmp
+      features:
+          1:
+            type: road
+      edges: 
+          west: 1
+          east: 1
+
+    RoadCurve:
+      image: RoadCurve.bmp
+      features:
+          1:
+            type: road
+      edges: 
+          west: 1
+          south: 1
+
+    RoadTerminal3:
+      image: RoadTerminal3.bmp
+      features:
+          1:
+            type: road
+          2:
+            type: road
+          3:
+            type: road
+      edges: 
+          west: 1
+          south: 2
+          east: 3
+
+    RoadTerminal4:
+      image: RoadTerminal4.bmp
+      features:
+          1:
+            type: road
+          2:
+            type: road
+          3:
+            type: road
+          4:
+            type: road
+      edges: 
+          north: 1
+          west: 2
+          south: 3
+          east: 4
+
+    CastleRoadStraight:
+      image: CastleRoadStraight.bmp
+      features:
+          1:
+            type: castle
+          2:
+            type: road
+      edges: 
+          north: 1
+          west: 2
+          east: 2
+
+    CastleRoadCurveWest:
+      image: CastleRoadCurveWest.bmp
+      features:
+          1:
+            type: castle
+          2:
+            type: road
+      edges: 
+          north: 1
+          west: 2
+          south: 2
+    
+    CastleRoadCurveEast:
+      image: CastleRoadCurveEast.bmp
+      features:
+          1:
+            type: castle
+          2:
+            type: road
+      edges: 
+          north: 1
+          east: 2
+          south: 2
+
+    CastleRoadTerminal3:
+      image: CastleRoadTerminal3.bmp
+      features:
+          1:
+            type: castle
+          2:
+            type: road
+          3:
+            type: road
+          4:
+            type: road
+      edges: 
+          north: 1
+          east: 2
+          south: 3
+          west: 4
+
+    CastleLong:
+      image: CastleLong.bmp
+      features:
+          1:
+            type: castle
+      edges: 
+          east: 1
+          west: 1
+
+    CastleLongShield:
+      image: CastleLongShield.bmp
+      features:
+          1:
+            type: castle
+            shield: true
+      edges: 
+          east: 1
+          west: 1
+
+    CastleCorner:
+      image: CastleCorner.bmp
+      features:
+          1:
+            type: castle
+      edges: 
+          north: 1
+          east: 1
+
+    CastleCornerShield:
+      image: CastleCornerShield.bmp
+      features:
+          1:
+            type: castle
+            shield: true
+      edges: 
+          north: 1
+          east: 1
+
+    DoubleCastleEndCapNorthSouth:
+      image: DoubleCastleEndCapNorthSouth.bmp
+      features:
+          1:
+            type: castle
+          2:
+            type: castle
+      edges: 
+          north: 1
+          south: 2
+
+    CastleDoubleEndCapNorthEast:
+      image: CastleDoubleEndCapNorthEast.bmp
+      features:
+          1:
+            type: castle
+          2:
+            type: castle
+      edges: 
+          north: 1
+          east: 2
+
+    CastleCornerRoadCurve:
+      image: CastleCornerRoadCurve.bmp
+      features:
+          1:
+            type: castle
+          2:
+            type: road
+      edges: 
+          north: 1
+          east: 1
+          south: 2
+          west: 2
+    
+    CastleCornerRoadCurveShield:
+      image: CastleCornerRoadCurveShield.bmp
+      features:
+          1:
+            type: castle
+            shield: true
+          2:
+            type: road
+      edges: 
+          north: 1
+          east: 1
+          south: 2
+          west: 2
+
+    CastleFill3:
+      image: CastleFill3.bmp
+      features:
+          1:
+            type: castle
+      edges: 
+          north: 1
+          east: 1
+          west: 1
+    
+    CastleFill3Shield:
+      image: CastleFill3Shield.bmp
+      features:
+          1:
+            type: castle
+            shield: true
+      edges: 
+          north: 1
+          east: 1
+          west: 1
+
+    CastleFill3Road:
+      image: CastleFill3Road.bmp
+      features:
+          1:
+            type: castle
+          2:
+            type: road
+      edges: 
+          north: 1
+          east: 1
+          west: 1
+          south: 2
+
+    CastleFill3ShieldRoad:
+      image: CastleFill3ShieldRoad.bmp
+      features:
+          1:
+            type: castle
+            shield: true
+          2:
+            type: road
+      edges: 
+          north: 1
+          east: 1
+          west: 1
+          south: 2
+    
+    CastleFill4Shield:
+      image: CastleFill4Shield.bmp
+      features:
+          1:
+            type: castle
+            shield: true
+      edges: 
+          north: 1
+          east: 1
+          west: 1
+          south: 1
 
 deck:
-    cloisterRiverRoad: 1
+  Cloister: 40
+  CloisterRoad: 20
+  RoadStraight: 80
+  RoadCurve: 90
+  RoadTerminal3: 40
+  RoadTerminal4: 10
+  CastleEndCap: 50
+  CastleRoadStraight: 40
+  CastleRoadCurveWest: 30
+  CastleRoadCurveEast: 30
+  CastleRoadTerminal3: 30
+  CastleLong: 10
+  CastleLongShield: 20
+  CastleCorner: 30
+  CastleCornerShield: 20
+  DoubleCastleEndCapNorthSouth: 30
+  CastleDoubleEndCapNorthEast: 20
+  CastleCornerRoadCurve: 30
+  CastleCornerRoadCurveShield: 20
+  CastleFill3: 30
+  CastleFill3Road: 10
+  CastleFill3Shield: 10
+  CastleFill3ShieldRoad: 20
+  CastleFill4Shield: 10
+
+riverdeck:
+  begin: RiverTerminus
+  end: RiverTerminus
+  deck:
+    RiverStraight: 2
+    RiverCurve: 2
+    CastleRiverRoad: 1
+    CloisterRiverRoad: 1
+    RiverRoadCurve: 1
+    RiverRoad: 1
+    DoubleCastleRiver: 1
+    CornerCastleRiver: 1
