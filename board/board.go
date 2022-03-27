@@ -255,12 +255,11 @@ func (b *Board) PossibleTilePlacements(t *tile.Tile) []tile.Placement {
 
 	var wg sync.WaitGroup
 
-	sectionSize := int(math.Floor(float64(len(keys)) / float64(numRoutines)))
+	sectionSize := int(math.Ceil(float64(len(keys)) / float64(numRoutines)))
 
 	for i := 0; i < numRoutines; i++ {
 		wg.Add(1)
-
-		start := i * sectionSize
+		start := min(i*sectionSize, len(keys))
 		end := min((i+1)*sectionSize, len(keys))
 		go b.ptpGoRoutine(keys[start:end], t, c, &wg)
 	}

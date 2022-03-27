@@ -16,13 +16,15 @@ func (g *Game) Update() error {
 
 	//build river first
 	if g.RiverDeck.Remaining() > 0 {
-		//for g.RiverDeck.Remaining() > 0 {
-		if err := g.updateRiverBuild(); err != nil {
-			return err
+		for g.RiverDeck.Remaining() > 0 {
+			if err := g.updateRiverBuild(); err != nil {
+				return err
+			}
 		}
-		//}
 
 	} else if g.Deck.Remaining() > 0 {
+		fmt.Println("Placing", g.Deck.Remaining(), "Tiles")
+
 		for g.Deck.Remaining() > 0 {
 			tile, err := g.Deck.Pop()
 
@@ -47,6 +49,8 @@ func (g *Game) Update() error {
 				panic(fmt.Sprint("Error Placing Tile: ", err))
 			}
 		}
+
+		fmt.Println("Done Placing Tiles")
 	}
 
 	return nil

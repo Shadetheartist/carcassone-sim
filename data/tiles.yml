@@ -32,7 +32,7 @@ riverdeck:
   end: RiverTerminus
   deck:
     RiverStraight: 2
-    RiverCurve: 200
+    RiverCurve: 2
     CastleRiverRoad: 1
     CloisterRiverRoad: 1
     RiverRoadCurve: 1

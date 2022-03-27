@@ -163,7 +163,7 @@ func (g *Game) renderRoadsByTile() {
 			dirs := t.EdgeDirsFromFeature(r)
 
 			for _, d := range dirs {
-				tileDir := t.Placement.TileDirection(d)
+				tileDir := t.Placement.TileToGridDir(d)
 				offset := dirOffset(tileDir)
 
 				offsetX := float64(offset.X*g.baseSize) / 2
@@ -244,7 +244,7 @@ func (g *Game) renderRoad(ctx *gg.Context, roadId int, node *road.Node) {
 	dirs := tile.EdgeDirsFromFeature(feature)
 
 	for _, d := range dirs {
-		tileDir := tile.Placement.TileDirection(d)
+		tileDir := tile.Placement.TileToGridDir(d)
 		offset := dirOffset(tileDir)
 
 		offsetX := float64(offset.X*g.baseSize) / 2

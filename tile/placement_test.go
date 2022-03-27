@@ -4,7 +4,6 @@ import (
 	"beeb/carcassonne/directions"
 	"beeb/carcassonne/tile"
 	"fmt"
-	"math/rand"
 	"testing"
 )
 
@@ -88,22 +87,4 @@ func TestGridToTileDir(t *testing.T) {
 	testGridToTileDir(t, 270, directions.East, directions.South)
 	testGridToTileDir(t, 270, directions.South, directions.West)
 	testGridToTileDir(t, 270, directions.West, directions.North)
-}
-
-func benchmarkTileDir(placement tile.Placement, dir directions.Direction, b *testing.B) {
-	placement.TileDirection(dir)
-}
-
-func BenchmarkTileDirection(b *testing.B) {
-	for n := 0; n < b.N; n++ {
-		randOri := uint16(rand.Intn(3) * 90)
-		pl := tile.Placement{
-			Position:    tile.Position{},
-			Orientation: randOri,
-		}
-
-		randDir := directions.Direction(rand.Intn(3))
-
-		benchmarkTileDir(pl, randDir, b)
-	}
 }
