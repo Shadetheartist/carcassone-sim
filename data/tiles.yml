@@ -103,10 +103,10 @@ tiles:
           2:
             type: road
       edges: 
-          north: 2
-          east: 2
           south: 1
           west: 1
+          north: 2
+          east: 2
 
     RiverRoad:
       image: RiverRoad.bmp
@@ -135,7 +135,7 @@ tiles:
           2:
             type: road
       edges: 
-          south: 1
+          south: 2
 
     RoadStraight:
       image: RoadStraight.bmp
@@ -387,30 +387,30 @@ tiles:
           south: 1
 
 deck:
-  Cloister: 40
-  CloisterRoad: 20
-  RoadStraight: 80
-  RoadCurve: 90
-  RoadTerminal3: 40
-  RoadTerminal4: 10
-  CastleEndCap: 50
-  CastleRoadStraight: 40
-  CastleRoadCurveWest: 30
-  CastleRoadCurveEast: 30
-  CastleRoadTerminal3: 30
-  CastleLong: 10
-  CastleLongShield: 20
-  CastleCorner: 30
-  CastleCornerShield: 20
-  DoubleCastleEndCapNorthSouth: 30
-  CastleDoubleEndCapNorthEast: 20
-  CastleCornerRoadCurve: 30
-  CastleCornerRoadCurveShield: 20
-  CastleFill3: 30
-  CastleFill3Road: 10
-  CastleFill3Shield: 10
-  CastleFill3ShieldRoad: 20
-  CastleFill4Shield: 10
+  Cloister: 4
+  CloisterRoad: 2
+  RoadStraight: 8
+  RoadCurve: 9
+  RoadTerminal3: 4
+  RoadTerminal4: 1
+  CastleEndCap: 5
+  CastleRoadStraight: 4
+  CastleRoadCurveWest: 3
+  CastleRoadCurveEast: 3
+  CastleRoadTerminal3: 3
+  CastleLong: 1
+  CastleLongShield: 2
+  CastleCorner: 3
+  CastleCornerShield: 2
+  DoubleCastleEndCapNorthSouth: 3
+  CastleDoubleEndCapNorthEast: 2
+  CastleCornerRoadCurve: 3
+  CastleCornerRoadCurveShield: 2
+  CastleFill3: 3
+  CastleFill3Road: 1
+  CastleFill3Shield: 1
+  CastleFill3ShieldRoad: 2
+  CastleFill4Shield: 1
 
 riverdeck:
   begin: RiverTerminus

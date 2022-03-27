@@ -13,6 +13,30 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+type RiverDeck struct {
+	Begin string
+	End   string
+	Deck  map[string]int
+}
+
+type TileInfoFile struct {
+	Tiles     map[string]TileInfo
+	Deck      map[string]int
+	RiverDeck RiverDeck
+}
+
+type FeatureInfo struct {
+	Type   string
+	Shield bool
+	Curve  bool
+}
+
+type TileInfo struct {
+	Image    string
+	Features map[int]FeatureInfo
+	Edges    map[string]int
+}
+
 func loadBitmaps(bitmapDir string) map[string]image.Image {
 	files, err := ioutil.ReadDir(bitmapDir)
 
@@ -25,8 +49,6 @@ func loadBitmaps(bitmapDir string) map[string]image.Image {
 	for _, file := range files {
 
 		fileName := filepath.Join(bitmapDir, file.Name())
-
-		fmt.Println("Loading BMP", fileName)
 
 		reader, err := os.Open(fileName)
 
@@ -41,7 +63,6 @@ func loadBitmaps(bitmapDir string) map[string]image.Image {
 		}
 
 		bitmaps[file.Name()] = image
-
 	}
 
 	return bitmaps
@@ -66,14 +87,9 @@ func loadTileInfo(infoFileName string) TileInfoFile {
 	return info
 }
 
-func LoadTiles() (map[string]tile.Tile, TileInfoFile) {
-	fmt.Println("Loading Tiles")
-
-	bitmapDirectory := "../data/bitmaps"
-	infoFileName := "../data/tiles.yml"
-
+func LoadTiles(ymlPath string, bitmapDirectory string) (map[string]tile.Tile, TileInfoFile) {
 	bitmaps := loadBitmaps(bitmapDirectory)
-	info := loadTileInfo(infoFileName)
+	info := loadTileInfo(ymlPath)
 
 	tiles := make(map[string]tile.Tile)
 
@@ -83,36 +99,49 @@ func LoadTiles() (map[string]tile.Tile, TileInfoFile) {
 			panic(fmt.Sprint("Bitmap not found", tileInfo.Image))
 		}
 
-		tiles[tileName] = tile.Tile{
+		edges := make(map[directions.Direction]int)
+
+		for edgeStr, featureId := range tileInfo.Edges {
+			edges[directions.StrMap[edgeStr]] = featureId
+		}
+
+		features := make(map[int]*tile.Feature)
+
+		for featureId, featureInfo := range tileInfo.Features {
+
+			edgesForFeature := make([]directions.Direction, 0)
+
+			for dir, fid := range edges {
+				if fid == featureId {
+					edgesForFeature = append(edgesForFeature, dir)
+				}
+			}
+
+			features[featureId] = &tile.Feature{
+				Type:   tile.FeatureTypeStrMap[featureInfo.Type],
+				Shield: featureInfo.Shield,
+				Curve:  featureInfo.Curve,
+				Edges:  edgesForFeature,
+			}
+		}
+
+		t := tile.Tile{
 			Name:       tileName,
 			Image:      bitmaps[tileInfo.Image],
-			Features:   tileInfo.Features,
-			Edges:      tileInfo.Edges,
-			Neighbours: make(map[directions.Direction]*tile.Tile),
+			Features:   features,
+			Edges:      edges,
+			Neighbours: make([]*tile.Tile, 4),
 			Placement: tile.Placement{
 				Position:    tile.Position{},
 				Orientation: 0,
 			},
 		}
+
+		t.EdgeFeatureTypes = t.ComputeEdgeFeatureTypes()
+
+		tiles[tileName] = t
+
 	}
 
 	return tiles, info
-}
-
-type RiverDeck struct {
-	Begin string
-	End   string
-	Deck  map[string]int
-}
-
-type TileInfoFile struct {
-	Tiles     map[string]TileInfo
-	Deck      map[string]int
-	RiverDeck RiverDeck
-}
-
-type TileInfo struct {
-	Image    string
-	Features map[int]tile.Feature
-	Edges    map[directions.Direction]int
 }

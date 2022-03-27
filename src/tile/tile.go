@@ -6,91 +6,24 @@ import (
 	"image"
 )
 
-const (
-	OrientationZero       uint16 = 0
-	OrientationNinety            = 90
-	OrientationOneEight          = 180
-	OrientationTwoSeventy        = 270
-)
-
-var OrientationList = [...]uint16{0, 90, 180, 270}
-
-type Position struct {
-	X int
-	Y int
-}
-
-type Placement struct {
-	Position    Position
-	Orientation uint16
-}
-
-func (p Position) North() Position {
-	return Position{
-		X: p.X,
-		Y: p.Y - 1,
-	}
-}
-
-func (p Position) South() Position {
-	return Position{
-		X: p.X,
-		Y: p.Y + 1,
-	}
-}
-
-func (p Position) East() Position {
-	return Position{
-		X: p.X + 1,
-		Y: p.Y,
-	}
-}
-
-func (p Position) West() Position {
-	return Position{
-		X: p.X - 1,
-		Y: p.Y,
-	}
-}
-
-type Feature struct {
-	Type   FeatureType
-	Shield bool
-	Curve  bool
-}
-
-var DefaultFeature = Feature{
-	Type:   "grass",
-	Shield: false,
-}
-
 type Tile struct {
 	Name      string
 	Image     image.Image
 	Placement Placement
-	IsPlaced  bool
+	Rendered  bool
 
 	//these are non-oriented (board reference)
-	Features   map[int]Feature
-	Edges      map[directions.Direction]int
-	Neighbours map[directions.Direction]*Tile
+	Features map[int]*Feature
+	Edges    map[directions.Direction]int
+
+	//dir mapped
+	Neighbours []*Tile
+
+	//dir mapped
+	EdgeFeatureTypes [4]FeatureType
 }
 
-func (t *Tile) EdgeFeatures() map[directions.Direction]Feature {
-	edgeFeatures := make(map[directions.Direction]Feature)
-
-	for edge, featureId := range t.Edges {
-		if feature, exists := t.Features[featureId]; exists {
-			edgeFeatures[edge] = feature
-		}
-
-		edgeFeatures[edge] = DefaultFeature
-	}
-
-	return edgeFeatures
-}
-
-func (t *Tile) Feature(direction directions.Direction) Feature {
+func (t *Tile) Feature(direction directions.Direction) *Feature {
 	if edge, exists := t.Edges[direction]; exists {
 		if feature, exists := t.Features[edge]; exists {
 			return feature
@@ -99,48 +32,62 @@ func (t *Tile) Feature(direction directions.Direction) Feature {
 		panic(fmt.Sprint("Edge does not have a corresponding feature mapped. ", edge))
 	}
 
-	return DefaultFeature
+	//should really return nil
+	return &DefaultFeature
 }
 
-func (p Placement) TileDirection(direction directions.Direction) directions.Direction {
-	if p.Orientation == 0 {
-		return direction
+func (t *Tile) FeatureById(id int) *Feature {
+	for _, f := range t.Features {
+		if f.Id == id {
+			return f
+		}
 	}
 
-	shift := int(p.Orientation) / 90
-
-	//this will get us an int 0-3, which we can add to our
-	//shift subtraction from our edge (plus 4, mod 4)
-	//to basically rotate the edge clockwise
-	dirInt := directions.StrMap[direction]
-	shiftedDirInt := (4 + dirInt - shift) % 4
-
-	return directions.IntMap[shiftedDirInt]
+	return nil
 }
 
-func (p Position) EdgePos(dir directions.Direction) Position {
-	switch dir {
-	case directions.North:
-		return p.North()
-	case directions.South:
-		return p.South()
-	case directions.West:
-		return p.West()
-	case directions.East:
-		return p.East()
-	default:
-		panic("That's not a direction")
+func (t *Tile) FeaturesByType(ft FeatureType) []*Feature {
+
+	roads := make([]*Feature, 0)
+	for _, f := range t.Features {
+		if f.Type == ft {
+			roads = append(roads, f)
+		}
 	}
+
+	return roads
 }
 
-func (t *Tile) FreeFeatureEdge(featureType string) directions.Direction {
-	//for dir, feature := range t.Features {}
-	return directions.North
+func (t *Tile) EdgeDirsFromFeature(feature *Feature) []directions.Direction {
+
+	dirs := make([]directions.Direction, 0)
+
+	for i, f := range t.Features {
+		if f == feature {
+			for dir, e := range t.Edges {
+				if e == i {
+					dirs = append(dirs, dir)
+				}
+			}
+		}
+	}
+
+	return dirs
+}
+
+func (t *Tile) ComputeEdgeFeatureTypes() [4]FeatureType {
+
+	var ef [4]FeatureType
+
+	for _, d := range directions.List {
+		if f := t.Feature(d); f != nil {
+			ef[d] = f.Type
+		}
+	}
+
+	return ef
 }
 
 func (t *Tile) String() string {
 	return t.Name
-}
-func (pl *Placement) String() string {
-	return fmt.Sprint("X: ", pl.Position.X, " Y: ", pl.Position.Y, " O: ", pl.Orientation)
 }

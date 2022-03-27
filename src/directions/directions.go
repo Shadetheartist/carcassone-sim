@@ -1,33 +1,27 @@
 package directions
 
-type Direction string
+type Direction int
 
+//specifially indexed to rotate together
 const (
-	North Direction = "north"
-	East            = "east"
-	South           = "south"
-	West            = "west"
+	North Direction = iota
+	East
+	South
+	West
 )
 
-const (
-	IntNorth int = 0
-	IntEast      = 1
-	IntSouth     = 2
-	IntWest      = 3
-)
-
-var IntMap = map[int]Direction{
-	0: North,
-	1: East,
-	2: South,
-	3: West,
+var StrMap = map[string]Direction{
+	"north": North,
+	"east":  East,
+	"south": South,
+	"west":  West,
 }
 
-var StrMap = map[Direction]int{
-	North: 0,
-	East:  1,
-	South: 2,
-	West:  3,
+var IntMap = map[Direction]string{
+	North: "north",
+	East:  "east",
+	South: "south",
+	West:  "west",
 }
 
 var Compliment = map[Direction]Direction{

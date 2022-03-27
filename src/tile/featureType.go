@@ -1,11 +1,21 @@
 package tile
 
-type FeatureType string
+type FeatureType int
 
 const (
-	Grass    FeatureType = "grass"
-	River                = "river"
-	Castle               = "castle"
-	Road                 = "road"
-	Cloister             = "cloister"
+	None FeatureType = iota
+	Grass
+	River
+	Castle
+	Road
+	Cloister
 )
+
+var FeatureTypeStrMap = map[string]FeatureType{
+	"none":     None,
+	"grass":    Grass,
+	"river":    River,
+	"castle":   Castle,
+	"road":     Road,
+	"cloister": Cloister,
+}
