@@ -20,6 +20,7 @@ type Game struct {
 
 	HoveredPosition  tile.Position
 	SelectedPosition tile.Position
+	HighlightedRoads []board.Road
 
 	//the size of the bitmap images, add 1 to show a grid
 	baseSize    int
@@ -29,6 +30,9 @@ type Game struct {
 	//1 is not ever a valid orientation so it will not be a false positive
 	lastRiverTurn uint16
 	lastRiverTile *tile.Tile
+
+	ImageW int
+	ImageH int
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {

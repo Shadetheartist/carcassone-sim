@@ -19,8 +19,11 @@ func (g *Game) Initialize() {
 	ymlPath := filepath.Join(exeDir, "data/tiles.yml")
 	bitmapDirectory := filepath.Join(exeDir, "data/bitmaps")
 
+	g.ImageW = 1000
+	g.ImageH = 1000
+
 	g.Tiles, g.TileInfo = loader.LoadTiles(ymlPath, bitmapDirectory)
-	g.Board = board.New()
+	g.Board = board.New(g.Tiles, g.ImageW, g.ImageH)
 	g.RiverDeck = g.buildRiverDeck()
 	g.Deck = g.buildDeck()
 	g.baseSize = 7
@@ -29,10 +32,12 @@ func (g *Game) Initialize() {
 	g.lastRiverTurn = 1
 	g.lastRiverTile = nil
 
-	g.CameraOffset.X = -35 * g.baseSize * 4
-	g.CameraOffset.Y = -35 * g.baseSize * 4
+	g.CameraOffset.X = g.ImageW / g.baseSize
+	g.CameraOffset.Y = g.ImageH / g.baseSize
 
 	g.initializeRenderer()
+
+	g.HighlightedRoads = make([]board.Road, 0)
 }
 
 //how many tiles are in the deck data loaded from the yml file
@@ -57,7 +62,14 @@ func (g *Game) buildRiverDeck() Deck {
 	var c int = 0
 	for tileName, quantity := range g.TileInfo.RiverDeck.Deck {
 		for i := 0; i < quantity; i++ {
-			deck.Tiles[c] = g.Tiles[tileName]
+			tile := g.Tiles[tileName]
+
+			//compute the road segements for the copy of the tile that is in the deck, not the tile from the loader
+			//otherwise we will have pointer issues
+			tile.RoadSegments = tile.ComputeRoadSegments()
+
+			deck.Tiles[c] = tile
+
 			c++
 		}
 	}
@@ -81,7 +93,14 @@ func (g *Game) buildDeck() Deck {
 	var c int = 0
 	for tileName, quantity := range g.TileInfo.Deck {
 		for i := 0; i < quantity; i++ {
-			deck.Tiles[c] = g.Tiles[tileName]
+			tile := g.Tiles[tileName]
+
+			//compute the road segements for the copy of the tile that is in the deck, not the tile from the loader
+			//otherwise we will have pointer issues
+			tile.RoadSegments = tile.ComputeRoadSegments()
+
+			deck.Tiles[c] = tile
+
 			c++
 		}
 	}

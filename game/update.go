@@ -1,6 +1,7 @@
 package game
 
 import (
+	"beeb/carcassonne/board"
 	"beeb/carcassonne/tile"
 	"errors"
 	"fmt"
@@ -68,7 +69,7 @@ func (g *Game) updateRiverBuild() error {
 		}
 
 		g.Board.AddTile(&rt, tile.Placement{
-			Position:    tile.Position{X: 35 * 2, Y: 35 * 2},
+			Position:    tile.Position{X: 10, Y: 10},
 			Orientation: 0,
 		})
 
@@ -144,11 +145,25 @@ func (g *Game) handleMouseInput() {
 		g.SelectedPosition = g.HoveredPosition
 
 		if _, exists := g.Board.Tiles[g.HoveredPosition]; exists {
+			clickedTile := g.Board.Tiles[g.HoveredPosition]
+
+			roads := make([]board.Road, 0)
+			for _, rs := range clickedTile.UniqueRoadSegements() {
+				rd := board.CompileRoadFromSegment(rs)
+				roads = append(roads, rd)
+			}
+
+			g.HighlightedRoads = roads
 
 		}
 
 		if _, exists := g.Board.OpenPositions[g.HoveredPosition]; exists {
 			t, err := g.findTileForPos(g.SelectedPosition)
+
+			//compute the road segements for the copy of the tile that is in the deck, not the tile from the loader
+			//otherwise we will have pointer issues
+			t.RoadSegments = t.ComputeRoadSegments()
+
 			if err == nil {
 				g.Board.AddTile(&t, t.Placement)
 			}

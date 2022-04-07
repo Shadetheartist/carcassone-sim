@@ -19,11 +19,18 @@ type Tile struct {
 	//dir mapped
 	Neighbours []*Tile
 
-	//dir mapped
+	//this is used in tight loops a LOT so it is cached here
 	EdgeFeatureTypes [4]FeatureType
+	EdgeFeatures     [4]*Feature
+
+	RoadSegments [4]*RoadSegment
 }
 
 func (t *Tile) Feature(direction directions.Direction) *Feature {
+	return t.EdgeFeatures[direction]
+}
+
+func (t *Tile) ComputeFeature(direction directions.Direction) *Feature {
 	if edge, exists := t.Edges[direction]; exists {
 		if feature, exists := t.Features[edge]; exists {
 			return feature
@@ -47,15 +54,15 @@ func (t *Tile) FeatureById(id int) *Feature {
 }
 
 func (t *Tile) FeaturesByType(ft FeatureType) []*Feature {
+	features := make([]*Feature, 0, 1)
 
-	roads := make([]*Feature, 0)
 	for _, f := range t.Features {
 		if f.Type == ft {
-			roads = append(roads, f)
+			features = append(features, f)
 		}
 	}
 
-	return roads
+	return features
 }
 
 func (t *Tile) EdgeDirsFromFeature(feature *Feature) []directions.Direction {
@@ -80,8 +87,23 @@ func (t *Tile) ComputeEdgeFeatureTypes() [4]FeatureType {
 	var ef [4]FeatureType
 
 	for _, d := range directions.List {
-		if f := t.Feature(d); f != nil {
+		if f := t.ComputeFeature(d); f != nil {
 			ef[d] = f.Type
+		}
+	}
+
+	return ef
+}
+
+func (t *Tile) ComputeEdgeFeatures() [4]*Feature {
+
+	var ef [4]*Feature
+
+	for _, d := range directions.List {
+		if f := t.ComputeFeature(d); f != nil {
+			ef[d] = f
+		} else {
+			ef[d] = &DefaultFeature
 		}
 	}
 

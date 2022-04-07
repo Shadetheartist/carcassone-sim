@@ -1,7 +1,6 @@
 package game
 
 import (
-	"beeb/carcassonne/board/road"
 	"beeb/carcassonne/directions"
 	"beeb/carcassonne/tile"
 	"fmt"
@@ -19,6 +18,37 @@ import (
 	"golang.org/x/image/font/opentype"
 )
 
+func (g *Game) RenderBoard(screen *ebiten.Image) {
+
+	screen.Fill(colornames.Grey600)
+
+	for _, t := range g.Board.Tiles {
+		g.renderTileToBoard(t)
+	}
+
+	g.Board.OpenPositionsImage.Clear()
+
+	for p, fts := range g.Board.OpenPositions {
+		g.renderOpenPosition(p, fts)
+	}
+
+	op := ebiten.DrawImageOptions{}
+
+	op.GeoM.Translate(
+		float64(g.CameraOffset.X),
+		float64(g.CameraOffset.Y),
+	)
+
+	screen.DrawImage(g.Board.BoardImage, &op)
+	screen.DrawImage(g.Board.OpenPositionsImage, &op)
+	screen.DrawImage(g.Board.RoadsImage, &op)
+
+	text.Draw(screen, fmt.Sprint("X:", g.HoveredPosition.X), mplusNormalFont, 20, 20, color.White)
+	text.Draw(screen, fmt.Sprint("Y:", g.HoveredPosition.Y), mplusNormalFont, 20, 60, color.White)
+
+	g.renderHoveredPosition(screen)
+}
+
 var (
 	mplusNormalFont font.Face
 	mplusBigFont    font.Face
@@ -32,7 +62,7 @@ func (g *Game) initializeRenderer() {
 
 	const dpi = 72
 	mplusNormalFont, err = opentype.NewFace(tt, &opentype.FaceOptions{
-		Size:    24,
+		Size:    14,
 		DPI:     dpi,
 		Hinting: font.HintingFull,
 	})
@@ -49,6 +79,86 @@ func (g *Game) initializeRenderer() {
 	}
 
 	g.initializeHoverImage()
+	g.initializeOpenPositionImage()
+
+}
+
+func (g *Game) isRoadSegmentHighlighted(rs *tile.RoadSegment) bool {
+	for _, rd := range g.HighlightedRoads {
+		if rd.ContainsSegment(rs) {
+			return true
+		}
+	}
+
+	return false
+}
+
+func (g *Game) setRoadSegmentColor(ctx *gg.Context, rs *tile.RoadSegment) {
+	if g.isRoadSegmentHighlighted(rs) {
+		ctx.SetRGBA(0, 1, 1, 1)
+
+	} else {
+		ctx.SetRGBA(0, 0, 0, 1)
+	}
+}
+
+func (g *Game) renderRoadSegment(img *ebiten.Image, rs *tile.RoadSegment) {
+
+	if rs == nil {
+		return
+	}
+
+	ctx := gg.NewContext(g.baseSize, g.baseSize)
+
+	ep := tile.Position{}
+
+	//middle to edge
+	if len(rs.ParentFeature.Edges) == 1 {
+		edge := rs.ParentFeature.Edges[0]
+
+		edgePos := ep.EdgePos(edge)
+
+		g.setRoadSegmentColor(ctx, rs)
+
+		ctx.MoveTo(float64(g.baseSize)/2, float64(g.baseSize)/2)
+		ctx.LineTo(
+			float64(g.baseSize)/2+float64(edgePos.X)*float64(g.baseSize)/2,
+			float64(g.baseSize)/2+float64(edgePos.Y)*float64(g.baseSize)/2,
+		)
+		ctx.SetLineWidth(0.5)
+		ctx.Stroke()
+
+		ctx.SetRGBA(1, 1, 1, 1)
+		ctx.DrawCircle(float64(g.baseSize)/2, float64(g.baseSize)/2, 1.5)
+		ctx.Fill()
+
+	} else if len(rs.ParentFeature.Edges) == 2 {
+		//edge to edge
+
+		g.setRoadSegmentColor(ctx, rs)
+
+		edgeA := rs.ParentFeature.Edges[0]
+		edgeB := rs.ParentFeature.Edges[1]
+		edgeAPos := ep.EdgePos(edgeA)
+		edgeBPos := ep.EdgePos(edgeB)
+
+		ctx.MoveTo(
+			float64(g.baseSize)/2+float64(edgeAPos.X)*float64(g.baseSize)/2,
+			float64(g.baseSize)/2+float64(edgeAPos.Y)*float64(g.baseSize)/2,
+		)
+
+		ctx.LineTo(
+			float64(g.baseSize)/2+float64(edgeBPos.X)*float64(g.baseSize)/2,
+			float64(g.baseSize)/2+float64(edgeBPos.Y)*float64(g.baseSize)/2,
+		)
+
+		ctx.Stroke()
+	}
+
+	ebiImg := ebiten.NewImageFromImage(ctx.Image())
+
+	op := ebiten.DrawImageOptions{}
+	img.DrawImage(ebiImg, &op)
 
 }
 
@@ -61,42 +171,27 @@ func (g *Game) initializeHoverImage() {
 	ctx.SetRGBA(0, 0, 0, 0.25)
 	ctx.Fill()
 
-	ctx.SetRGBA(1, 1, 1, 1)
-	ctx.DrawString(fmt.Sprint("X:", g.HoveredPosition.X), 0, 0)
-	ctx.DrawString(fmt.Sprint("Y:", g.HoveredPosition.Y), 8, 0)
-	ctx.Stroke()
-
 	img := ctx.Image()
 	hoverImage = ebiten.NewImageFromImage(img)
 }
 
-func (g *Game) RenderBoard(screen *ebiten.Image) {
+var openPosImage *ebiten.Image
 
-	screen.Fill(colornames.Grey600)
+func (g *Game) initializeOpenPositionImage() {
+	ctx := gg.NewContext(g.baseSize, g.baseSize)
 
-	for _, t := range g.Board.Tiles {
-		g.renderTileToBoard(t)
-	}
+	ctx.DrawRectangle(0, 0, float64(g.baseSize), float64(g.baseSize))
+	ctx.SetRGBA(0, 1, 0, 0.25)
+	ctx.Fill()
 
-	op := ebiten.DrawImageOptions{}
-
-	op.GeoM.Translate(
-		float64(g.CameraOffset.X),
-		float64(g.CameraOffset.Y),
-	)
-
-	g.renderRoads()
-
-	screen.DrawImage(g.Board.BoardImage, &op)
-	screen.DrawImage(g.Board.RoadsImage, &op)
-	g.renderHoveredPosition(screen)
-
+	img := ctx.Image()
+	openPosImage = ebiten.NewImageFromImage(img)
 }
 
 func (g *Game) renderTileToBoard(t *tile.Tile) {
 
 	if t.Rendered {
-		return
+		//return
 	}
 
 	pos := t.Placement.Position
@@ -104,6 +199,10 @@ func (g *Game) renderTileToBoard(t *tile.Tile) {
 	img := ebiten.NewImageFromImage(t.Image)
 
 	d := float64(img.Bounds().Max.X) / 2
+
+	for _, rs := range t.UniqueRoadSegements() {
+		g.renderRoadSegment(img, rs)
+	}
 
 	// Move the image's center to the screen's upper-left corner.
 	// This is a preparation for rotating. When geometry matrices are applied,
@@ -114,7 +213,6 @@ func (g *Game) renderTileToBoard(t *tile.Tile) {
 	// the center of the image.
 	op.GeoM.Rotate(float64(t.Placement.Orientation) * math.Pi / 180)
 
-	// Move the image to the screen's center.
 	op.GeoM.Translate(d+float64(pos.X*g.baseSize), d+float64(pos.Y*g.baseSize))
 
 	op.GeoM.Scale(g.renderScale, g.renderScale)
@@ -124,10 +222,18 @@ func (g *Game) renderTileToBoard(t *tile.Tile) {
 	t.Rendered = true
 }
 
-func (g *Game) renderHoveredPosition(screen *ebiten.Image) {
+func (g *Game) renderOpenPosition(p tile.Position, fts []tile.FeatureType) {
+	op := ebiten.DrawImageOptions{}
 
-	text.Draw(screen, fmt.Sprint("X:", g.HoveredPosition.X), mplusNormalFont, 20, 20, color.White)
-	text.Draw(screen, fmt.Sprint("Y:", g.HoveredPosition.Y), mplusNormalFont, 20, 60, color.White)
+	// Move the image to the screen's center.
+	op.GeoM.Translate(float64(p.X*g.baseSize), float64(p.Y*g.baseSize))
+
+	op.GeoM.Scale(g.renderScale, g.renderScale)
+
+	g.Board.OpenPositionsImage.DrawImage(hoverImage, &op)
+}
+
+func (g *Game) renderHoveredPosition(screen *ebiten.Image) {
 
 	op := ebiten.DrawImageOptions{}
 
@@ -149,70 +255,6 @@ func (g *Game) renderHoveredPosition(screen *ebiten.Image) {
 	screen.DrawImage(hoverImage, &op)
 }
 
-func (g *Game) renderRoadsByTile() {
-	ctx := gg.NewContext(1000, 1000)
-
-	for _, t := range g.Board.Tiles {
-
-		x := float64(t.Placement.Position.X*g.baseSize) + float64(g.baseSize)/2
-		y := float64(t.Placement.Position.Y*g.baseSize) + float64(g.baseSize)/2
-
-		roads := t.FeaturesByType(tile.Road)
-
-		for _, r := range roads {
-			dirs := t.EdgeDirsFromFeature(r)
-
-			for _, d := range dirs {
-				tileDir := t.Placement.TileToGridDir(d)
-				offset := dirOffset(tileDir)
-
-				offsetX := float64(offset.X*g.baseSize) / 2
-				offsetY := float64(offset.Y*g.baseSize) / 2
-
-				//to the center of the edge of the feature
-				ctx.LineTo(x+offsetX, y+offsetY)
-			}
-		}
-
-		ctx.SetLineWidth(1)
-		ctx.SetRGBA(0, 0, 1, 1)
-		ctx.Stroke()
-	}
-
-	roadsImage := ctx.Image()
-
-	op := ebiten.DrawImageOptions{}
-	op.GeoM.Scale(g.renderScale, g.renderScale)
-
-	ebitenImage := ebiten.NewImageFromImage(roadsImage)
-	g.Board.RoadsImage.Clear()
-	g.Board.RoadsImage.DrawImage(ebitenImage, &op)
-}
-
-func (g *Game) renderRoads() {
-	ctx := gg.NewContext(1000, 1000)
-
-	for id, r := range g.Board.Roads {
-
-		for next := r.First(); next != nil; next = next.Next() {
-			g.renderRoad(ctx, id, next)
-		}
-
-		ctx.SetLineWidth(1)
-		ctx.SetRGBA(0, 0, 1, 1)
-		ctx.Stroke()
-	}
-
-	roadsImage := ctx.Image()
-
-	op := ebiten.DrawImageOptions{}
-	op.GeoM.Scale(g.renderScale, g.renderScale)
-
-	ebitenImage := ebiten.NewImageFromImage(roadsImage)
-	g.Board.RoadsImage.Clear()
-	g.Board.RoadsImage.DrawImage(ebitenImage, &op)
-}
-
 func dirOffset(dir directions.Direction) image.Point {
 	switch dir {
 	case directions.North:
@@ -226,31 +268,4 @@ func dirOffset(dir directions.Direction) image.Point {
 	}
 
 	panic("Invalid Direction Supplied")
-}
-
-func (g *Game) renderRoad(ctx *gg.Context, roadId int, node *road.Node) {
-	tile := node.Value
-
-	x := float64(tile.Placement.Position.X*g.baseSize) + float64(g.baseSize)/2
-	y := float64(tile.Placement.Position.Y*g.baseSize) + float64(g.baseSize)/2
-
-	feature := tile.FeatureById(roadId)
-
-	if feature == nil {
-		return
-		//panic("Edge Feature Not found by Id")
-	}
-
-	dirs := tile.EdgeDirsFromFeature(feature)
-
-	for _, d := range dirs {
-		tileDir := tile.Placement.TileToGridDir(d)
-		offset := dirOffset(tileDir)
-
-		offsetX := float64(offset.X*g.baseSize) / 2
-		offsetY := float64(offset.Y*g.baseSize) / 2
-
-		//to the center of the edge of the feature
-		ctx.LineTo(x+offsetX, y+offsetY)
-	}
 }

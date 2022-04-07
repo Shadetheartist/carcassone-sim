@@ -15,8 +15,7 @@ func (p Placement) TileToGridDir(direction directions.Direction) directions.Dire
 	shift := int(p.Orientation) / 90
 
 	//this will get us an int 0-3, which we can add to our
-	//shift subtraction from our edge (plus 4, mod 4)
-	//to basically rotate the edge clockwise
+	//to basically rotate the edge counter-clockwise
 	dirInt := int(direction)
 	shiftedDirInt := (dirInt + shift) % 4
 

@@ -138,6 +138,7 @@ func LoadTiles(ymlPath string, bitmapDirectory string) (map[string]tile.Tile, Ti
 			},
 		}
 
+		t.EdgeFeatures = t.ComputeEdgeFeatures()
 		t.EdgeFeatureTypes = t.ComputeEdgeFeatureTypes()
 
 		tiles[tileName] = t

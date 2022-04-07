@@ -7,7 +7,7 @@ const (
 	Grass
 	River
 	Castle
-	Road
+	FeatureTypeRoad
 	Cloister
 )
 
@@ -16,6 +16,6 @@ var FeatureTypeStrMap = map[string]FeatureType{
 	"grass":    Grass,
 	"river":    River,
 	"castle":   Castle,
-	"road":     Road,
+	"road":     FeatureTypeRoad,
 	"cloister": Cloister,
 }

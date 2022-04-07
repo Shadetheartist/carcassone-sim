@@ -1,10 +1,12 @@
-package board
+package board_test
 
 import (
+	"beeb/carcassonne/board"
 	"beeb/carcassonne/directions"
 	"beeb/carcassonne/loader"
 	"beeb/carcassonne/tile"
 	"math/rand"
+	"sort"
 	"testing"
 	"time"
 )
@@ -14,8 +16,8 @@ func loadTiles() map[string]tile.Tile {
 	return tiles
 }
 
-func setupBoard(tiles map[string]tile.Tile, placedTiles int) Board {
-	board := New()
+func setupBoard(tiles map[string]tile.Tile, placedTiles int) board.Board {
+	board := board.New(tiles, 1000, 1000)
 
 	rand.Seed(0)
 
@@ -50,6 +52,10 @@ func selectRandomTile(tiles map[string]tile.Tile) *tile.Tile {
 		keys = append(keys, k)
 	}
 
+	sort.Slice(keys, func(i, j int) bool {
+		return keys[i] < keys[j]
+	})
+
 	n := rand.Intn(len(keys))
 
 	randKey := keys[n]
@@ -61,7 +67,7 @@ func selectRandomTile(tiles map[string]tile.Tile) *tile.Tile {
 
 func TestConnectedFeatures(t *testing.T) {
 	tiles := loadTiles()
-	board := New()
+	board := board.New(tiles, 1000, 1000)
 
 	tileA := tiles["RiverCurve"]
 	board.AddTile(&tileA, tile.Placement{
@@ -90,7 +96,7 @@ func TestConnectedFeatures(t *testing.T) {
 
 func TestConnectedFeatures2(t *testing.T) {
 	tiles := loadTiles()
-	board := New()
+	board := board.New(tiles, 1000, 1000)
 
 	tileA := tiles["RiverCurve"]
 	board.AddTile(&tileA, tile.Placement{
@@ -140,7 +146,7 @@ func TestAddTile(t *testing.T) {
 
 func TestOpenPositionState(t *testing.T) {
 	tiles := loadTiles()
-	board := New()
+	board := board.New(tiles, 1000, 1000)
 
 	plc := tile.Placement{
 		Position:    tile.Position{},
@@ -161,7 +167,7 @@ func TestOpenPositionState(t *testing.T) {
 	op := board.OpenPositions[plc.Position]
 
 	northFeatureType := op[int(directions.North)]
-	if northFeatureType != tile.Road {
+	if northFeatureType != tile.FeatureTypeRoad {
 		t.Error("North Neighbour should be Road")
 	}
 
@@ -174,7 +180,7 @@ func TestOpenPositionState(t *testing.T) {
 
 func TestIsTilePlacable(t *testing.T) {
 	tiles := loadTiles()
-	board := New()
+	board := board.New(tiles, 1000, 1000)
 
 	testTile := tiles["RoadTerminal3"]
 
@@ -220,7 +226,7 @@ func TestIsTilePlacable(t *testing.T) {
 
 func TestIsTilePlacable2(t *testing.T) {
 	tiles := loadTiles()
-	board := New()
+	board := board.New(tiles, 1000, 1000)
 
 	testTile := tiles["RoadTerminal3"]
 
@@ -262,7 +268,7 @@ func TestIsTilePlacable2(t *testing.T) {
 
 func TestIsTilePlacable3(t *testing.T) {
 	tiles := loadTiles()
-	board := New()
+	board := board.New(tiles, 1000, 1000)
 
 	testTile := tiles["RoadTerminal4"]
 
@@ -304,7 +310,7 @@ func TestIsTilePlacable3(t *testing.T) {
 
 func TestIsTilePlacable4(t *testing.T) {
 	tiles := loadTiles()
-	board := New()
+	board := board.New(tiles, 1000, 1000)
 
 	testTile := tiles["CastleFill3Road"]
 
@@ -325,12 +331,6 @@ func TestIsTilePlacable4(t *testing.T) {
 		Orientation: 270,
 	})
 
-	tileSouth := tiles["CastleEndCap"]
-	board.AddTile(&tileSouth, tile.Placement{
-		Position:    plc.Position.South(),
-		Orientation: 0,
-	})
-
 	tileWest := tiles["RoadStraight"]
 	board.AddTile(&tileWest, tile.Placement{
 		Position:    plc.Position.West(),
@@ -342,6 +342,20 @@ func TestIsTilePlacable4(t *testing.T) {
 	if err != nil {
 		t.Error("Tile should be placable, but is not allowed")
 	}
+}
+
+func TestPossibleTilePlacements(t *testing.T) {
+	tiles := loadTiles()
+	board := setupBoard(tiles, 512)
+
+	testTile := tiles["CastleFill3Road"]
+
+	positions := board.PossibleTilePlacements(&testTile)
+
+	if len(positions) == 0 {
+		t.Error("No positions possible to place tile (incredibly unlikely)")
+	}
+
 }
 
 func BenchmarkIsTilePlaceable(b *testing.B) {
@@ -397,7 +411,7 @@ func BenchmarkAddTiles(b *testing.B) {
 	tiles := loadTiles()
 
 	for n := 0; n < b.N; n++ {
-		board := New()
+		board := board.New(tiles, 1000, 1000)
 
 		_tile := selectRandomTile(tiles)
 
