@@ -25,8 +25,6 @@ deck:
   CastleFill4Shield: 1
 
 
-
-
 riverdeck:
   begin: RiverTerminus
   end: RiverTerminus

@@ -118,11 +118,14 @@ func selectRandomTile(tiles map[string]tile.Tile) tile.Tile {
 
 func (g *Game) findTileForPos(pos tile.Position) (tile.Tile, error) {
 
-	for _, t := range g.Tiles {
+	for tileName, t := range g.Tiles {
 		if orientation, err := g.Board.IsTilePlaceable(&t, pos); err == nil {
-			t.Placement.Position = pos
-			t.Placement.Orientation = orientation
-			return t, nil
+
+			builtTile := g.TileFactory.BuildTile(tileName)
+			builtTile.Placement.Position = pos
+			builtTile.Placement.Orientation = orientation
+
+			return builtTile, nil
 		}
 	}
 
@@ -159,10 +162,6 @@ func (g *Game) handleMouseInput() {
 
 		if _, exists := g.Board.OpenPositions[g.HoveredPosition]; exists {
 			t, err := g.findTileForPos(g.SelectedPosition)
-
-			//compute the road segements for the copy of the tile that is in the deck, not the tile from the loader
-			//otherwise we will have pointer issues
-			t.RoadSegments = t.ComputeRoadSegments()
 
 			if err == nil {
 				g.Board.AddTile(&t, t.Placement)

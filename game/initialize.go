@@ -23,6 +23,9 @@ func (g *Game) Initialize() {
 	g.ImageH = 1000
 
 	g.Tiles, g.TileInfo = loader.LoadTiles(ymlPath, bitmapDirectory)
+	g.TileFactory = tile.Factory{}
+	g.TileFactory.Initialize(g.Tiles)
+
 	g.Board = board.New(g.Tiles, g.ImageW, g.ImageH)
 	g.RiverDeck = g.buildRiverDeck()
 	g.Deck = g.buildDeck()
@@ -62,23 +65,15 @@ func (g *Game) buildRiverDeck() Deck {
 	var c int = 0
 	for tileName, quantity := range g.TileInfo.RiverDeck.Deck {
 		for i := 0; i < quantity; i++ {
-			tile := g.Tiles[tileName]
-
-			//compute the road segements for the copy of the tile that is in the deck, not the tile from the loader
-			//otherwise we will have pointer issues
-			tile.RoadSegments = tile.ComputeRoadSegments()
-
-			deck.Tiles[c] = tile
-
+			deck.Tiles[c] = g.TileFactory.BuildTile(tileName)
 			c++
 		}
 	}
 
 	deck.Shuffle()
 
-	deck.Prepend(g.Tiles[g.TileInfo.RiverDeck.Begin])
-
-	deck.Append(g.Tiles[g.TileInfo.RiverDeck.End])
+	deck.Prepend(g.TileFactory.BuildTile(g.TileInfo.RiverDeck.Begin))
+	deck.Append(g.TileFactory.BuildTile(g.TileInfo.RiverDeck.End))
 
 	return deck
 }
@@ -93,14 +88,7 @@ func (g *Game) buildDeck() Deck {
 	var c int = 0
 	for tileName, quantity := range g.TileInfo.Deck {
 		for i := 0; i < quantity; i++ {
-			tile := g.Tiles[tileName]
-
-			//compute the road segements for the copy of the tile that is in the deck, not the tile from the loader
-			//otherwise we will have pointer issues
-			tile.RoadSegments = tile.ComputeRoadSegments()
-
-			deck.Tiles[c] = tile
-
+			deck.Tiles[c] = g.TileFactory.BuildTile(tileName)
 			c++
 		}
 	}

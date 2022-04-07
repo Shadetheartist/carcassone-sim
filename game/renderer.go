@@ -21,6 +21,7 @@ import (
 func (g *Game) RenderBoard(screen *ebiten.Image) {
 
 	screen.Fill(colornames.Grey600)
+	g.Board.RoadsImage.Clear()
 
 	for _, t := range g.Board.Tiles {
 		g.renderTileToBoard(t)
@@ -41,6 +42,7 @@ func (g *Game) RenderBoard(screen *ebiten.Image) {
 
 	screen.DrawImage(g.Board.BoardImage, &op)
 	screen.DrawImage(g.Board.OpenPositionsImage, &op)
+
 	screen.DrawImage(g.Board.RoadsImage, &op)
 
 	text.Draw(screen, fmt.Sprint("X:", g.HoveredPosition.X), mplusNormalFont, 20, 20, color.White)
@@ -102,13 +104,19 @@ func (g *Game) setRoadSegmentColor(ctx *gg.Context, rs *tile.RoadSegment) {
 	}
 }
 
-func (g *Game) renderRoadSegment(img *ebiten.Image, rs *tile.RoadSegment) {
+func (g *Game) renderRoadSegment(op ebiten.DrawImageOptions, rs *tile.RoadSegment) {
 
 	if rs == nil {
 		return
 	}
 
+	if g.isRoadSegmentHighlighted(rs) == false {
+		return
+	}
+
 	ctx := gg.NewContext(g.baseSize, g.baseSize)
+
+	ctx.SetRGBA(1, 0, 0, 1)
 
 	ep := tile.Position{}
 
@@ -125,12 +133,8 @@ func (g *Game) renderRoadSegment(img *ebiten.Image, rs *tile.RoadSegment) {
 			float64(g.baseSize)/2+float64(edgePos.X)*float64(g.baseSize)/2,
 			float64(g.baseSize)/2+float64(edgePos.Y)*float64(g.baseSize)/2,
 		)
-		ctx.SetLineWidth(0.5)
-		ctx.Stroke()
 
-		ctx.SetRGBA(1, 1, 1, 1)
-		ctx.DrawCircle(float64(g.baseSize)/2, float64(g.baseSize)/2, 1.5)
-		ctx.Fill()
+		ctx.Stroke()
 
 	} else if len(rs.ParentFeature.Edges) == 2 {
 		//edge to edge
@@ -157,8 +161,7 @@ func (g *Game) renderRoadSegment(img *ebiten.Image, rs *tile.RoadSegment) {
 
 	ebiImg := ebiten.NewImageFromImage(ctx.Image())
 
-	op := ebiten.DrawImageOptions{}
-	img.DrawImage(ebiImg, &op)
+	g.Board.RoadsImage.DrawImage(ebiImg, &op)
 
 }
 
@@ -190,19 +193,11 @@ func (g *Game) initializeOpenPositionImage() {
 
 func (g *Game) renderTileToBoard(t *tile.Tile) {
 
-	if t.Rendered {
-		//return
-	}
-
 	pos := t.Placement.Position
+
 	op := ebiten.DrawImageOptions{}
-	img := ebiten.NewImageFromImage(t.Image)
 
-	d := float64(img.Bounds().Max.X) / 2
-
-	for _, rs := range t.UniqueRoadSegements() {
-		g.renderRoadSegment(img, rs)
-	}
+	d := float64(g.baseSize) / 2
 
 	// Move the image's center to the screen's upper-left corner.
 	// This is a preparation for rotating. When geometry matrices are applied,
@@ -217,6 +212,15 @@ func (g *Game) renderTileToBoard(t *tile.Tile) {
 
 	op.GeoM.Scale(g.renderScale, g.renderScale)
 
+	for _, rs := range t.UniqueRoadSegements() {
+		g.renderRoadSegment(op, rs)
+	}
+
+	if t.Rendered {
+		return
+	}
+
+	img := ebiten.NewImageFromImage(t.Image)
 	g.Board.BoardImage.DrawImage(img, &op)
 
 	t.Rendered = true

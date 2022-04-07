@@ -10,8 +10,10 @@ import (
 )
 
 type Game struct {
-	TileInfo     loader.TileInfoFile
-	Tiles        map[string]tile.Tile
+	TileInfo    loader.TileInfoFile
+	Tiles       map[string]tile.Tile
+	TileFactory tile.Factory
+
 	RiverDeck    Deck
 	Deck         Deck
 	Board        board.Board
