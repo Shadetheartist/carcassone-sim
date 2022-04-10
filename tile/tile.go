@@ -18,10 +18,6 @@ type Tile struct {
 	Placement Placement
 	Rendered  bool
 
-	//these are non-oriented (board reference)
-	Features map[int]*Feature
-	Edges    map[directions.Direction]int
-
 	//dir mapped
 	Neighbours []*Tile
 
@@ -37,11 +33,11 @@ func (t *Tile) Feature(direction directions.Direction) *Feature {
 }
 
 func (t *Tile) FeaturesByType(ft FeatureType) []*Feature {
-	features := make([]*Feature, 0, 1)
+	features := make([]*Feature, 0, 4)
 
-	for _, f := range t.Features {
-		if f.Type == ft {
-			features = append(features, f)
+	for _, e := range t.Edges2 {
+		if e.Feature != nil && e.Feature.Type == ft {
+			features = append(features, e.Feature)
 		}
 	}
 

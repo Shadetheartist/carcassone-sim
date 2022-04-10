@@ -33,11 +33,6 @@ func TestFactoyBuiltTileReferences(t *testing.T) {
 		t.Errorf("Tiles reference the same memory - Neighbours")
 	}
 
-	tileA.Features[0] = &tile.Feature{}
-	if tileA.Features[0] == tileB.Features[0] {
-		t.Errorf("Tiles reference the same memory - Features")
-	}
-
 	tileA.RoadSegments[0] = &tile.RoadSegment{}
 	if tileA.RoadSegments[0] == tileB.RoadSegments[0] {
 		t.Errorf("Tiles reference the same memory - RoadSegments")

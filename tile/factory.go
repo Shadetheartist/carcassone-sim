@@ -74,10 +74,8 @@ func (factory *Factory) BuildTile(tileName string) Tile {
 	}
 
 	t := Tile{
-		Name:     tileName,
-		Image:    tileBitmap,
-		Features: features,
-		Edges:    edges,
+		Name:  tileName,
+		Image: tileBitmap,
 		Placement: Placement{
 			Position:    Position{},
 			Orientation: 0,
