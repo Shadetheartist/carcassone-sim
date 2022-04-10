@@ -118,7 +118,7 @@ func selectRandomTile(tiles map[string]tile.Tile) tile.Tile {
 
 func (g *Game) findTileForPos(pos tile.Position) (tile.Tile, error) {
 
-	for tileName, t := range g.Tiles {
+	for tileName, t := range g.TileFactory.ReferenceTiles() {
 		if orientation, err := g.Board.IsTilePlaceable(&t, pos); err == nil {
 
 			builtTile := g.TileFactory.BuildTile(tileName)

@@ -6,6 +6,14 @@ import (
 	"image"
 )
 
+type Edge struct {
+	Direction directions.Direction
+	Type      FeatureType
+	Parent    *Tile
+	Feature   *Feature
+	Neighbour *Edge
+}
+
 type Tile struct {
 	Name      string
 	Image     image.Image
@@ -24,6 +32,7 @@ type Tile struct {
 	EdgeFeatures     [4]*Feature
 
 	RoadSegments [4]*RoadSegment
+	Edges2       [4]Edge
 }
 
 func (t *Tile) Feature(direction directions.Direction) *Feature {

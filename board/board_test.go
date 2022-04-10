@@ -2,8 +2,8 @@ package board_test
 
 import (
 	"beeb/carcassonne/board"
+	"beeb/carcassonne/db"
 	"beeb/carcassonne/directions"
-	"beeb/carcassonne/loader"
 	"beeb/carcassonne/tile"
 	"math/rand"
 	"sort"
@@ -12,10 +12,18 @@ import (
 )
 
 func loadTiles() map[string]tile.Tile {
-	tiles, _ := loader.LoadTiles("../data/tiles.yml", "../data/bitmaps")
-	return tiles
-}
 
+	tileInfoLoader := &db.ConfigFileDataLoader{}
+	tileInfoLoader.LoadData("../data/tiles.yml")
+
+	bitmapLoader := &db.DirectoryBitmapLoader{}
+	bitmapLoader.LoadBitmapsFromDirectory("../data/bitmaps")
+
+	tf := tile.Factory{}
+	tf.Initialize(tileInfoLoader.GetAllTileNames(), tileInfoLoader, bitmapLoader)
+
+	return tf.ReferenceTiles()
+}
 func setupBoard(tiles map[string]tile.Tile, placedTiles int) board.Board {
 	board := board.New(tiles, 1000, 1000)
 

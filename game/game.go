@@ -2,7 +2,8 @@ package game
 
 import (
 	"beeb/carcassonne/board"
-	"beeb/carcassonne/loader"
+	"beeb/carcassonne/db"
+	"beeb/carcassonne/game/deck"
 	"beeb/carcassonne/tile"
 	"image"
 
@@ -10,12 +11,12 @@ import (
 )
 
 type Game struct {
-	TileInfo    loader.TileInfoFile
+	TileInfo    db.TileInfoFile
 	Tiles       map[string]tile.Tile
-	TileFactory tile.Factory
+	TileFactory *tile.Factory
 
-	RiverDeck    Deck
-	Deck         Deck
+	RiverDeck    deck.Deck
+	Deck         deck.Deck
 	Board        board.Board
 	CameraOffset image.Point
 	CameraZoom   float64
