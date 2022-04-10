@@ -84,10 +84,34 @@ func (factory *Factory) BuildTile(tileName string) Tile {
 		},
 	}
 
+	var edges2 [4]Edge
+
+	for i := 0; i < 4; i++ {
+
+		var feature *Feature
+
+		if e, exists := edges[directions.Direction(i)]; exists {
+			feature = features[e]
+		} else {
+			feature = &Feature{
+				Type:   Grass,
+				Shield: false,
+			}
+		}
+
+		edge := Edge{
+			Direction: directions.Direction(i),
+			Feature:   feature,
+			Parent:    &t,
+		}
+
+		edges2[i] = edge
+	}
+	t.Edges2 = edges2
+
 	//recompute pointers to new memory
 	t.Neighbours = make([]*Tile, 4)
-	t.EdgeFeatures = t.ComputeEdgeFeatures()
-	t.EdgeFeatureTypes = t.ComputeEdgeFeatureTypes()
+	t.CachedEdgeFeatureTypes = t.CacheEdgeFeatureTypes()
 	t.RoadSegments = t.ComputeRoadSegments()
 
 	return t

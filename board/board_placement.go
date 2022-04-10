@@ -49,7 +49,7 @@ func (b *Board) PossibleTilePlacements(t *tile.Tile) []tile.Placement {
 func (b *Board) IsTilePlaceable(t *tile.Tile, position tile.Position) (uint16, error) {
 
 	op := b.OpenPositions[position]
-	eft := t.EdgeFeatureTypes
+	eft := t.CachedEdgeFeatureTypes
 
 	for i := 0; i < 4; i++ {
 		if compareEft(op, eft) {
@@ -68,7 +68,7 @@ func (b *Board) PlaceableOrientations(t *tile.Tile, position tile.Position) []ui
 	orientations := make([]uint16, 0, 4)
 
 	op := b.OpenPositions[position]
-	eft := t.EdgeFeatureTypes
+	eft := t.CachedEdgeFeatureTypes
 
 	for i := 0; i < 4; i++ {
 		if compareEft(op, eft) {
