@@ -9,7 +9,7 @@ import (
 )
 
 func setupBoard(tiles map[string]tile.Tile, placedTiles int) board.Board {
-	board := board.New(tiles, 1000, 1000)
+	board := board.CreateBoard(tiles, 1000, 1000)
 	return board
 }
 
@@ -109,7 +109,7 @@ func testRoad(
 
 func TestRoadContinuity(t *testing.T) {
 	tiles := loadTiles()
-	b := board.New(tiles, 1000, 1000)
+	b := board.CreateBoard(tiles, 1000, 1000)
 
 	setupTestScenario(tiles, &b)
 
@@ -263,7 +263,7 @@ func setupRoadTestTerminals(tiles map[string]tile.Tile, b *board.Board) {
 
 func TestRoadOpen(t *testing.T) {
 	tiles := loadTiles()
-	b := board.New(tiles, 1000, 1000)
+	b := board.CreateBoard(tiles, 1000, 1000)
 
 	setupRoadTestOpen(tiles, &b)
 
@@ -279,7 +279,7 @@ func TestRoadOpen(t *testing.T) {
 
 func TestRoadLoop(t *testing.T) {
 	tiles := loadTiles()
-	b := board.New(tiles, 1000, 1000)
+	b := board.CreateBoard(tiles, 1000, 1000)
 
 	setupRoadTestLoop(tiles, &b)
 
@@ -294,7 +294,7 @@ func TestRoadLoop(t *testing.T) {
 
 func TestRoadTerminals(t *testing.T) {
 	tiles := loadTiles()
-	b := board.New(tiles, 1000, 1000)
+	b := board.CreateBoard(tiles, 1000, 1000)
 
 	setupRoadTestTerminals(tiles, &b)
 

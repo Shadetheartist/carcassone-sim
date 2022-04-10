@@ -8,7 +8,7 @@ import (
 )
 
 type ConfigFileDataLoader struct {
-	info TileInfoFile
+	info GameConfig
 }
 
 func (dl *ConfigFileDataLoader) GetAllTileNames() []string {
@@ -20,7 +20,7 @@ func (dl *ConfigFileDataLoader) GetAllTileNames() []string {
 	return keys
 }
 
-func (dl *ConfigFileDataLoader) GetGameConfig() TileInfoFile {
+func (dl *ConfigFileDataLoader) GetGameConfig() GameConfig {
 	return dl.info
 }
 
@@ -39,7 +39,7 @@ func (dl *ConfigFileDataLoader) GetTileInfo(tileName string) (TileInfo, error) {
 
 func (dl *ConfigFileDataLoader) LoadData(configFilePath string) error {
 
-	info := TileInfoFile{}
+	info := GameConfig{}
 
 	fileContent, err := os.ReadFile(configFilePath)
 

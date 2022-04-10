@@ -6,13 +6,17 @@ import (
 )
 
 type TileInfoDeckFactory struct {
-	tileInfoFile *db.TileInfoFile
+	tileInfoFile *db.GameConfig
 	tileFactory  *tile.Factory
 }
 
-func (df *TileInfoDeckFactory) Initialize(tileInfoFile *db.TileInfoFile, tileFactory *tile.Factory) {
-	df.tileInfoFile = tileInfoFile
+func CreateDeckFactory(gameConfig *db.GameConfig, tileFactory *tile.Factory) *TileInfoDeckFactory {
+	df := TileInfoDeckFactory{}
+
+	df.tileInfoFile = gameConfig
 	df.tileFactory = tileFactory
+
+	return &df
 }
 
 func (df *TileInfoDeckFactory) BuildRiverDeck() Deck {

@@ -19,13 +19,12 @@ func loadTiles() map[string]tile.Tile {
 	bitmapLoader := &db.DirectoryBitmapLoader{}
 	bitmapLoader.LoadBitmapsFromDirectory("../data/bitmaps")
 
-	tf := tile.Factory{}
-	tf.Initialize(tileInfoLoader.GetAllTileNames(), tileInfoLoader, bitmapLoader)
+	tf := tile.CreateTileFactory(tileInfoLoader.GetAllTileNames(), tileInfoLoader, bitmapLoader)
 
 	return tf.ReferenceTiles()
 }
 func setupBoard(tiles map[string]tile.Tile, placedTiles int) board.Board {
-	board := board.New(tiles, 1000, 1000)
+	board := board.CreateBoard(tiles, 1000, 1000)
 
 	rand.Seed(0)
 
@@ -75,7 +74,7 @@ func selectRandomTile(tiles map[string]tile.Tile) *tile.Tile {
 
 func TestConnectedFeatures(t *testing.T) {
 	tiles := loadTiles()
-	board := board.New(tiles, 1000, 1000)
+	board := board.CreateBoard(tiles, 1000, 1000)
 
 	tileA := tiles["RiverCurve"]
 	board.AddTile(&tileA, tile.Placement{
@@ -104,7 +103,7 @@ func TestConnectedFeatures(t *testing.T) {
 
 func TestConnectedFeatures2(t *testing.T) {
 	tiles := loadTiles()
-	board := board.New(tiles, 1000, 1000)
+	board := board.CreateBoard(tiles, 1000, 1000)
 
 	tileA := tiles["RiverCurve"]
 	board.AddTile(&tileA, tile.Placement{
@@ -154,7 +153,7 @@ func TestAddTile(t *testing.T) {
 
 func TestOpenPositionState(t *testing.T) {
 	tiles := loadTiles()
-	board := board.New(tiles, 1000, 1000)
+	board := board.CreateBoard(tiles, 1000, 1000)
 
 	plc := tile.Placement{
 		Position:    tile.Position{},
@@ -188,7 +187,7 @@ func TestOpenPositionState(t *testing.T) {
 
 func TestIsTilePlacable(t *testing.T) {
 	tiles := loadTiles()
-	board := board.New(tiles, 1000, 1000)
+	board := board.CreateBoard(tiles, 1000, 1000)
 
 	testTile := tiles["RoadTerminal3"]
 
@@ -234,7 +233,7 @@ func TestIsTilePlacable(t *testing.T) {
 
 func TestIsTilePlacable2(t *testing.T) {
 	tiles := loadTiles()
-	board := board.New(tiles, 1000, 1000)
+	board := board.CreateBoard(tiles, 1000, 1000)
 
 	testTile := tiles["RoadTerminal3"]
 
@@ -276,7 +275,7 @@ func TestIsTilePlacable2(t *testing.T) {
 
 func TestIsTilePlacable3(t *testing.T) {
 	tiles := loadTiles()
-	board := board.New(tiles, 1000, 1000)
+	board := board.CreateBoard(tiles, 1000, 1000)
 
 	testTile := tiles["RoadTerminal4"]
 
@@ -318,7 +317,7 @@ func TestIsTilePlacable3(t *testing.T) {
 
 func TestIsTilePlacable4(t *testing.T) {
 	tiles := loadTiles()
-	board := board.New(tiles, 1000, 1000)
+	board := board.CreateBoard(tiles, 1000, 1000)
 
 	testTile := tiles["CastleFill3Road"]
 
@@ -419,7 +418,7 @@ func BenchmarkAddTiles(b *testing.B) {
 	tiles := loadTiles()
 
 	for n := 0; n < b.N; n++ {
-		board := board.New(tiles, 1000, 1000)
+		board := board.CreateBoard(tiles, 1000, 1000)
 
 		_tile := selectRandomTile(tiles)
 

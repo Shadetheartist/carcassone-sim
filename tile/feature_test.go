@@ -15,8 +15,7 @@ func loadTiles() map[string]tile.Tile {
 	bitmapLoader := &db.DirectoryBitmapLoader{}
 	bitmapLoader.LoadBitmapsFromDirectory("../data/bitmaps")
 
-	tf := tile.Factory{}
-	tf.Initialize(tileInfoLoader.GetAllTileNames(), tileInfoLoader, bitmapLoader)
+	tf := tile.CreateTileFactory(tileInfoLoader.GetAllTileNames(), tileInfoLoader, bitmapLoader)
 
 	return tf.ReferenceTiles()
 }

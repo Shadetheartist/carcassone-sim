@@ -13,7 +13,10 @@ type Factory struct {
 	referenceTiles map[string]Tile
 }
 
-func (factory *Factory) Initialize(tileNames []string, tileInfoLoader db.TileInfoLoader, bitmapLoader db.BitmapLoader) {
+func CreateTileFactory(tileNames []string, tileInfoLoader db.TileInfoLoader, bitmapLoader db.BitmapLoader) *Factory {
+
+	factory := Factory{}
+
 	factory.tileNames = tileNames
 	factory.tileInfoLoader = tileInfoLoader
 	factory.bitmapLoader = bitmapLoader
@@ -22,6 +25,8 @@ func (factory *Factory) Initialize(tileNames []string, tileInfoLoader db.TileInf
 	for _, tileName := range factory.tileNames {
 		factory.referenceTiles[tileName] = factory.BuildTile(tileName)
 	}
+
+	return &factory
 }
 
 func (factory *Factory) ReferenceTiles() map[string]Tile {

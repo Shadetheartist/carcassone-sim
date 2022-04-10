@@ -15,8 +15,7 @@ func buildTileFactory() *tile.Factory {
 	bitmapLoader := db.DirectoryBitmapLoader{}
 	bitmapLoader.LoadBitmapsFromDirectory("../data/bitmaps")
 
-	tileFactory := &tile.Factory{}
-	tileFactory.Initialize(tileInfoLoader.GetAllTileNames(), &tileInfoLoader, &bitmapLoader)
+	tileFactory := tile.CreateTileFactory(tileInfoLoader.GetAllTileNames(), &tileInfoLoader, &bitmapLoader)
 
 	return tileFactory
 }

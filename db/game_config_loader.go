@@ -1,7 +1,7 @@
 package db
 
 //types required for unmarshalling the tile info file data
-type TileInfoFile struct {
+type GameConfig struct {
 	Tiles     map[string]TileInfo
 	Deck      map[string]int
 	RiverDeck RiverDeck
@@ -14,6 +14,6 @@ type RiverDeck struct {
 }
 
 type GameConfigLoader interface {
-	GetGameConfig() TileInfoFile
+	GetGameConfig() GameConfig
 	GetAllTileNames() []string
 }

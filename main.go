@@ -45,10 +45,9 @@ func main() {
 	bitmapDir := bitmapDirectory()
 	bitmapLoader.LoadBitmapsFromDirectory(bitmapDir)
 
-	game := game.Game{}
-	game.Initialize(tileInfoLoader, tileInfoLoader, bitmapLoader)
+	game := game.CreateGame(tileInfoLoader, tileInfoLoader, bitmapLoader)
 
-	if err := ebiten.RunGame(&game); err != nil {
+	if err := ebiten.RunGame(game); err != nil {
 		panic(err)
 	}
 }

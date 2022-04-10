@@ -22,8 +22,9 @@ type Board struct {
 	RoadsImage         *ebiten.Image
 }
 
-func New(tileOptions map[string]tile.Tile, imageW int, imageH int) Board {
+func CreateBoard(tileOptions map[string]tile.Tile, imageW int, imageH int) Board {
 	b := Board{}
+
 	b.TileOptions = tileOptions
 	b.Tiles = make(map[tile.Position]*tile.Tile)
 	b.OpenPositions = make(map[tile.Position][]tile.FeatureType, 4)
@@ -37,6 +38,7 @@ func New(tileOptions map[string]tile.Tile, imageW int, imageH int) Board {
 
 //be careful not to add the same tile by reference accidentally,
 //always make sure that each tile sent to this function has its own memory
+//which can easily be done through the tile factory
 func (b *Board) AddTile(t *tile.Tile, p tile.Placement) error {
 
 	//verify placement
@@ -53,6 +55,9 @@ func (b *Board) AddTile(t *tile.Tile, p tile.Placement) error {
 
 			//set the neighbour relationships between the tiles for later use
 			t.Neighbours[d] = neighbour
+			t.Edges2[d].Neighbour = &neighbour.Edges2[dir.Compliment[d]]
+
+			neighbour.Edges2[dir.Compliment[d]].Neighbour = &t.Edges2[d]
 			neighbour.Neighbours[dir.Compliment[d]] = t
 		}
 	}

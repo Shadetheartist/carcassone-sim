@@ -11,7 +11,7 @@ import (
 )
 
 type Game struct {
-	TileInfo    db.TileInfoFile
+	TileInfo    db.GameConfig
 	Tiles       map[string]tile.Tile
 	TileFactory *tile.Factory
 
