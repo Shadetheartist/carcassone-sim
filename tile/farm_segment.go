@@ -4,28 +4,81 @@ import (
 	"errors"
 	"image"
 	"image/color"
+	"math"
 )
 
 type FarmSegment struct {
-	Parent     *Tile
-	EdgePixels []Position
+	Parent *Tile
 }
 
-type pix struct {
-	neighbours [4]*pix
+func TransposeFarmMatrix(matrix [][]*FarmSegment) [][]*FarmSegment {
+
+	newMatrix := make([][]*FarmSegment, len(matrix))
+
+	for i := 0; i < len(matrix); i++ {
+		for j := 0; j < len(matrix[0]); j++ {
+			newMatrix[j] = append(newMatrix[j], matrix[i][j])
+		}
+	}
+
+	return newMatrix
 }
 
-func ComputeFarmSegments(t Tile) []FarmSegment {
+func OrientedFarmMatrix(t *Tile, r int) [][]*FarmSegment {
+	n := int(math.Abs(float64(r))) / 90 % 4
+
+	var matrix [][]*FarmSegment
+
+	switch n {
+	case 1:
+		{
+			//transpose & reverse each row = 90 deg
+			matrix = TransposeFarmMatrix(t.FarmMatrix)
+
+			//reverse each row
+			for _, row := range matrix {
+				for i, j := 0, len(row)-1; i < j; i, j = i+1, j-1 {
+					row[i], row[j] = row[j], row[i]
+				}
+			}
+		}
+
+	case 2:
+		{
+			//transpose = 180 deg
+			matrix = TransposeFarmMatrix(t.FarmMatrix)
+		}
+
+	case 3:
+		{
+			//transpose & reverse each column = 270 / -90 deg
+			matrix = TransposeFarmMatrix(t.FarmMatrix)
+
+			//reverse each column
+			for i, j := 0, len(matrix)-1; i < j; i, j = i+1, j-1 {
+				matrix[i], matrix[j] = matrix[j], matrix[i]
+			}
+
+		}
+	}
+
+	return matrix
+}
+
+func ComputeFarmMatrix(t Tile) [][]*FarmSegment {
 
 	img := t.Image
 	edgePositions := EdgePositions(img)
-	farmSegments := make([]FarmSegment, 0, 4)
 
 	imgLen := img.Bounds().Max.X * img.Bounds().Max.Y
 
-	visited := make([]bool, imgLen)
+	farmMatrix := make([][]*FarmSegment, img.Bounds().Max.Y)
 
-	var positions []Position
+	for y := 0; y < img.Bounds().Max.Y; y++ {
+		farmMatrix[y] = make([]*FarmSegment, img.Bounds().Max.X)
+	}
+
+	visited := make([]bool, imgLen)
 
 	for !allVisited(visited) {
 
@@ -35,16 +88,14 @@ func ComputeFarmSegments(t Tile) []FarmSegment {
 			break
 		}
 
-		positions = fillSegment(img, edgePositions, nextIndex, visited)
-
 		farmSegment := FarmSegment{}
-		farmSegment.EdgePixels = positions
 		farmSegment.Parent = &t
 
-		farmSegments = append(farmSegments, farmSegment)
+		fillSegment(img, edgePositions, nextIndex, visited, farmMatrix, &farmSegment)
+
 	}
 
-	return farmSegments
+	return farmMatrix
 }
 
 func getUnvisitedFarmPos(img image.Image, visited []bool) (int, Position, error) {
@@ -65,9 +116,7 @@ func getUnvisitedFarmPos(img image.Image, visited []bool) (int, Position, error)
 	return 0, Position{}, errors.New("No more unvisited positions")
 }
 
-func fillSegment(img image.Image, edgePositions []Position, initialIndex int, visited []bool) []Position {
-	segmentEdgePositions := make([]Position, 0, 8)
-
+func fillSegment(img image.Image, edgePositions []Position, initialIndex int, visited []bool, farmMatrix [][]*FarmSegment, segment *FarmSegment) {
 	stack := make([]int, 0, 8)
 	stack = append(stack, initialIndex)
 
@@ -87,8 +136,8 @@ func fillSegment(img image.Image, edgePositions []Position, initialIndex int, vi
 		pos := indexToPos(img, i)
 		color := img.At(pos.X, pos.Y)
 
-		if isFarmColor(color) && isEdgePosition(edgePositions, pos) {
-			segmentEdgePositions = append(segmentEdgePositions, pos)
+		if isFarmColor(color) {
+			farmMatrix[pos.Y][pos.X] = segment
 		}
 
 		//add neighbours to stack
@@ -101,9 +150,6 @@ func fillSegment(img image.Image, edgePositions []Position, initialIndex int, vi
 			}
 		}
 	}
-
-	return segmentEdgePositions
-
 }
 
 func isEdgePosition(edgePositions []Position, pos Position) bool {

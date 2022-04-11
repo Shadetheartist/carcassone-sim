@@ -25,6 +25,7 @@ type Tile struct {
 	CachedEdgeFeatureTypes [4]FeatureType
 
 	RoadSegments [4]*RoadSegment
+	FarmMatrix   [][]*FarmSegment
 	Edges2       [4]Edge
 }
 

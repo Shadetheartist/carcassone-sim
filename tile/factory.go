@@ -116,6 +116,7 @@ func (factory *Factory) BuildTile(tileName string) Tile {
 	t.Neighbours = make([]*Tile, 4)
 	t.CachedEdgeFeatureTypes = t.CacheEdgeFeatureTypes()
 	t.RoadSegments = t.ComputeRoadSegments()
+	t.FarmMatrix = ComputeFarmMatrix(t)
 
 	return t
 }
