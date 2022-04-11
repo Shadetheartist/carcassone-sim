@@ -47,6 +47,8 @@ func main() {
 
 	game := game.CreateGame(tileInfoLoader, tileInfoLoader, bitmapLoader)
 
+	game.Setup()
+
 	if err := ebiten.RunGame(game); err != nil {
 		panic(err)
 	}
