@@ -1,6 +1,7 @@
 package tile
 
 import (
+	"errors"
 	"image"
 	"image/color"
 )
@@ -20,13 +21,21 @@ func ComputeFarmSegments(t Tile) []FarmSegment {
 	edgePositions := EdgePositions(img)
 	farmSegments := make([]FarmSegment, 0, 4)
 
-	forwardCounter := 0
-	visited := make([]bool, len(edgePositions))
+	imgLen := img.Bounds().Max.X * img.Bounds().Max.Y
+
+	visited := make([]bool, imgLen)
 
 	var positions []Position
 
 	for !allVisited(visited) {
-		forwardCounter, positions = segmentEdgePositions(img, edgePositions, forwardCounter, visited)
+
+		nextIndex, _, err := getUnvisitedFarmPos(img, visited)
+
+		if err != nil {
+			break
+		}
+
+		positions = fillSegment(img, edgePositions, nextIndex, visited)
 
 		farmSegment := FarmSegment{}
 		farmSegment.EdgePixels = positions
@@ -38,6 +47,144 @@ func ComputeFarmSegments(t Tile) []FarmSegment {
 	return farmSegments
 }
 
+func getUnvisitedFarmPos(img image.Image, visited []bool) (int, Position, error) {
+	for i, v := range visited {
+		if v {
+			continue
+		}
+
+		pos := indexToPos(img, i)
+
+		color := img.At(pos.X, pos.Y)
+
+		if isFarmColor(color) {
+			return i, pos, nil
+		}
+	}
+
+	return 0, Position{}, errors.New("No more unvisited positions")
+}
+
+func fillSegment(img image.Image, edgePositions []Position, initialIndex int, visited []bool) []Position {
+	segmentEdgePositions := make([]Position, 0, 8)
+
+	stack := make([]int, 0, 8)
+	stack = append(stack, initialIndex)
+
+	var i int
+
+	for len(stack) > 0 {
+
+		// pop off stack
+		i, stack = stack[len(stack)-1], stack[:len(stack)-1]
+
+		if visited[i] {
+			continue
+		}
+
+		visited[i] = true
+
+		pos := indexToPos(img, i)
+		color := img.At(pos.X, pos.Y)
+
+		if isFarmColor(color) && isEdgePosition(edgePositions, pos) {
+			segmentEdgePositions = append(segmentEdgePositions, pos)
+		}
+
+		//add neighbours to stack
+		neighbours := indexNeighbours(img, i)
+		for _, n := range neighbours {
+			p := indexToPos(img, n)
+			c := img.At(p.X, p.Y)
+			if !visited[n] && isFarmColor(c) {
+				stack = append(stack, n)
+			}
+		}
+	}
+
+	return segmentEdgePositions
+
+}
+
+func isEdgePosition(edgePositions []Position, pos Position) bool {
+	for _, p := range edgePositions {
+		if p == pos {
+			return true
+		}
+	}
+
+	return false
+}
+
+func indexNeighbours(img image.Image, i int) []int {
+	neighbours := make([]int, 0, 4)
+	if neighbour, valid := northIndex(img, i); valid {
+		neighbours = append(neighbours, neighbour)
+	}
+
+	if neighbour, valid := southIndex(img, i); valid {
+		neighbours = append(neighbours, neighbour)
+	}
+
+	if neighbour, valid := eastIndex(img, i); valid {
+		neighbours = append(neighbours, neighbour)
+	}
+
+	if neighbour, valid := westIndex(img, i); valid {
+		neighbours = append(neighbours, neighbour)
+	}
+
+	return neighbours
+}
+
+func northIndex(img image.Image, i int) (int, bool) {
+	_i := i - img.Bounds().Max.X
+
+	if _i < 0 {
+		return 0, false
+	}
+
+	return _i, true
+}
+
+func southIndex(img image.Image, i int) (int, bool) {
+	max := img.Bounds().Max.X * img.Bounds().Max.Y
+	_i := i + img.Bounds().Max.X
+
+	if _i >= max {
+		return 0, false
+	}
+
+	return _i, true
+}
+
+func eastIndex(img image.Image, i int) (int, bool) {
+	rowIndex := i % img.Bounds().Max.X
+
+	if rowIndex-1 < 0 {
+		return 0, false
+	}
+
+	return i - 1, true
+}
+
+func westIndex(img image.Image, i int) (int, bool) {
+	rowIndex := i % img.Bounds().Max.X
+
+	if rowIndex+1 >= img.Bounds().Max.X {
+		return 0, false
+	}
+
+	return i + 1, true
+}
+
+func indexToPos(img image.Image, index int) Position {
+	x := index % img.Bounds().Max.X
+	y := (index / img.Bounds().Max.X)
+
+	return Position{X: x, Y: y}
+}
+
 func allVisited(seen []bool) bool {
 	for _, s := range seen {
 		if !s {
@@ -46,66 +193,6 @@ func allVisited(seen []bool) bool {
 	}
 
 	return true
-}
-
-func segmentEdgePositions(img image.Image, edgePositions []Position, startIndex int, visited []bool) (int, []Position) {
-
-	forwardCounter := startIndex
-	backwardCounter := backCounterIndex(startIndex-1, len(edgePositions)-1)
-	farmEdges := make([]Position, 0, len(edgePositions))
-
-	for forwardCounter < len(edgePositions) {
-
-		if visited[forwardCounter] {
-			break
-		}
-
-		visited[forwardCounter] = true
-
-		pos := edgePositions[forwardCounter]
-
-		color := img.At(pos.X, pos.Y)
-
-		if isFarmColor(color) {
-			//farm edge is continuing
-			farmEdges = append(farmEdges, pos)
-			forwardCounter++
-		} else {
-			break
-		}
-	}
-
-	for backwardCounter > 0 {
-
-		if visited[backwardCounter] {
-			break
-		}
-
-		visited[backwardCounter] = true
-
-		pos := edgePositions[backwardCounter]
-
-		color := img.At(pos.X, pos.Y)
-
-		if isFarmColor(color) {
-			farmEdges = append(farmEdges, pos)
-			//farm edge is continuing
-			backwardCounter = backCounterIndex(backwardCounter-1, len(edgePositions)-1)
-		} else {
-			break
-		}
-	}
-
-	return forwardCounter + 1, farmEdges
-}
-
-func backCounterIndex(i int, max int) int {
-
-	if i < 0 {
-		i += max + 1
-	}
-
-	return i
 }
 
 var farmColorGreen uint32 = 190 | 190<<8
