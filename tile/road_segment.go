@@ -75,7 +75,7 @@ func (t *Tile) UniqueRoadSegements() []*RoadSegment {
 }
 
 //must be called after the edge features are set up as it relies on them
-func (t *Tile) ComputeRoadSegments() [4]*RoadSegment {
+func ComputeRoadSegments(t *Tile) [4]*RoadSegment {
 
 	var rs [4]*RoadSegment
 

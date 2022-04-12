@@ -13,14 +13,8 @@ func CreateGame(gcl db.GameConfigLoader, til db.TileInfoLoader, bmpl db.BitmapLo
 	g.lastRiverTurn = 1
 	g.lastRiverTile = nil
 
-	g.ImageW = 1000
-	g.ImageH = 1000
-
-	g.baseSize = 7
-	g.renderScale = 2
-
-	g.CameraOffset.X = g.ImageW / g.baseSize
-	g.CameraOffset.Y = g.ImageH / g.baseSize
+	g.CameraOffset.X = 0
+	g.CameraOffset.Y = 0
 
 	g.HighlightedRoads = make([]board.Road, 0)
 
@@ -29,7 +23,7 @@ func CreateGame(gcl db.GameConfigLoader, til db.TileInfoLoader, bmpl db.BitmapLo
 	gameConfig := gcl.GetGameConfig()
 	deckFactory := deck.CreateDeckFactory(&gameConfig, g.TileFactory)
 
-	g.Board = board.CreateBoard(g.Tiles, g.ImageW, g.ImageH)
+	g.Board = board.CreateBoard(g.Tiles, 1000, 1000)
 	g.RiverDeck = deckFactory.BuildRiverDeck()
 	g.Deck = deckFactory.BuildDeck()
 

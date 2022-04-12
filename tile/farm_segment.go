@@ -11,6 +11,10 @@ type FarmSegment struct {
 	Parent *Tile
 }
 
+func (t *Tile) IntegrateFarms() {
+
+}
+
 func TransposeFarmMatrix(matrix [][]*FarmSegment) [][]*FarmSegment {
 
 	newMatrix := make([][]*FarmSegment, len(matrix))
@@ -30,9 +34,15 @@ func OrientedFarmMatrix(t *Tile, r int) [][]*FarmSegment {
 	var matrix [][]*FarmSegment
 
 	switch n {
+	case 0:
+		//absolute dogshit way to return a copy of the original matrix
+		matrix = TransposeFarmMatrix(t.FarmMatrix)
+		matrix = TransposeFarmMatrix(matrix)
+
 	case 1:
 		{
 			//transpose & reverse each row = 90 deg
+			//this copies the existing matrix
 			matrix = TransposeFarmMatrix(t.FarmMatrix)
 
 			//reverse each row
@@ -46,12 +56,14 @@ func OrientedFarmMatrix(t *Tile, r int) [][]*FarmSegment {
 	case 2:
 		{
 			//transpose = 180 deg
+			//this copies the existing matrix
 			matrix = TransposeFarmMatrix(t.FarmMatrix)
 		}
 
 	case 3:
 		{
 			//transpose & reverse each column = 270 / -90 deg
+			//this copies the existing matrix
 			matrix = TransposeFarmMatrix(t.FarmMatrix)
 
 			//reverse each column
@@ -65,7 +77,7 @@ func OrientedFarmMatrix(t *Tile, r int) [][]*FarmSegment {
 	return matrix
 }
 
-func ComputeFarmMatrix(t Tile) [][]*FarmSegment {
+func ComputeFarmMatrix(t *Tile) [][]*FarmSegment {
 
 	img := t.Image
 	edgePositions := EdgePositions(img)
@@ -89,10 +101,9 @@ func ComputeFarmMatrix(t Tile) [][]*FarmSegment {
 		}
 
 		farmSegment := FarmSegment{}
-		farmSegment.Parent = &t
+		farmSegment.Parent = t
 
 		fillSegment(img, edgePositions, nextIndex, visited, farmMatrix, &farmSegment)
-
 	}
 
 	return farmMatrix

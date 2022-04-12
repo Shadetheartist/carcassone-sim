@@ -2,7 +2,7 @@ package game
 
 import (
 	"beeb/carcassonne/board"
-	"math"
+	"image"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -22,9 +22,10 @@ func (g *Game) handleMouseInput() {
 
 	cX, cY := ebiten.CursorPosition()
 
-	//cursor pos mapped to tile grid
-	g.HoveredPosition.X = int(math.Floor(float64(cX-g.CameraOffset.X) / g.renderScale / float64(g.baseSize)))
-	g.HoveredPosition.Y = int(math.Floor(float64(cY-g.CameraOffset.Y) / g.renderScale / float64(g.baseSize)))
+	g.HoveredPosition = g.Board.PixToPos(image.Point{
+		X: cX - g.CameraOffset.X,
+		Y: cY - g.CameraOffset.Y,
+	})
 
 	if ebiten.IsMouseButtonPressed(ebiten.MouseButtonRight) && g.HoveredPosition != g.SelectedPosition {
 		g.SelectedPosition = g.HoveredPosition

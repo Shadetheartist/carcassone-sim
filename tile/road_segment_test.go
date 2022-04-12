@@ -16,7 +16,7 @@ func setupBoard(tiles map[string]tile.Tile, placedTiles int) board.Board {
 func setupTestScenario(tiles map[string]tile.Tile, b *board.Board) {
 
 	straightRoad := tiles["RoadStraight"]
-	straightRoad.RoadSegments = straightRoad.ComputeRoadSegments()
+	straightRoad.RoadSegments = tile.ComputeRoadSegments(&straightRoad)
 	b.AddTile(&straightRoad, tile.Placement{
 		Position: tile.Position{
 			X: 0,
@@ -26,7 +26,7 @@ func setupTestScenario(tiles map[string]tile.Tile, b *board.Board) {
 	})
 
 	roadCurve0 := tiles["RoadCurve"]
-	roadCurve0.RoadSegments = roadCurve0.ComputeRoadSegments()
+	roadCurve0.RoadSegments = tile.ComputeRoadSegments(&roadCurve0)
 	b.AddTile(&roadCurve0, tile.Placement{
 		Position: tile.Position{
 			X: 1,
@@ -36,7 +36,7 @@ func setupTestScenario(tiles map[string]tile.Tile, b *board.Board) {
 	})
 
 	roadCurve1 := tiles["RoadCurve"]
-	roadCurve1.RoadSegments = roadCurve1.ComputeRoadSegments()
+	roadCurve1.RoadSegments = tile.ComputeRoadSegments(&roadCurve1)
 	b.AddTile(&roadCurve1, tile.Placement{
 		Position: tile.Position{
 			X: 1,
@@ -46,7 +46,7 @@ func setupTestScenario(tiles map[string]tile.Tile, b *board.Board) {
 	})
 
 	straightRoad2 := tiles["RoadStraight"]
-	straightRoad2.RoadSegments = straightRoad2.ComputeRoadSegments()
+	straightRoad2.RoadSegments = tile.ComputeRoadSegments(&straightRoad2)
 	b.AddTile(&straightRoad2, tile.Placement{
 		Position: tile.Position{
 			X: 0,
@@ -56,7 +56,7 @@ func setupTestScenario(tiles map[string]tile.Tile, b *board.Board) {
 	})
 
 	roadCurve2 := tiles["RoadCurve"]
-	roadCurve2.RoadSegments = roadCurve2.ComputeRoadSegments()
+	roadCurve2.RoadSegments = tile.ComputeRoadSegments(&roadCurve2)
 	b.AddTile(&roadCurve2, tile.Placement{
 		Position: tile.Position{
 			X: -1,
@@ -66,7 +66,7 @@ func setupTestScenario(tiles map[string]tile.Tile, b *board.Board) {
 	})
 
 	roadCurve3 := tiles["RoadCurve"]
-	roadCurve3.RoadSegments = roadCurve3.ComputeRoadSegments()
+	roadCurve3.RoadSegments = tile.ComputeRoadSegments(&roadCurve3)
 	b.AddTile(&roadCurve3, tile.Placement{
 		Position: tile.Position{
 			X: -1,
@@ -124,7 +124,7 @@ func TestRoadContinuity(t *testing.T) {
 func setupRoadTestOpen(tiles map[string]tile.Tile, b *board.Board) {
 
 	straightRoad := tiles["RoadStraight"]
-	straightRoad.RoadSegments = straightRoad.ComputeRoadSegments()
+	straightRoad.RoadSegments = tile.ComputeRoadSegments(&straightRoad)
 	b.AddTile(&straightRoad, tile.Placement{
 		Position: tile.Position{
 			X: 0,
@@ -134,7 +134,7 @@ func setupRoadTestOpen(tiles map[string]tile.Tile, b *board.Board) {
 	})
 
 	roadCurve0 := tiles["RoadCurve"]
-	roadCurve0.RoadSegments = roadCurve0.ComputeRoadSegments()
+	roadCurve0.RoadSegments = tile.ComputeRoadSegments(&roadCurve0)
 	b.AddTile(&roadCurve0, tile.Placement{
 		Position: tile.Position{
 			X: 1,
@@ -144,7 +144,7 @@ func setupRoadTestOpen(tiles map[string]tile.Tile, b *board.Board) {
 	})
 
 	roadCurve1 := tiles["RoadCurve"]
-	roadCurve1.RoadSegments = roadCurve1.ComputeRoadSegments()
+	roadCurve1.RoadSegments = tile.ComputeRoadSegments(&roadCurve1)
 	b.AddTile(&roadCurve1, tile.Placement{
 		Position: tile.Position{
 			X: 1,
@@ -154,7 +154,7 @@ func setupRoadTestOpen(tiles map[string]tile.Tile, b *board.Board) {
 	})
 
 	straightRoad2 := tiles["RoadStraight"]
-	straightRoad2.RoadSegments = straightRoad2.ComputeRoadSegments()
+	straightRoad2.RoadSegments = tile.ComputeRoadSegments(&straightRoad2)
 	b.AddTile(&straightRoad2, tile.Placement{
 		Position: tile.Position{
 			X: 0,
@@ -168,7 +168,7 @@ func setupRoadTestOpen(tiles map[string]tile.Tile, b *board.Board) {
 func setupRoadTestLoop(tiles map[string]tile.Tile, b *board.Board) {
 
 	straightRoad := tiles["RoadCurve"]
-	straightRoad.RoadSegments = straightRoad.ComputeRoadSegments()
+	straightRoad.RoadSegments = tile.ComputeRoadSegments(&straightRoad)
 	b.AddTile(&straightRoad, tile.Placement{
 		Position: tile.Position{
 			X: 0,
@@ -178,7 +178,7 @@ func setupRoadTestLoop(tiles map[string]tile.Tile, b *board.Board) {
 	})
 
 	roadCurve0 := tiles["RoadCurve"]
-	roadCurve0.RoadSegments = roadCurve0.ComputeRoadSegments()
+	roadCurve0.RoadSegments = tile.ComputeRoadSegments(&roadCurve0)
 	b.AddTile(&roadCurve0, tile.Placement{
 		Position: tile.Position{
 			X: 1,
@@ -188,7 +188,7 @@ func setupRoadTestLoop(tiles map[string]tile.Tile, b *board.Board) {
 	})
 
 	roadCurve1 := tiles["RoadCurve"]
-	roadCurve1.RoadSegments = roadCurve1.ComputeRoadSegments()
+	roadCurve1.RoadSegments = tile.ComputeRoadSegments(&roadCurve1)
 	b.AddTile(&roadCurve1, tile.Placement{
 		Position: tile.Position{
 			X: 1,
@@ -198,7 +198,7 @@ func setupRoadTestLoop(tiles map[string]tile.Tile, b *board.Board) {
 	})
 
 	straightRoad2 := tiles["RoadCurve"]
-	straightRoad2.RoadSegments = straightRoad2.ComputeRoadSegments()
+	straightRoad2.RoadSegments = tile.ComputeRoadSegments(&roadCurve1)
 	b.AddTile(&straightRoad2, tile.Placement{
 		Position: tile.Position{
 			X: 0,
@@ -211,7 +211,7 @@ func setupRoadTestLoop(tiles map[string]tile.Tile, b *board.Board) {
 func setupRoadTestTerminals(tiles map[string]tile.Tile, b *board.Board) {
 
 	straightRoad := tiles["RoadTerminal4"]
-	straightRoad.RoadSegments = straightRoad.ComputeRoadSegments()
+	straightRoad.RoadSegments = tile.ComputeRoadSegments(&straightRoad)
 	b.AddTile(&straightRoad, tile.Placement{
 		Position: tile.Position{
 			X: 0,
@@ -221,7 +221,7 @@ func setupRoadTestTerminals(tiles map[string]tile.Tile, b *board.Board) {
 	})
 
 	terminal2 := tiles["RoadTerminal4"]
-	terminal2.RoadSegments = terminal2.ComputeRoadSegments()
+	terminal2.RoadSegments = tile.ComputeRoadSegments(&terminal2)
 	b.AddTile(&terminal2, tile.Placement{
 		Position: tile.Position{
 			X: 0,
@@ -231,7 +231,7 @@ func setupRoadTestTerminals(tiles map[string]tile.Tile, b *board.Board) {
 	})
 
 	roadCurve0 := tiles["RoadCurve"]
-	roadCurve0.RoadSegments = roadCurve0.ComputeRoadSegments()
+	roadCurve0.RoadSegments = tile.ComputeRoadSegments(&roadCurve0)
 	b.AddTile(&roadCurve0, tile.Placement{
 		Position: tile.Position{
 			X: 1,
@@ -241,7 +241,7 @@ func setupRoadTestTerminals(tiles map[string]tile.Tile, b *board.Board) {
 	})
 
 	roadCurve1 := tiles["RoadTerminal4"]
-	roadCurve1.RoadSegments = roadCurve1.ComputeRoadSegments()
+	roadCurve1.RoadSegments = tile.ComputeRoadSegments(&roadCurve1)
 	b.AddTile(&roadCurve1, tile.Placement{
 		Position: tile.Position{
 			X: 1,
@@ -251,7 +251,7 @@ func setupRoadTestTerminals(tiles map[string]tile.Tile, b *board.Board) {
 	})
 
 	straightRoad2 := tiles["RoadCurve"]
-	straightRoad2.RoadSegments = straightRoad2.ComputeRoadSegments()
+	straightRoad2.RoadSegments = tile.ComputeRoadSegments(&straightRoad2)
 	b.AddTile(&straightRoad2, tile.Placement{
 		Position: tile.Position{
 			X: 0,

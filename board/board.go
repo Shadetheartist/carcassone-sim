@@ -20,6 +20,9 @@ type Board struct {
 	BoardImage         *ebiten.Image
 	OpenPositionsImage *ebiten.Image
 	RoadsImage         *ebiten.Image
+
+	RenderScale float64
+	BaseSize    int
 }
 
 func CreateBoard(tileOptions map[string]tile.Tile, imageW int, imageH int) Board {
@@ -32,6 +35,9 @@ func CreateBoard(tileOptions map[string]tile.Tile, imageW int, imageH int) Board
 	b.BoardImage = ebiten.NewImage(imageW, imageH)
 	b.RoadsImage = ebiten.NewImage(imageW, imageH)
 	b.OpenPositionsImage = ebiten.NewImage(imageW, imageH)
+
+	b.RenderScale = 2
+	b.BaseSize = 7
 
 	return b
 }
@@ -74,6 +80,7 @@ func (b *Board) AddTile(t *tile.Tile, p tile.Placement) error {
 	//this must occur after the other tile state changes as it
 	//depends on the tile's neighbouring tiles
 	t.IntegrateRoads()
+	t.IntegrateFarms()
 
 	return nil
 }

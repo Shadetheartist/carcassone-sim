@@ -1,10 +1,80 @@
 package tile_test
 
 import (
+	"beeb/carcassonne/board"
 	"beeb/carcassonne/tile"
 	"image"
 	"testing"
 )
+
+func setupFarmTestScenario(tiles map[string]tile.Tile, b *board.Board) {
+
+	tileFactory := buildTileFactory()
+
+	_tile1 := tileFactory.BuildTile("CastleRoadStraight")
+	b.AddTile(&_tile1, tile.Placement{
+		Position: tile.Position{
+			X: 0,
+			Y: 0,
+		},
+		Orientation: 0,
+	})
+
+	_tile2 := tileFactory.BuildTile("RoadTerminal3")
+	b.AddTile(&_tile2, tile.Placement{
+		Position: tile.Position{
+			X: -1,
+			Y: 0,
+		},
+		Orientation: 0,
+	})
+
+	_tile3 := tileFactory.BuildTile("RoadTerminal3")
+	b.AddTile(&_tile3, tile.Placement{
+		Position: tile.Position{
+			X: -1,
+			Y: 1,
+		},
+		Orientation: 180,
+	})
+
+	_tile4 := tileFactory.BuildTile("CastleCornerRoadCurve")
+	b.AddTile(&_tile4, tile.Placement{
+		Position: tile.Position{
+			X: -2,
+			Y: 1,
+		},
+		Orientation: 180,
+	})
+
+	_tile5 := tileFactory.BuildTile("CastleFill3Road")
+	b.AddTile(&_tile5, tile.Placement{
+		Position: tile.Position{
+			X: 1,
+			Y: 0,
+		},
+		Orientation: 90,
+	})
+
+	_tile6 := tileFactory.BuildTile("CastleCornerRoadCurve")
+	b.AddTile(&_tile6, tile.Placement{
+		Position: tile.Position{
+			X: 1,
+			Y: 1,
+		},
+		Orientation: 0,
+	})
+
+}
+
+func TestFarmContinuity(t *testing.T) {
+	tiles := loadTiles()
+	b := board.CreateBoard(tiles, 1000, 1000)
+
+	setupFarmTestScenario(tiles, &b)
+
+	b.FarmSegmentAtPix(image.Point{0, 1})
+}
 
 func TestMatrixTransposition(t *testing.T) {
 	tiles := loadTiles()
@@ -22,7 +92,7 @@ func TestMatrixTransposition(t *testing.T) {
 	}
 
 	matrix = tile.OrientedFarmMatrix(&_tile, 270)
-	if matrix[6][0] == nil || matrix[6][1] != nil {
+	if matrix[6][1] == nil || matrix[6][0] != nil {
 		t.Error("270 Degree Sus")
 	}
 }
@@ -30,7 +100,8 @@ func TestMatrixTransposition(t *testing.T) {
 func TestCloisterRiverRoadSegment(t *testing.T) {
 	tiles := loadTiles()
 
-	tile.ComputeFarmMatrix(tiles["CloisterRiverRoad"])
+	_tile := tiles["CloisterRiverRoad"]
+	tile.ComputeFarmMatrix(&_tile)
 
 }
 
@@ -53,6 +124,6 @@ func BenchmarkFarmSegment(b *testing.B) {
 	b.ResetTimer()
 
 	for n := 0; n < b.N; n++ {
-		tile.ComputeFarmMatrix(_tile)
+		tile.ComputeFarmMatrix(&_tile)
 	}
 }

@@ -23,7 +23,9 @@ func CreateTileFactory(tileNames []string, tileInfoLoader db.TileInfoLoader, bit
 
 	factory.referenceTiles = make(map[string]Tile)
 	for _, tileName := range factory.tileNames {
-		factory.referenceTiles[tileName] = factory.BuildTile(tileName)
+		t := factory.BuildTile(tileName)
+		t.FarmMatrix = ComputeFarmMatrix(&t)
+		factory.referenceTiles[tileName] = t
 	}
 
 	return &factory
@@ -115,8 +117,8 @@ func (factory *Factory) BuildTile(tileName string) Tile {
 	//recompute pointers to new memory
 	t.Neighbours = make([]*Tile, 4)
 	t.CachedEdgeFeatureTypes = t.CacheEdgeFeatureTypes()
-	t.RoadSegments = t.ComputeRoadSegments()
-	t.FarmMatrix = ComputeFarmMatrix(t)
+	t.RoadSegments = ComputeRoadSegments(&t)
+	t.FarmMatrix = ComputeFarmMatrix(&t)
 
 	return t
 }

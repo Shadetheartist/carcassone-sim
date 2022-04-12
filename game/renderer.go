@@ -114,7 +114,7 @@ func (g *Game) renderRoadSegment(op ebiten.DrawImageOptions, rs *tile.RoadSegmen
 		return
 	}
 
-	ctx := gg.NewContext(g.baseSize, g.baseSize)
+	ctx := gg.NewContext(g.Board.BaseSize, g.Board.BaseSize)
 
 	ctx.SetRGBA(1, 0, 0, 1)
 
@@ -128,10 +128,10 @@ func (g *Game) renderRoadSegment(op ebiten.DrawImageOptions, rs *tile.RoadSegmen
 
 		g.setRoadSegmentColor(ctx, rs)
 
-		ctx.MoveTo(float64(g.baseSize)/2, float64(g.baseSize)/2)
+		ctx.MoveTo(float64(g.Board.BaseSize)/2, float64(g.Board.BaseSize)/2)
 		ctx.LineTo(
-			float64(g.baseSize)/2+float64(edgePos.X)*float64(g.baseSize)/2,
-			float64(g.baseSize)/2+float64(edgePos.Y)*float64(g.baseSize)/2,
+			float64(g.Board.BaseSize)/2+float64(edgePos.X)*float64(g.Board.BaseSize)/2,
+			float64(g.Board.BaseSize)/2+float64(edgePos.Y)*float64(g.Board.BaseSize)/2,
 		)
 
 		ctx.Stroke()
@@ -147,13 +147,13 @@ func (g *Game) renderRoadSegment(op ebiten.DrawImageOptions, rs *tile.RoadSegmen
 		edgeBPos := ep.EdgePos(edgeB)
 
 		ctx.MoveTo(
-			float64(g.baseSize)/2+float64(edgeAPos.X)*float64(g.baseSize)/2,
-			float64(g.baseSize)/2+float64(edgeAPos.Y)*float64(g.baseSize)/2,
+			float64(g.Board.BaseSize)/2+float64(edgeAPos.X)*float64(g.Board.BaseSize)/2,
+			float64(g.Board.BaseSize)/2+float64(edgeAPos.Y)*float64(g.Board.BaseSize)/2,
 		)
 
 		ctx.LineTo(
-			float64(g.baseSize)/2+float64(edgeBPos.X)*float64(g.baseSize)/2,
-			float64(g.baseSize)/2+float64(edgeBPos.Y)*float64(g.baseSize)/2,
+			float64(g.Board.BaseSize)/2+float64(edgeBPos.X)*float64(g.Board.BaseSize)/2,
+			float64(g.Board.BaseSize)/2+float64(edgeBPos.Y)*float64(g.Board.BaseSize)/2,
 		)
 
 		ctx.Stroke()
@@ -168,9 +168,9 @@ func (g *Game) renderRoadSegment(op ebiten.DrawImageOptions, rs *tile.RoadSegmen
 var hoverImage *ebiten.Image
 
 func (g *Game) initializeHoverImage() {
-	ctx := gg.NewContext(g.baseSize, g.baseSize)
+	ctx := gg.NewContext(g.Board.BaseSize, g.Board.BaseSize)
 
-	ctx.DrawRectangle(0, 0, float64(g.baseSize), float64(g.baseSize))
+	ctx.DrawRectangle(0, 0, float64(g.Board.BaseSize), float64(g.Board.BaseSize))
 	ctx.SetRGBA(0, 0, 0, 0.25)
 	ctx.Fill()
 
@@ -181,9 +181,9 @@ func (g *Game) initializeHoverImage() {
 var openPosImage *ebiten.Image
 
 func (g *Game) initializeOpenPositionImage() {
-	ctx := gg.NewContext(g.baseSize, g.baseSize)
+	ctx := gg.NewContext(g.Board.BaseSize, g.Board.BaseSize)
 
-	ctx.DrawRectangle(0, 0, float64(g.baseSize), float64(g.baseSize))
+	ctx.DrawRectangle(0, 0, float64(g.Board.BaseSize), float64(g.Board.BaseSize))
 	ctx.SetRGBA(0, 1, 0, 0.25)
 	ctx.Fill()
 
@@ -197,7 +197,7 @@ func (g *Game) renderTileToBoard(t *tile.Tile) {
 
 	op := ebiten.DrawImageOptions{}
 
-	d := float64(g.baseSize) / 2
+	d := float64(g.Board.BaseSize) / 2
 
 	// Move the image's center to the screen's upper-left corner.
 	// This is a preparation for rotating. When geometry matrices are applied,
@@ -208,9 +208,9 @@ func (g *Game) renderTileToBoard(t *tile.Tile) {
 	// the center of the image.
 	op.GeoM.Rotate(float64(t.Placement.Orientation) * math.Pi / 180)
 
-	op.GeoM.Translate(d+float64(pos.X*g.baseSize), d+float64(pos.Y*g.baseSize))
+	op.GeoM.Translate(d+float64(pos.X*g.Board.BaseSize), d+float64(pos.Y*g.Board.BaseSize))
 
-	op.GeoM.Scale(g.renderScale, g.renderScale)
+	op.GeoM.Scale(g.Board.RenderScale, g.Board.RenderScale)
 
 	for _, rs := range t.UniqueRoadSegements() {
 		g.renderRoadSegment(op, rs)
@@ -230,9 +230,9 @@ func (g *Game) renderOpenPosition(p tile.Position, fts []tile.FeatureType) {
 	op := ebiten.DrawImageOptions{}
 
 	// Move the image to the screen's center.
-	op.GeoM.Translate(float64(p.X*g.baseSize), float64(p.Y*g.baseSize))
+	op.GeoM.Translate(float64(p.X*g.Board.BaseSize), float64(p.Y*g.Board.BaseSize))
 
-	op.GeoM.Scale(g.renderScale, g.renderScale)
+	op.GeoM.Scale(g.Board.RenderScale, g.Board.RenderScale)
 
 	g.Board.OpenPositionsImage.DrawImage(hoverImage, &op)
 }
@@ -242,13 +242,13 @@ func (g *Game) renderHoveredPosition(screen *ebiten.Image) {
 	op := ebiten.DrawImageOptions{}
 
 	op.GeoM.Translate(
-		float64(g.HoveredPosition.X)*float64(g.baseSize),
-		float64(g.HoveredPosition.Y)*float64(g.baseSize),
+		float64(g.HoveredPosition.X)*float64(g.Board.BaseSize),
+		float64(g.HoveredPosition.Y)*float64(g.Board.BaseSize),
 	)
 
 	op.GeoM.Scale(
-		g.renderScale,
-		g.renderScale,
+		g.Board.RenderScale,
+		g.Board.RenderScale,
 	)
 
 	op.GeoM.Translate(
