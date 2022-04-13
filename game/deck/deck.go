@@ -8,13 +8,13 @@ import (
 
 type Deck struct {
 	Index int
-	Tiles []tile.Tile
+	Tiles []*tile.Tile
 }
 
-func (d *Deck) Pop() (tile.Tile, error) {
+func (d *Deck) Pop() (*tile.Tile, error) {
 
 	if d.Index >= len(d.Tiles) {
-		return tile.Tile{}, errors.New("Deck is Empty")
+		return nil, errors.New("Deck is Empty")
 	}
 
 	tile := d.Tiles[d.Index]
@@ -34,10 +34,10 @@ func (d *Deck) Shuffle() {
 	})
 }
 
-func (d *Deck) Prepend(t tile.Tile) {
-	d.Tiles = append([]tile.Tile{t}, d.Tiles...)
+func (d *Deck) Prepend(t *tile.Tile) {
+	d.Tiles = append([]*tile.Tile{t}, d.Tiles...)
 }
 
-func (d *Deck) Append(t tile.Tile) {
+func (d *Deck) Append(t *tile.Tile) {
 	d.Tiles = append(d.Tiles, t)
 }

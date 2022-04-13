@@ -28,7 +28,7 @@ func (b *Board) PixToPos(pix image.Point) tile.Position {
 }
 
 func (b *Board) posToPix(n int) int {
-	return n * b.BaseSize * int(b.RenderScale)
+	return int(float64(n*b.BaseSize) * b.RenderScale)
 }
 
 func (b *Board) PosToPix(pos tile.Position) image.Point {

@@ -8,16 +8,16 @@ import (
 	"testing"
 )
 
-func setupBoard(tiles map[string]tile.Tile, placedTiles int) board.Board {
-	board := board.CreateBoard(tiles, 1000, 1000)
+func setupBoard(tf *tile.Factory, placedTiles int) board.Board {
+	board := board.CreateBoard(tf.ReferenceTiles(), 1000, 1000)
 	return board
 }
 
-func setupTestScenario(tiles map[string]tile.Tile, b *board.Board) {
+func setupTestScenario(tileFactory *tile.Factory, b *board.Board) {
 
-	straightRoad := tiles["RoadStraight"]
-	straightRoad.RoadSegments = tile.ComputeRoadSegments(&straightRoad)
-	b.AddTile(&straightRoad, tile.Placement{
+	straightRoad := tileFactory.BuildTile("RoadStraight")
+	straightRoad.RoadSegments = tile.ComputeRoadSegments(straightRoad)
+	b.AddTile(straightRoad, tile.Placement{
 		Position: tile.Position{
 			X: 0,
 			Y: 0,
@@ -25,9 +25,9 @@ func setupTestScenario(tiles map[string]tile.Tile, b *board.Board) {
 		Orientation: 0,
 	})
 
-	roadCurve0 := tiles["RoadCurve"]
-	roadCurve0.RoadSegments = tile.ComputeRoadSegments(&roadCurve0)
-	b.AddTile(&roadCurve0, tile.Placement{
+	roadCurve0 := tileFactory.BuildTile("RoadCurve")
+	roadCurve0.RoadSegments = tile.ComputeRoadSegments(roadCurve0)
+	b.AddTile(roadCurve0, tile.Placement{
 		Position: tile.Position{
 			X: 1,
 			Y: 0,
@@ -35,9 +35,9 @@ func setupTestScenario(tiles map[string]tile.Tile, b *board.Board) {
 		Orientation: 0,
 	})
 
-	roadCurve1 := tiles["RoadCurve"]
-	roadCurve1.RoadSegments = tile.ComputeRoadSegments(&roadCurve1)
-	b.AddTile(&roadCurve1, tile.Placement{
+	roadCurve1 := tileFactory.BuildTile("RoadCurve")
+	roadCurve1.RoadSegments = tile.ComputeRoadSegments(roadCurve1)
+	b.AddTile(roadCurve1, tile.Placement{
 		Position: tile.Position{
 			X: 1,
 			Y: 1,
@@ -45,9 +45,9 @@ func setupTestScenario(tiles map[string]tile.Tile, b *board.Board) {
 		Orientation: 90,
 	})
 
-	straightRoad2 := tiles["RoadStraight"]
-	straightRoad2.RoadSegments = tile.ComputeRoadSegments(&straightRoad2)
-	b.AddTile(&straightRoad2, tile.Placement{
+	straightRoad2 := tileFactory.BuildTile("RoadStraight")
+	straightRoad2.RoadSegments = tile.ComputeRoadSegments(straightRoad2)
+	b.AddTile(straightRoad2, tile.Placement{
 		Position: tile.Position{
 			X: 0,
 			Y: 1,
@@ -55,9 +55,9 @@ func setupTestScenario(tiles map[string]tile.Tile, b *board.Board) {
 		Orientation: 0,
 	})
 
-	roadCurve2 := tiles["RoadCurve"]
-	roadCurve2.RoadSegments = tile.ComputeRoadSegments(&roadCurve2)
-	b.AddTile(&roadCurve2, tile.Placement{
+	roadCurve2 := tileFactory.BuildTile("RoadCurve")
+	roadCurve2.RoadSegments = tile.ComputeRoadSegments(roadCurve2)
+	b.AddTile(roadCurve2, tile.Placement{
 		Position: tile.Position{
 			X: -1,
 			Y: 1,
@@ -65,9 +65,9 @@ func setupTestScenario(tiles map[string]tile.Tile, b *board.Board) {
 		Orientation: 180,
 	})
 
-	roadCurve3 := tiles["RoadCurve"]
-	roadCurve3.RoadSegments = tile.ComputeRoadSegments(&roadCurve3)
-	b.AddTile(&roadCurve3, tile.Placement{
+	roadCurve3 := tileFactory.BuildTile("RoadCurve")
+	roadCurve3.RoadSegments = tile.ComputeRoadSegments(roadCurve3)
+	b.AddTile(roadCurve3, tile.Placement{
 		Position: tile.Position{
 			X: -1,
 			Y: 0,
@@ -108,10 +108,10 @@ func testRoad(
 }
 
 func TestRoadContinuity(t *testing.T) {
-	tiles := loadTiles()
-	b := board.CreateBoard(tiles, 1000, 1000)
+	tileFactory := buildTileFactory()
+	b := board.CreateBoard(tileFactory.ReferenceTiles(), 1000, 1000)
 
-	setupTestScenario(tiles, &b)
+	setupTestScenario(tileFactory, &b)
 
 	testRoad(t, b, tile.Position{X: 0, Y: 0}, 1, [4]bool{false, true, false, true})
 	testRoad(t, b, tile.Position{X: 1, Y: 0}, 1, [4]bool{false, false, true, true})
@@ -121,11 +121,11 @@ func TestRoadContinuity(t *testing.T) {
 	testRoad(t, b, tile.Position{X: -1, Y: 0}, 1, [4]bool{false, false, true, true})
 }
 
-func setupRoadTestOpen(tiles map[string]tile.Tile, b *board.Board) {
+func setupRoadTestOpen(tileFactory *tile.Factory, b *board.Board) {
 
-	straightRoad := tiles["RoadStraight"]
-	straightRoad.RoadSegments = tile.ComputeRoadSegments(&straightRoad)
-	b.AddTile(&straightRoad, tile.Placement{
+	straightRoad := tileFactory.BuildTile("RoadStraight")
+	straightRoad.RoadSegments = tile.ComputeRoadSegments(straightRoad)
+	b.AddTile(straightRoad, tile.Placement{
 		Position: tile.Position{
 			X: 0,
 			Y: 0,
@@ -133,9 +133,9 @@ func setupRoadTestOpen(tiles map[string]tile.Tile, b *board.Board) {
 		Orientation: 0,
 	})
 
-	roadCurve0 := tiles["RoadCurve"]
-	roadCurve0.RoadSegments = tile.ComputeRoadSegments(&roadCurve0)
-	b.AddTile(&roadCurve0, tile.Placement{
+	roadCurve0 := tileFactory.BuildTile("RoadCurve")
+	roadCurve0.RoadSegments = tile.ComputeRoadSegments(roadCurve0)
+	b.AddTile(roadCurve0, tile.Placement{
 		Position: tile.Position{
 			X: 1,
 			Y: 0,
@@ -143,9 +143,9 @@ func setupRoadTestOpen(tiles map[string]tile.Tile, b *board.Board) {
 		Orientation: 0,
 	})
 
-	roadCurve1 := tiles["RoadCurve"]
-	roadCurve1.RoadSegments = tile.ComputeRoadSegments(&roadCurve1)
-	b.AddTile(&roadCurve1, tile.Placement{
+	roadCurve1 := tileFactory.BuildTile("RoadCurve")
+	roadCurve1.RoadSegments = tile.ComputeRoadSegments(roadCurve1)
+	b.AddTile(roadCurve1, tile.Placement{
 		Position: tile.Position{
 			X: 1,
 			Y: 1,
@@ -153,9 +153,9 @@ func setupRoadTestOpen(tiles map[string]tile.Tile, b *board.Board) {
 		Orientation: 90,
 	})
 
-	straightRoad2 := tiles["RoadStraight"]
-	straightRoad2.RoadSegments = tile.ComputeRoadSegments(&straightRoad2)
-	b.AddTile(&straightRoad2, tile.Placement{
+	straightRoad2 := tileFactory.BuildTile("RoadStraight")
+	straightRoad2.RoadSegments = tile.ComputeRoadSegments(straightRoad2)
+	b.AddTile(straightRoad2, tile.Placement{
 		Position: tile.Position{
 			X: 0,
 			Y: 1,
@@ -165,11 +165,11 @@ func setupRoadTestOpen(tiles map[string]tile.Tile, b *board.Board) {
 
 }
 
-func setupRoadTestLoop(tiles map[string]tile.Tile, b *board.Board) {
+func setupRoadTestLoop(tileFactory *tile.Factory, b *board.Board) {
 
-	straightRoad := tiles["RoadCurve"]
-	straightRoad.RoadSegments = tile.ComputeRoadSegments(&straightRoad)
-	b.AddTile(&straightRoad, tile.Placement{
+	straightRoad := tileFactory.BuildTile("RoadCurve")
+	straightRoad.RoadSegments = tile.ComputeRoadSegments(straightRoad)
+	b.AddTile(straightRoad, tile.Placement{
 		Position: tile.Position{
 			X: 0,
 			Y: 0,
@@ -177,9 +177,9 @@ func setupRoadTestLoop(tiles map[string]tile.Tile, b *board.Board) {
 		Orientation: 270,
 	})
 
-	roadCurve0 := tiles["RoadCurve"]
-	roadCurve0.RoadSegments = tile.ComputeRoadSegments(&roadCurve0)
-	b.AddTile(&roadCurve0, tile.Placement{
+	roadCurve0 := tileFactory.BuildTile("RoadCurve")
+	roadCurve0.RoadSegments = tile.ComputeRoadSegments(roadCurve0)
+	b.AddTile(roadCurve0, tile.Placement{
 		Position: tile.Position{
 			X: 1,
 			Y: 0,
@@ -187,9 +187,9 @@ func setupRoadTestLoop(tiles map[string]tile.Tile, b *board.Board) {
 		Orientation: 0,
 	})
 
-	roadCurve1 := tiles["RoadCurve"]
-	roadCurve1.RoadSegments = tile.ComputeRoadSegments(&roadCurve1)
-	b.AddTile(&roadCurve1, tile.Placement{
+	roadCurve1 := tileFactory.BuildTile("RoadCurve")
+	roadCurve1.RoadSegments = tile.ComputeRoadSegments(roadCurve1)
+	b.AddTile(roadCurve1, tile.Placement{
 		Position: tile.Position{
 			X: 1,
 			Y: 1,
@@ -197,9 +197,9 @@ func setupRoadTestLoop(tiles map[string]tile.Tile, b *board.Board) {
 		Orientation: 90,
 	})
 
-	straightRoad2 := tiles["RoadCurve"]
-	straightRoad2.RoadSegments = tile.ComputeRoadSegments(&roadCurve1)
-	b.AddTile(&straightRoad2, tile.Placement{
+	straightRoad2 := tileFactory.BuildTile("RoadCurve")
+	straightRoad2.RoadSegments = tile.ComputeRoadSegments(roadCurve1)
+	b.AddTile(straightRoad2, tile.Placement{
 		Position: tile.Position{
 			X: 0,
 			Y: 1,
@@ -208,11 +208,11 @@ func setupRoadTestLoop(tiles map[string]tile.Tile, b *board.Board) {
 	})
 }
 
-func setupRoadTestTerminals(tiles map[string]tile.Tile, b *board.Board) {
+func setupRoadTestTerminals(tileFactory *tile.Factory, b *board.Board) {
 
-	straightRoad := tiles["RoadTerminal4"]
-	straightRoad.RoadSegments = tile.ComputeRoadSegments(&straightRoad)
-	b.AddTile(&straightRoad, tile.Placement{
+	straightRoad := tileFactory.BuildTile("RoadTerminal4")
+	straightRoad.RoadSegments = tile.ComputeRoadSegments(straightRoad)
+	b.AddTile(straightRoad, tile.Placement{
 		Position: tile.Position{
 			X: 0,
 			Y: 0,
@@ -220,9 +220,9 @@ func setupRoadTestTerminals(tiles map[string]tile.Tile, b *board.Board) {
 		Orientation: 0,
 	})
 
-	terminal2 := tiles["RoadTerminal4"]
-	terminal2.RoadSegments = tile.ComputeRoadSegments(&terminal2)
-	b.AddTile(&terminal2, tile.Placement{
+	terminal2 := tileFactory.BuildTile("RoadTerminal4")
+	terminal2.RoadSegments = tile.ComputeRoadSegments(terminal2)
+	b.AddTile(terminal2, tile.Placement{
 		Position: tile.Position{
 			X: 0,
 			Y: -1,
@@ -230,9 +230,9 @@ func setupRoadTestTerminals(tiles map[string]tile.Tile, b *board.Board) {
 		Orientation: 0,
 	})
 
-	roadCurve0 := tiles["RoadCurve"]
-	roadCurve0.RoadSegments = tile.ComputeRoadSegments(&roadCurve0)
-	b.AddTile(&roadCurve0, tile.Placement{
+	roadCurve0 := tileFactory.BuildTile("RoadCurve")
+	roadCurve0.RoadSegments = tile.ComputeRoadSegments(roadCurve0)
+	b.AddTile(roadCurve0, tile.Placement{
 		Position: tile.Position{
 			X: 1,
 			Y: 0,
@@ -240,9 +240,9 @@ func setupRoadTestTerminals(tiles map[string]tile.Tile, b *board.Board) {
 		Orientation: 0,
 	})
 
-	roadCurve1 := tiles["RoadTerminal4"]
-	roadCurve1.RoadSegments = tile.ComputeRoadSegments(&roadCurve1)
-	b.AddTile(&roadCurve1, tile.Placement{
+	roadCurve1 := tileFactory.BuildTile("RoadTerminal4")
+	roadCurve1.RoadSegments = tile.ComputeRoadSegments(roadCurve1)
+	b.AddTile(roadCurve1, tile.Placement{
 		Position: tile.Position{
 			X: 1,
 			Y: 1,
@@ -250,9 +250,9 @@ func setupRoadTestTerminals(tiles map[string]tile.Tile, b *board.Board) {
 		Orientation: 90,
 	})
 
-	straightRoad2 := tiles["RoadCurve"]
-	straightRoad2.RoadSegments = tile.ComputeRoadSegments(&straightRoad2)
-	b.AddTile(&straightRoad2, tile.Placement{
+	straightRoad2 := tileFactory.BuildTile("RoadCurve")
+	straightRoad2.RoadSegments = tile.ComputeRoadSegments(straightRoad2)
+	b.AddTile(straightRoad2, tile.Placement{
 		Position: tile.Position{
 			X: 0,
 			Y: 1,
@@ -262,10 +262,10 @@ func setupRoadTestTerminals(tiles map[string]tile.Tile, b *board.Board) {
 }
 
 func TestRoadOpen(t *testing.T) {
-	tiles := loadTiles()
-	b := board.CreateBoard(tiles, 1000, 1000)
+	tileFactory := buildTileFactory()
+	b := board.CreateBoard(tileFactory.ReferenceTiles(), 1000, 1000)
 
-	setupRoadTestOpen(tiles, &b)
+	setupRoadTestOpen(tileFactory, &b)
 
 	seg := b.Tiles[tile.Position{X: 0, Y: 0}].RoadSegments[1]
 
@@ -278,10 +278,10 @@ func TestRoadOpen(t *testing.T) {
 }
 
 func TestRoadLoop(t *testing.T) {
-	tiles := loadTiles()
-	b := board.CreateBoard(tiles, 1000, 1000)
+	tileFactory := buildTileFactory()
+	b := board.CreateBoard(tileFactory.ReferenceTiles(), 1000, 1000)
 
-	setupRoadTestLoop(tiles, &b)
+	setupRoadTestLoop(tileFactory, &b)
 
 	seg := b.Tiles[tile.Position{X: 0, Y: 0}].RoadSegments[2]
 
@@ -293,10 +293,10 @@ func TestRoadLoop(t *testing.T) {
 }
 
 func TestRoadTerminals(t *testing.T) {
-	tiles := loadTiles()
-	b := board.CreateBoard(tiles, 1000, 1000)
+	tileFactory := buildTileFactory()
+	b := board.CreateBoard(tileFactory.ReferenceTiles(), 1000, 1000)
 
-	setupRoadTestTerminals(tiles, &b)
+	setupRoadTestTerminals(tileFactory, &b)
 
 	seg := b.Tiles[tile.Position{X: 0, Y: 0}].RoadSegments[0]
 

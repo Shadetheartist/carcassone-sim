@@ -24,7 +24,7 @@ func (df *TileInfoDeckFactory) BuildRiverDeck() Deck {
 
 	deckSize := deckDataSize(df.tileInfoFile.RiverDeck.Deck)
 
-	deck.Tiles = make([]tile.Tile, deckSize)
+	deck.Tiles = make([]*tile.Tile, deckSize)
 
 	var c int = 0
 	for tileName, quantity := range df.tileInfoFile.RiverDeck.Deck {
@@ -47,7 +47,7 @@ func (df *TileInfoDeckFactory) BuildDeck() Deck {
 
 	deckSize := deckDataSize(df.tileInfoFile.Deck)
 
-	deck.Tiles = make([]tile.Tile, deckSize)
+	deck.Tiles = make([]*tile.Tile, deckSize)
 
 	var c int = 0
 	for tileName, quantity := range df.tileInfoFile.Deck {

@@ -10,7 +10,7 @@ import (
 )
 
 type Board struct {
-	TileOptions map[string]tile.Tile
+	TileOptions map[string]*tile.Tile
 	Tiles       map[tile.Position]*tile.Tile
 	RoadCount   int
 
@@ -20,12 +20,13 @@ type Board struct {
 	BoardImage         *ebiten.Image
 	OpenPositionsImage *ebiten.Image
 	RoadsImage         *ebiten.Image
+	FarmsImage         *ebiten.Image
 
 	RenderScale float64
 	BaseSize    int
 }
 
-func CreateBoard(tileOptions map[string]tile.Tile, imageW int, imageH int) Board {
+func CreateBoard(tileOptions map[string]*tile.Tile, imageW int, imageH int) Board {
 	b := Board{}
 
 	b.TileOptions = tileOptions
@@ -35,8 +36,9 @@ func CreateBoard(tileOptions map[string]tile.Tile, imageW int, imageH int) Board
 	b.BoardImage = ebiten.NewImage(imageW, imageH)
 	b.RoadsImage = ebiten.NewImage(imageW, imageH)
 	b.OpenPositionsImage = ebiten.NewImage(imageW, imageH)
+	b.FarmsImage = ebiten.NewImage(imageW, imageH)
 
-	b.RenderScale = 2
+	b.RenderScale = 4
 	b.BaseSize = 7
 
 	return b

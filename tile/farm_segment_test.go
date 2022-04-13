@@ -7,12 +7,10 @@ import (
 	"testing"
 )
 
-func setupFarmTestScenario(tiles map[string]tile.Tile, b *board.Board) {
-
-	tileFactory := buildTileFactory()
+func setupFarmTestScenario(tileFactory *tile.Factory, b *board.Board) {
 
 	_tile1 := tileFactory.BuildTile("CastleRoadStraight")
-	b.AddTile(&_tile1, tile.Placement{
+	b.AddTile(_tile1, tile.Placement{
 		Position: tile.Position{
 			X: 0,
 			Y: 0,
@@ -21,7 +19,7 @@ func setupFarmTestScenario(tiles map[string]tile.Tile, b *board.Board) {
 	})
 
 	_tile2 := tileFactory.BuildTile("RoadTerminal3")
-	b.AddTile(&_tile2, tile.Placement{
+	b.AddTile(_tile2, tile.Placement{
 		Position: tile.Position{
 			X: -1,
 			Y: 0,
@@ -30,7 +28,7 @@ func setupFarmTestScenario(tiles map[string]tile.Tile, b *board.Board) {
 	})
 
 	_tile3 := tileFactory.BuildTile("RoadTerminal3")
-	b.AddTile(&_tile3, tile.Placement{
+	b.AddTile(_tile3, tile.Placement{
 		Position: tile.Position{
 			X: -1,
 			Y: 1,
@@ -39,7 +37,7 @@ func setupFarmTestScenario(tiles map[string]tile.Tile, b *board.Board) {
 	})
 
 	_tile4 := tileFactory.BuildTile("CastleCornerRoadCurve")
-	b.AddTile(&_tile4, tile.Placement{
+	b.AddTile(_tile4, tile.Placement{
 		Position: tile.Position{
 			X: -2,
 			Y: 1,
@@ -48,7 +46,7 @@ func setupFarmTestScenario(tiles map[string]tile.Tile, b *board.Board) {
 	})
 
 	_tile5 := tileFactory.BuildTile("CastleFill3Road")
-	b.AddTile(&_tile5, tile.Placement{
+	b.AddTile(_tile5, tile.Placement{
 		Position: tile.Position{
 			X: 1,
 			Y: 0,
@@ -57,7 +55,7 @@ func setupFarmTestScenario(tiles map[string]tile.Tile, b *board.Board) {
 	})
 
 	_tile6 := tileFactory.BuildTile("CastleCornerRoadCurve")
-	b.AddTile(&_tile6, tile.Placement{
+	b.AddTile(_tile6, tile.Placement{
 		Position: tile.Position{
 			X: 1,
 			Y: 1,
@@ -68,62 +66,52 @@ func setupFarmTestScenario(tiles map[string]tile.Tile, b *board.Board) {
 }
 
 func TestFarmContinuity(t *testing.T) {
-	tiles := loadTiles()
-	b := board.CreateBoard(tiles, 1000, 1000)
+	tileFactory := buildTileFactory()
+	b := board.CreateBoard(tileFactory.ReferenceTiles(), 1000, 1000)
 
-	setupFarmTestScenario(tiles, &b)
+	setupFarmTestScenario(tileFactory, &b)
 
 	b.FarmSegmentAtPix(image.Point{0, 1})
 }
 
 func TestMatrixTransposition(t *testing.T) {
-	tiles := loadTiles()
+	tileFactory := buildTileFactory()
 
-	_tile := tiles["CastleCorner"]
+	_tile := tileFactory.BuildTile("CastleCorner")
 
-	matrix := tile.OrientedFarmMatrix(&_tile, 90)
+	matrix := tile.OrientedFarmMatrix(_tile, 90)
 	if matrix[0][5] == nil || matrix[0][6] != nil {
 		t.Error("90 Degree Sus")
 	}
 
-	matrix = tile.OrientedFarmMatrix(&_tile, 180)
+	matrix = tile.OrientedFarmMatrix(_tile, 180)
 	if matrix[5][6] == nil || matrix[6][6] != nil {
 		t.Error("180 Degree Sus")
 	}
 
-	matrix = tile.OrientedFarmMatrix(&_tile, 270)
+	matrix = tile.OrientedFarmMatrix(_tile, 270)
 	if matrix[6][1] == nil || matrix[6][0] != nil {
 		t.Error("270 Degree Sus")
 	}
 }
 
 func TestCloisterRiverRoadSegment(t *testing.T) {
-	tiles := loadTiles()
+	tileFactory := buildTileFactory()
 
-	_tile := tiles["CloisterRiverRoad"]
-	tile.ComputeFarmMatrix(&_tile)
+	_tile := tileFactory.BuildTile("CloisterRiverRoad")
+	tile.ComputeFarmMatrix(_tile)
 
-}
-
-func TestEdgePositions(t *testing.T) {
-	img := image.NewRGBA(image.Rect(0, 0, 7, 7))
-
-	pos := tile.EdgePositions(img)
-
-	if len(pos) != 24 {
-		t.Error("Should be 24 edge pixels")
-	}
 }
 
 func BenchmarkFarmSegment(b *testing.B) {
 
-	tiles := loadTiles()
+	tileFactory := buildTileFactory()
 
-	_tile := tiles["CloisterRiverRoad"]
+	_tile := tileFactory.BuildTile("CloisterRiverRoad")
 
 	b.ResetTimer()
 
 	for n := 0; n < b.N; n++ {
-		tile.ComputeFarmMatrix(&_tile)
+		tile.ComputeFarmMatrix(_tile)
 	}
 }

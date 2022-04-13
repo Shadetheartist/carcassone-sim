@@ -26,6 +26,7 @@ type Tile struct {
 
 	RoadSegments [4]*RoadSegment
 	FarmMatrix   [][]*FarmSegment
+	FarmSegments []*FarmSegment
 	Edges2       [4]Edge
 }
 

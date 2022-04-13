@@ -45,6 +45,10 @@ func (g *Game) RenderBoard(screen *ebiten.Image) {
 
 	screen.DrawImage(g.Board.RoadsImage, &op)
 
+	g.Board.FarmsImage.Clear()
+	g.renderFarms()
+	screen.DrawImage(g.Board.FarmsImage, &op)
+
 	text.Draw(screen, fmt.Sprint("X:", g.HoveredPosition.X), mplusNormalFont, 20, 20, color.White)
 	text.Draw(screen, fmt.Sprint("Y:", g.HoveredPosition.Y), mplusNormalFont, 20, 60, color.White)
 
@@ -102,6 +106,105 @@ func (g *Game) setRoadSegmentColor(ctx *gg.Context, rs *tile.RoadSegment) {
 	} else {
 		ctx.SetRGBA(0, 0, 0, 1)
 	}
+}
+
+func (g *Game) toScreenSpace(p image.Point) image.Point {
+	return image.Point{
+		X: p.X * int(g.Board.RenderScale),
+		Y: p.Y * int(g.Board.RenderScale),
+	}
+}
+
+func sumPoint(p1 image.Point, p2 image.Point) image.Point {
+	return image.Point{
+		X: p1.X + p2.X,
+		Y: p1.Y + p2.Y,
+	}
+}
+
+func (g *Game) renderFarms() {
+	ctx := gg.NewContext(g.Board.FarmsImage.Size())
+	ctx.SetRGBA(0, 0, 0, 1)
+
+	for pos, t := range g.Board.Tiles {
+		pix := g.Board.PosToPix(pos)
+
+		for _, fs := range t.FarmSegments {
+			matrix := tile.OrientedFarmMatrix(t, int(t.Placement.Orientation))
+			avgPoint := tile.AvgFarmSegmentPos(fs, matrix)
+			ssAvgPoint := sumPoint(pix, g.toScreenSpace(avgPoint))
+
+			ctx.SetPixel(ssAvgPoint.X, ssAvgPoint.Y)
+
+			for _, neighbour := range fs.Neighbours {
+				nPos := neighbour.Parent.Placement.Position
+				nPix := g.Board.PosToPix(nPos)
+				nMatrix := tile.OrientedFarmMatrix(neighbour.Parent, int(neighbour.Parent.Placement.Orientation))
+				nAvgPoint := tile.AvgFarmSegmentPos(neighbour, nMatrix)
+				nSsAvgPoint := sumPoint(nPix, g.toScreenSpace(nAvgPoint))
+				ctx.MoveTo(float64(ssAvgPoint.X), float64(ssAvgPoint.Y))
+				ctx.LineTo(float64(nSsAvgPoint.X), float64(nSsAvgPoint.Y))
+				ctx.Stroke()
+			}
+		}
+
+	}
+
+	ebiImg := ebiten.NewImageFromImage(ctx.Image())
+
+	op := ebiten.DrawImageOptions{}
+	g.Board.FarmsImage.DrawImage(ebiImg, &op)
+}
+
+func (g *Game) renderFarmSegment(fs *tile.FarmSegment) {
+
+	//image size needs to encompass the neighbours of this tile
+	ctx := gg.NewContext(g.Board.BaseSize*int(g.Board.RenderScale)*3, g.Board.BaseSize*int(g.Board.RenderScale)*3)
+	ctx.SetRGBA(0, 0, 0, 1)
+
+	offset := g.Board.BaseSize * int(g.Board.RenderScale)
+
+	matrix := tile.OrientedFarmMatrix(fs.Parent, int(fs.Parent.Placement.Orientation))
+	avgPoint := tile.AvgFarmSegmentPos(fs, matrix)
+
+	tilePosition := fs.Parent.Placement.Position
+	ctx.SetPixel(int(float64(avgPoint.X)*g.Board.RenderScale)+offset, int(float64(avgPoint.Y)*g.Board.RenderScale)+offset)
+
+	ctx.SetRGBA(1, 0, 0, 1)
+
+	for _, neighbour := range fs.Neighbours {
+		nMatrix := tile.OrientedFarmMatrix(neighbour.Parent, int(neighbour.Parent.Placement.Orientation))
+		nAvgPoint := tile.AvgFarmSegmentPos(neighbour, nMatrix)
+
+		if nAvgPoint.X == -1 || nAvgPoint.Y == -1 {
+			continue
+		}
+
+		neighbourPosition := neighbour.Parent.Placement.Position
+		offsetPosition := tile.Position{
+			X: neighbourPosition.X - tilePosition.X,
+			Y: neighbourPosition.Y - tilePosition.Y,
+		}
+
+		neighbourPix := image.Point{
+			X: (nAvgPoint.X + int(float64(offsetPosition.X*g.Board.BaseSize))*int(g.Board.RenderScale)),
+			Y: (nAvgPoint.Y + int(float64(offsetPosition.Y*g.Board.BaseSize))*int(g.Board.RenderScale)),
+		}
+
+		ctx.MoveTo(float64(avgPoint.X)*g.Board.RenderScale+float64(offset), float64(avgPoint.Y)*g.Board.RenderScale+float64(offset))
+		ctx.LineTo(float64(neighbourPix.X)+float64(offset), float64(neighbourPix.Y)+float64(offset))
+		ctx.Stroke()
+	}
+
+	op := ebiten.DrawImageOptions{}
+
+	op.GeoM.Translate(
+		float64(tilePosition.X*g.Board.BaseSize*int(g.Board.RenderScale)-offset),
+		float64(tilePosition.Y*g.Board.BaseSize*int(g.Board.RenderScale)-offset),
+	)
+
+	ebiImg := ebiten.NewImageFromImage(ctx.Image())
+	g.Board.FarmsImage.DrawImage(ebiImg, &op)
 }
 
 func (g *Game) renderRoadSegment(op ebiten.DrawImageOptions, rs *tile.RoadSegment) {

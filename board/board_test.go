@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-func loadTiles() map[string]tile.Tile {
+func buildTileFactory() *tile.Factory {
 
 	tileInfoLoader := &db.ConfigFileDataLoader{}
 	tileInfoLoader.LoadData("../data/tiles.yml")
@@ -21,21 +21,22 @@ func loadTiles() map[string]tile.Tile {
 
 	tf := tile.CreateTileFactory(tileInfoLoader.GetAllTileNames(), tileInfoLoader, bitmapLoader)
 
-	return tf.ReferenceTiles()
+	return tf
 }
-func setupBoard(tiles map[string]tile.Tile, placedTiles int) board.Board {
-	board := board.CreateBoard(tiles, 1000, 1000)
+
+func setupBoard(tf *tile.Factory, placedTiles int) board.Board {
+	board := board.CreateBoard(tf.ReferenceTiles(), 1000, 1000)
 
 	rand.Seed(0)
 
-	board.AddTile(selectRandomTile(tiles), tile.Placement{
+	board.AddTile(selectRandomTile(tf), tile.Placement{
 		Position: tile.Position{},
 	})
 
 	for i := 0; i < placedTiles; i++ {
 		//keep looping though tiles until a possible placement for a tile is found
 		for {
-			t := selectRandomTile(tiles)
+			t := selectRandomTile(tf)
 
 			placements := board.PossibleTilePlacements(t)
 
@@ -53,7 +54,9 @@ func setupBoard(tiles map[string]tile.Tile, placedTiles int) board.Board {
 	return board
 }
 
-func selectRandomTile(tiles map[string]tile.Tile) *tile.Tile {
+func selectRandomTile(tileFactory *tile.Factory) *tile.Tile {
+
+	tiles := tileFactory.ReferenceTiles()
 	keys := make([]string, 0, len(tiles))
 	for k := range tiles {
 		keys = append(keys, k)
@@ -69,15 +72,15 @@ func selectRandomTile(tiles map[string]tile.Tile) *tile.Tile {
 
 	randTile := tiles[randKey]
 
-	return &randTile
+	return randTile
 }
 
 func TestConnectedFeatures(t *testing.T) {
-	tiles := loadTiles()
-	board := board.CreateBoard(tiles, 1000, 1000)
+	tileFactory := buildTileFactory()
+	board := board.CreateBoard(tileFactory.ReferenceTiles(), 1000, 1000)
 
-	tileA := tiles["RiverCurve"]
-	board.AddTile(&tileA, tile.Placement{
+	tileA := tileFactory.BuildTile("RiverCurve")
+	board.AddTile(tileA, tile.Placement{
 		Position: tile.Position{
 			X: 0,
 			Y: 0,
@@ -85,7 +88,7 @@ func TestConnectedFeatures(t *testing.T) {
 		Orientation: 90,
 	})
 
-	tileB := tiles["RiverCurve"]
+	tileB := tileFactory.BuildTile("RiverCurve")
 	tileBPlacement := tile.Placement{
 		Position: tile.Position{
 			X: -1,
@@ -94,7 +97,7 @@ func TestConnectedFeatures(t *testing.T) {
 		Orientation: 270,
 	}
 
-	cf := board.ConnectedFeatures(&tileB, tileBPlacement)
+	cf := board.ConnectedFeatures(tileB, tileBPlacement)
 
 	if cf[directions.East] != tile.River {
 		t.Error("East Feature should be river")
@@ -102,11 +105,11 @@ func TestConnectedFeatures(t *testing.T) {
 }
 
 func TestConnectedFeatures2(t *testing.T) {
-	tiles := loadTiles()
-	board := board.CreateBoard(tiles, 1000, 1000)
+	tileFactory := buildTileFactory()
+	board := board.CreateBoard(tileFactory.ReferenceTiles(), 1000, 1000)
 
-	tileA := tiles["RiverCurve"]
-	board.AddTile(&tileA, tile.Placement{
+	tileA := tileFactory.BuildTile("RiverCurve")
+	board.AddTile(tileA, tile.Placement{
 		Position: tile.Position{
 			X: 0,
 			Y: 0,
@@ -114,7 +117,7 @@ func TestConnectedFeatures2(t *testing.T) {
 		Orientation: 270,
 	})
 
-	tileB := tiles["RiverCurve"]
+	tileB := tileFactory.BuildTile("RiverCurve")
 	tileBPlacement := tile.Placement{
 		Position: tile.Position{
 			X: 0,
@@ -123,7 +126,7 @@ func TestConnectedFeatures2(t *testing.T) {
 		Orientation: 90,
 	}
 
-	cf := board.ConnectedFeatures(&tileB, tileBPlacement)
+	cf := board.ConnectedFeatures(tileB, tileBPlacement)
 
 	if cf[directions.North] != tile.River {
 		t.Error("East Feature should be river")
@@ -133,10 +136,10 @@ func TestConnectedFeatures2(t *testing.T) {
 func TestAddTile(t *testing.T) {
 	rand.Seed(time.Now().Unix())
 
-	tiles := loadTiles()
-	board := setupBoard(tiles, 32)
+	tileFactory := buildTileFactory()
+	board := setupBoard(tileFactory, 32)
 
-	_tile := selectRandomTile(tiles)
+	_tile := selectRandomTile(tileFactory)
 
 	pl := tile.Placement{
 		Position:    tile.Position{},
@@ -152,22 +155,22 @@ func TestAddTile(t *testing.T) {
 }
 
 func TestOpenPositionState(t *testing.T) {
-	tiles := loadTiles()
-	board := board.CreateBoard(tiles, 1000, 1000)
+	tileFactory := buildTileFactory()
+	board := board.CreateBoard(tileFactory.ReferenceTiles(), 1000, 1000)
 
 	plc := tile.Placement{
 		Position:    tile.Position{},
 		Orientation: 0,
 	}
 
-	tileNorth := tiles["RoadStraight"]
-	board.AddTile(&tileNorth, tile.Placement{
+	tileNorth := tileFactory.BuildTile("RoadStraight")
+	board.AddTile(tileNorth, tile.Placement{
 		Position:    plc.Position.North(),
 		Orientation: 90,
 	})
 
-	tileSouth := tiles["CastleEndCap"]
-	board.AddTile(&tileSouth, tile.Placement{
+	tileSouth := tileFactory.BuildTile("CastleEndCap")
+	board.AddTile(tileSouth, tile.Placement{
 		Position: plc.Position.South(),
 	})
 
@@ -186,41 +189,41 @@ func TestOpenPositionState(t *testing.T) {
 }
 
 func TestIsTilePlacable(t *testing.T) {
-	tiles := loadTiles()
-	board := board.CreateBoard(tiles, 1000, 1000)
+	tileFactory := buildTileFactory()
+	board := board.CreateBoard(tileFactory.ReferenceTiles(), 1000, 1000)
 
-	testTile := tiles["RoadTerminal3"]
+	testTile := tileFactory.BuildTile("RoadTerminal3")
 
 	plc := tile.Placement{
 		Position:    tile.Position{},
 		Orientation: 0,
 	}
 
-	tileNorth := tiles["RoadStraight"]
-	board.AddTile(&tileNorth, tile.Placement{
+	tileNorth := tileFactory.BuildTile("RoadStraight")
+	board.AddTile(tileNorth, tile.Placement{
 		Position:    plc.Position.North(),
 		Orientation: 90,
 	})
 
-	tileEast := tiles["Cloister"]
-	board.AddTile(&tileEast, tile.Placement{
+	tileEast := tileFactory.BuildTile("Cloister")
+	board.AddTile(tileEast, tile.Placement{
 		Position:    plc.Position.East(),
 		Orientation: 0,
 	})
 
-	tileSouth := tiles["RoadStraight"]
-	board.AddTile(&tileSouth, tile.Placement{
+	tileSouth := tileFactory.BuildTile("RoadStraight")
+	board.AddTile(tileSouth, tile.Placement{
 		Position:    plc.Position.South(),
 		Orientation: 90,
 	})
 
-	tileWest := tiles["RoadStraight"]
-	board.AddTile(&tileWest, tile.Placement{
+	tileWest := tileFactory.BuildTile("RoadStraight")
+	board.AddTile(tileWest, tile.Placement{
 		Position:    plc.Position.West(),
 		Orientation: 0,
 	})
 
-	orientation, err := board.IsTilePlaceable(&testTile, plc.Position)
+	orientation, err := board.IsTilePlaceable(testTile, plc.Position)
 
 	if err != nil {
 		t.Error("Tile should be placable, but is not allowed")
@@ -232,41 +235,41 @@ func TestIsTilePlacable(t *testing.T) {
 }
 
 func TestIsTilePlacable2(t *testing.T) {
-	tiles := loadTiles()
-	board := board.CreateBoard(tiles, 1000, 1000)
+	tileFactory := buildTileFactory()
+	board := board.CreateBoard(tileFactory.ReferenceTiles(), 1000, 1000)
 
-	testTile := tiles["RoadTerminal3"]
+	testTile := tileFactory.BuildTile("RoadTerminal3")
 
 	plc := tile.Placement{
 		Position:    tile.Position{},
 		Orientation: 0,
 	}
 
-	tileNorth := tiles["RoadStraight"]
-	board.AddTile(&tileNorth, tile.Placement{
+	tileNorth := tileFactory.BuildTile("RoadStraight")
+	board.AddTile(tileNorth, tile.Placement{
 		Position:    plc.Position.North(),
 		Orientation: 90,
 	})
 
-	tileEast := tiles["RoadStraight"]
-	board.AddTile(&tileEast, tile.Placement{
+	tileEast := tileFactory.BuildTile("RoadStraight")
+	board.AddTile(tileEast, tile.Placement{
 		Position:    plc.Position.East(),
 		Orientation: 0,
 	})
 
-	tileSouth := tiles["RoadStraight"]
-	board.AddTile(&tileSouth, tile.Placement{
+	tileSouth := tileFactory.BuildTile("RoadStraight")
+	board.AddTile(tileSouth, tile.Placement{
 		Position:    plc.Position.South(),
 		Orientation: 90,
 	})
 
-	tileWest := tiles["RoadStraight"]
-	board.AddTile(&tileWest, tile.Placement{
+	tileWest := tileFactory.BuildTile("RoadStraight")
+	board.AddTile(tileWest, tile.Placement{
 		Position:    plc.Position.West(),
 		Orientation: 0,
 	})
 
-	_, err := board.IsTilePlaceable(&testTile, plc.Position)
+	_, err := board.IsTilePlaceable(testTile, plc.Position)
 
 	if err == nil {
 		t.Error("Tile should not be placable, but is allowed")
@@ -274,41 +277,41 @@ func TestIsTilePlacable2(t *testing.T) {
 }
 
 func TestIsTilePlacable3(t *testing.T) {
-	tiles := loadTiles()
-	board := board.CreateBoard(tiles, 1000, 1000)
+	tileFactory := buildTileFactory()
+	board := board.CreateBoard(tileFactory.ReferenceTiles(), 1000, 1000)
 
-	testTile := tiles["RoadTerminal4"]
+	testTile := tileFactory.BuildTile("RoadTerminal4")
 
 	plc := tile.Placement{
 		Position:    tile.Position{},
 		Orientation: 0,
 	}
 
-	tileNorth := tiles["RoadStraight"]
-	board.AddTile(&tileNorth, tile.Placement{
+	tileNorth := tileFactory.BuildTile("RoadStraight")
+	board.AddTile(tileNorth, tile.Placement{
 		Position:    plc.Position.North(),
 		Orientation: 90,
 	})
 
-	tileEast := tiles["RoadStraight"]
-	board.AddTile(&tileEast, tile.Placement{
+	tileEast := tileFactory.BuildTile("RoadStraight")
+	board.AddTile(tileEast, tile.Placement{
 		Position:    plc.Position.East(),
 		Orientation: 0,
 	})
 
-	tileSouth := tiles["RoadStraight"]
-	board.AddTile(&tileSouth, tile.Placement{
+	tileSouth := tileFactory.BuildTile("RoadStraight")
+	board.AddTile(tileSouth, tile.Placement{
 		Position:    plc.Position.South(),
 		Orientation: 90,
 	})
 
-	tileWest := tiles["RoadStraight"]
-	board.AddTile(&tileWest, tile.Placement{
+	tileWest := tileFactory.BuildTile("RoadStraight")
+	board.AddTile(tileWest, tile.Placement{
 		Position:    plc.Position.West(),
 		Orientation: 0,
 	})
 
-	_, err := board.IsTilePlaceable(&testTile, plc.Position)
+	_, err := board.IsTilePlaceable(testTile, plc.Position)
 
 	if err != nil {
 		t.Error("Tile should be placable, but is not allowed")
@@ -316,35 +319,35 @@ func TestIsTilePlacable3(t *testing.T) {
 }
 
 func TestIsTilePlacable4(t *testing.T) {
-	tiles := loadTiles()
-	board := board.CreateBoard(tiles, 1000, 1000)
+	tileFactory := buildTileFactory()
+	board := board.CreateBoard(tileFactory.ReferenceTiles(), 1000, 1000)
 
-	testTile := tiles["CastleFill3Road"]
+	testTile := tileFactory.BuildTile("CastleFill3Road")
 
 	plc := tile.Placement{
 		Position:    tile.Position{},
 		Orientation: 0,
 	}
 
-	tileNorth := tiles["CastleEndCap"]
-	board.AddTile(&tileNorth, tile.Placement{
+	tileNorth := tileFactory.BuildTile("CastleEndCap")
+	board.AddTile(tileNorth, tile.Placement{
 		Position:    plc.Position.North(),
 		Orientation: 180,
 	})
 
-	tileEast := tiles["CastleEndCap"]
-	board.AddTile(&tileEast, tile.Placement{
+	tileEast := tileFactory.BuildTile("CastleEndCap")
+	board.AddTile(tileEast, tile.Placement{
 		Position:    plc.Position.East(),
 		Orientation: 270,
 	})
 
-	tileWest := tiles["RoadStraight"]
-	board.AddTile(&tileWest, tile.Placement{
+	tileWest := tileFactory.BuildTile("RoadStraight")
+	board.AddTile(tileWest, tile.Placement{
 		Position:    plc.Position.West(),
 		Orientation: 0,
 	})
 
-	_, err := board.IsTilePlaceable(&testTile, plc.Position)
+	_, err := board.IsTilePlaceable(testTile, plc.Position)
 
 	if err != nil {
 		t.Error("Tile should be placable, but is not allowed")
@@ -352,12 +355,12 @@ func TestIsTilePlacable4(t *testing.T) {
 }
 
 func TestPossibleTilePlacements(t *testing.T) {
-	tiles := loadTiles()
-	board := setupBoard(tiles, 512)
+	tileFactory := buildTileFactory()
+	board := setupBoard(tileFactory, 512)
 
-	testTile := tiles["CastleFill3Road"]
+	testTile := tileFactory.BuildTile("CastleFill3Road")
 
-	positions := board.PossibleTilePlacements(&testTile)
+	positions := board.PossibleTilePlacements(testTile)
 
 	if len(positions) == 0 {
 		t.Error("No positions possible to place tile (incredibly unlikely)")
@@ -368,10 +371,10 @@ func TestPossibleTilePlacements(t *testing.T) {
 func BenchmarkIsTilePlaceable(b *testing.B) {
 	rand.Seed(0)
 
-	tiles := loadTiles()
-	board := setupBoard(tiles, 32)
+	tileFactory := buildTileFactory()
+	board := setupBoard(tileFactory, 32)
 
-	_tile := selectRandomTile(tiles)
+	_tile := selectRandomTile(tileFactory)
 	keys := make([]tile.Position, 0, len(board.OpenPositions))
 	for k := range board.OpenPositions {
 		keys = append(keys, k)
@@ -404,9 +407,9 @@ func BenchmarkPossiblePlacement2048(b *testing.B) {
 func benchmarkPossiblePlacement(boardComplexity int, b *testing.B) {
 	rand.Seed(0)
 
-	tiles := loadTiles()
-	board := setupBoard(tiles, boardComplexity)
-	_tile := selectRandomTile(tiles)
+	tileFactory := buildTileFactory()
+	board := setupBoard(tileFactory, boardComplexity)
+	_tile := selectRandomTile(tileFactory)
 	b.ResetTimer()
 
 	for n := 0; n < b.N; n++ {
@@ -415,12 +418,12 @@ func benchmarkPossiblePlacement(boardComplexity int, b *testing.B) {
 }
 
 func BenchmarkAddTiles(b *testing.B) {
-	tiles := loadTiles()
+	tileFactory := buildTileFactory()
 
 	for n := 0; n < b.N; n++ {
-		board := board.CreateBoard(tiles, 1000, 1000)
+		board := board.CreateBoard(tileFactory.ReferenceTiles(), 1000, 1000)
 
-		_tile := selectRandomTile(tiles)
+		_tile := selectRandomTile(tileFactory)
 
 		pl := tile.Placement{
 			Position:    tile.Position{},

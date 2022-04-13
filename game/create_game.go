@@ -23,7 +23,7 @@ func CreateGame(gcl db.GameConfigLoader, til db.TileInfoLoader, bmpl db.BitmapLo
 	gameConfig := gcl.GetGameConfig()
 	deckFactory := deck.CreateDeckFactory(&gameConfig, g.TileFactory)
 
-	g.Board = board.CreateBoard(g.Tiles, 1000, 1000)
+	g.Board = board.CreateBoard(g.TileFactory.ReferenceTiles(), 1000, 1000)
 	g.RiverDeck = deckFactory.BuildRiverDeck()
 	g.Deck = deckFactory.BuildDeck()
 

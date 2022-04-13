@@ -1,29 +1,15 @@
 package tile_test
 
 import (
-	"beeb/carcassonne/db"
 	"beeb/carcassonne/directions"
 	"beeb/carcassonne/tile"
 	"testing"
 )
 
-func loadTiles() map[string]tile.Tile {
-
-	tileInfoLoader := &db.ConfigFileDataLoader{}
-	tileInfoLoader.LoadData("../data/tiles.yml")
-
-	bitmapLoader := &db.DirectoryBitmapLoader{}
-	bitmapLoader.LoadBitmapsFromDirectory("../data/bitmaps")
-
-	tf := tile.CreateTileFactory(tileInfoLoader.GetAllTileNames(), tileInfoLoader, bitmapLoader)
-
-	return tf.ReferenceTiles()
-}
-
 func TestFeature(t *testing.T) {
-	tiles := loadTiles()
+	tileFactory := buildTileFactory()
 
-	_tile := tiles["RiverCurve"]
+	_tile := tileFactory.BuildTile("RiverCurve")
 
 	if _tile.Feature(directions.North).Type != tile.Grass {
 		t.Error("Err N")

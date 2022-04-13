@@ -23,7 +23,7 @@ func (g *Game) Setup() error {
 			return err
 		}
 
-		possiblePlacements := g.Board.PossibleTilePlacements(&tile)
+		possiblePlacements := g.Board.PossibleTilePlacements(tile)
 
 		if len(possiblePlacements) == 0 {
 			return errors.New("No valid placement for tile")
@@ -32,10 +32,10 @@ func (g *Game) Setup() error {
 		randomIndex := rand.Intn(len(possiblePlacements))
 		randomlySelectedPlacement := possiblePlacements[randomIndex]
 
-		err = g.Board.AddTile(&tile, randomlySelectedPlacement)
+		err = g.Board.AddTile(tile, randomlySelectedPlacement)
 
 		if err != nil {
-			err = g.Board.AddTile(&tile, randomlySelectedPlacement)
+			err = g.Board.AddTile(tile, randomlySelectedPlacement)
 
 			panic(fmt.Sprint("Error Placing Tile: ", err))
 		}
@@ -57,12 +57,12 @@ func (g *Game) updateRiverBuild() error {
 			return err
 		}
 
-		g.Board.AddTile(&rt, tile.Placement{
+		g.Board.AddTile(rt, tile.Placement{
 			Position:    tile.Position{X: 10, Y: 10},
 			Orientation: 0,
 		})
 
-		g.lastRiverTile = &rt
+		g.lastRiverTile = rt
 
 		return nil
 	}
@@ -73,19 +73,19 @@ func (g *Game) updateRiverBuild() error {
 		return err
 	}
 
-	riverPlacement, err := g.getRiverPlacement(&riverTile)
+	riverPlacement, err := g.getRiverPlacement(riverTile)
 
 	if err != nil {
 		return err
 	}
 
-	err = g.Board.AddTile(&riverTile, riverPlacement)
+	err = g.Board.AddTile(riverTile, riverPlacement)
 
 	if err != nil {
 		return err
 	}
 
-	g.lastRiverTile = &riverTile
+	g.lastRiverTile = riverTile
 
 	return nil
 }
@@ -105,10 +105,10 @@ func selectRandomTile(tiles map[string]tile.Tile) tile.Tile {
 	return randTile
 }
 
-func (g *Game) findTileForPos(pos tile.Position) (tile.Tile, error) {
+func (g *Game) findTileForPos(pos tile.Position) (*tile.Tile, error) {
 
 	for tileName, t := range g.TileFactory.ReferenceTiles() {
-		if orientation, err := g.Board.IsTilePlaceable(&t, pos); err == nil {
+		if orientation, err := g.Board.IsTilePlaceable(t, pos); err == nil {
 
 			builtTile := g.TileFactory.BuildTile(tileName)
 			builtTile.Placement.Position = pos
@@ -118,7 +118,7 @@ func (g *Game) findTileForPos(pos tile.Position) (tile.Tile, error) {
 		}
 	}
 
-	return tile.Tile{}, errors.New("No Tile Fits this Place")
+	return nil, errors.New("No Tile Fits this Place")
 }
 
 func (g *Game) getRiverPlacement(riverTile *tile.Tile) (tile.Placement, error) {

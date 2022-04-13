@@ -1,6 +1,7 @@
 package tile
 
 import (
+	"beeb/carcassonne/directions"
 	"errors"
 	"image"
 	"image/color"
@@ -8,11 +9,74 @@ import (
 )
 
 type FarmSegment struct {
-	Parent *Tile
+	Parent     *Tile
+	Neighbours []*FarmSegment
+	AvgPoint   image.Point
+}
+
+func AvgFarmSegmentPos(fs *FarmSegment, matrix [][]*FarmSegment) image.Point {
+
+	//calculating the center of the segment via averaging
+
+	totalX := 0
+	totalY := 0
+	n := 0
+
+	for y := range matrix {
+		for x := range matrix[y] {
+			p := matrix[y][x]
+			if p == fs {
+				totalX += x
+				totalY += y
+				n++
+			}
+		}
+	}
+
+	//no dividing by zero!
+	if n == 0 {
+		return image.Point{-1, -1}
+	}
+
+	avgX := totalX / n
+	avgY := totalY / n
+	return image.Point{avgX, avgY}
 }
 
 func (t *Tile) IntegrateFarms() {
+	matrix := OrientedFarmMatrix(t, int(t.Placement.Orientation))
+	edgePix := edgePix(t.Image.Bounds())
 
+	for dirInt, n := range t.Neighbours {
+
+		if n == nil {
+			continue
+		}
+
+		dir := directions.Direction(dirInt)
+		complimentDir := directions.Compliment[dir]
+
+		pix := edgePix[dir]
+		complimentPix := edgePix[complimentDir]
+
+		neighbourFarmMatrix := OrientedFarmMatrix(n, int(n.Placement.Orientation))
+
+		for i := range pix {
+			farmSegment := matrix[pix[i].Y][pix[i].X]
+
+			if farmSegment == nil {
+				continue
+			}
+
+			neighbouringFarmSegment := neighbourFarmMatrix[complimentPix[i].Y][complimentPix[i].X]
+
+			if neighbouringFarmSegment == nil {
+				continue
+			}
+
+			linkFarmSegments(farmSegment, neighbouringFarmSegment)
+		}
+	}
 }
 
 func TransposeFarmMatrix(matrix [][]*FarmSegment) [][]*FarmSegment {
@@ -80,7 +144,6 @@ func OrientedFarmMatrix(t *Tile, r int) [][]*FarmSegment {
 func ComputeFarmMatrix(t *Tile) [][]*FarmSegment {
 
 	img := t.Image
-	edgePositions := EdgePositions(img)
 
 	imgLen := img.Bounds().Max.X * img.Bounds().Max.Y
 
@@ -102,11 +165,34 @@ func ComputeFarmMatrix(t *Tile) [][]*FarmSegment {
 
 		farmSegment := FarmSegment{}
 		farmSegment.Parent = t
+		farmSegment.Neighbours = make([]*FarmSegment, 0, 4)
+		t.FarmSegments = append(t.FarmSegments, &farmSegment)
 
-		fillSegment(img, edgePositions, nextIndex, visited, farmMatrix, &farmSegment)
+		fillSegment(img, nextIndex, visited, farmMatrix, &farmSegment)
 	}
 
 	return farmMatrix
+}
+
+func areFarmSegmentsLinked(fsA *FarmSegment, fsB *FarmSegment) bool {
+	for _, n := range fsA.Neighbours {
+		if n == fsB {
+			return true
+		}
+	}
+
+	return false
+}
+
+func linkFarmSegments(fsA *FarmSegment, fsB *FarmSegment) {
+	if !areFarmSegmentsLinked(fsA, fsB) {
+		fsA.Neighbours = append(fsA.Neighbours, fsB)
+	}
+
+	if !areFarmSegmentsLinked(fsB, fsA) {
+		fsB.Neighbours = append(fsB.Neighbours, fsA)
+	}
+
 }
 
 func getUnvisitedFarmPos(img image.Image, visited []bool) (int, Position, error) {
@@ -127,7 +213,7 @@ func getUnvisitedFarmPos(img image.Image, visited []bool) (int, Position, error)
 	return 0, Position{}, errors.New("No more unvisited positions")
 }
 
-func fillSegment(img image.Image, edgePositions []Position, initialIndex int, visited []bool, farmMatrix [][]*FarmSegment, segment *FarmSegment) {
+func fillSegment(img image.Image, initialIndex int, visited []bool, farmMatrix [][]*FarmSegment, segment *FarmSegment) {
 	stack := make([]int, 0, 8)
 	stack = append(stack, initialIndex)
 
@@ -161,16 +247,6 @@ func fillSegment(img image.Image, edgePositions []Position, initialIndex int, vi
 			}
 		}
 	}
-}
-
-func isEdgePosition(edgePositions []Position, pos Position) bool {
-	for _, p := range edgePositions {
-		if p == pos {
-			return true
-		}
-	}
-
-	return false
 }
 
 func indexNeighbours(img image.Image, i int) []int {
@@ -259,37 +335,53 @@ func isFarmColor(c color.Color) bool {
 	return g == farmColorGreen
 }
 
-//creates a slice of positions that describe the outer edge of a square input image
-//elements of the slice are in clockwise order starting from the top left corner
-func EdgePositions(img image.Image) []Position {
-	//these images are square, no need for a Y
-	maxSize := img.Bounds().Max.X
+func edgePix(rect image.Rectangle) [][]image.Point {
+	edgePix := make([][]image.Point, 4)
 
-	//edge lengths with corner pixels removed * num edges, then re add corner pixel count
-	numEdgePix := (maxSize-2)*4 + 4
-	edgePixels := make([]Position, 0, numEdgePix)
+	edgePix[0] = northPix(rect)
+	edgePix[1] = eastPix(rect)
+	edgePix[2] = southPix(rect)
+	edgePix[3] = westPix(rect)
 
-	//we're going clockwise around the edge to create the slice
+	return edgePix
+}
 
-	//top row
-	for i := 0; i < maxSize; i++ {
-		edgePixels = append(edgePixels, Position{X: i, Y: 0})
+func northPix(rect image.Rectangle) []image.Point {
+	pix := make([]image.Point, rect.Max.X)
+
+	for i := 0; i < rect.Max.X; i++ {
+		pix[i] = image.Point{X: i, Y: 0}
 	}
 
-	//right side, without top pos, which has already been added
-	for i := 1; i < maxSize; i++ {
-		edgePixels = append(edgePixels, Position{X: maxSize - 1, Y: i})
+	return pix
+}
+
+func southPix(rect image.Rectangle) []image.Point {
+	pix := make([]image.Point, rect.Max.X)
+
+	for i := 0; i < rect.Max.X; i++ {
+		pix[i] = image.Point{X: i, Y: rect.Max.X - 1}
 	}
 
-	//bottom row, going backward,
-	for i := maxSize - 2; i >= 0; i-- {
-		edgePixels = append(edgePixels, Position{X: i, Y: maxSize - 1})
+	return pix
+}
+
+func westPix(rect image.Rectangle) []image.Point {
+	pix := make([]image.Point, rect.Max.X)
+
+	for i := 0; i < rect.Max.X; i++ {
+		pix[i] = image.Point{X: 0, Y: i}
 	}
 
-	//left side, without top and bottom pos, which have already been added, going backward
-	for i := maxSize - 2; i > 0; i-- {
-		edgePixels = append(edgePixels, Position{X: 0, Y: i})
+	return pix
+}
+
+func eastPix(rect image.Rectangle) []image.Point {
+	pix := make([]image.Point, rect.Max.X)
+
+	for i := 0; i < rect.Max.X; i++ {
+		pix[i] = image.Point{X: rect.Max.X - 1, Y: i}
 	}
 
-	return edgePixels
+	return pix
 }

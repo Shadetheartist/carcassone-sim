@@ -47,7 +47,7 @@ func (g *Game) handleMouseInput() {
 			t, err := g.findTileForPos(g.SelectedPosition)
 
 			if err == nil {
-				g.Board.AddTile(&t, t.Placement)
+				g.Board.AddTile(t, t.Placement)
 			}
 		}
 	}

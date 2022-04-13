@@ -10,7 +10,7 @@ type Factory struct {
 	bitmapLoader   db.BitmapLoader
 	tileNames      []string
 
-	referenceTiles map[string]Tile
+	referenceTiles map[string]*Tile
 }
 
 func CreateTileFactory(tileNames []string, tileInfoLoader db.TileInfoLoader, bitmapLoader db.BitmapLoader) *Factory {
@@ -21,25 +21,24 @@ func CreateTileFactory(tileNames []string, tileInfoLoader db.TileInfoLoader, bit
 	factory.tileInfoLoader = tileInfoLoader
 	factory.bitmapLoader = bitmapLoader
 
-	factory.referenceTiles = make(map[string]Tile)
+	factory.referenceTiles = make(map[string]*Tile)
 	for _, tileName := range factory.tileNames {
 		t := factory.BuildTile(tileName)
-		t.FarmMatrix = ComputeFarmMatrix(&t)
 		factory.referenceTiles[tileName] = t
 	}
 
 	return &factory
 }
 
-func (factory *Factory) ReferenceTiles() map[string]Tile {
+func (factory *Factory) ReferenceTiles() map[string]*Tile {
 	return factory.referenceTiles
 }
 
-func (factory *Factory) GetReferenceTile(tileName string) Tile {
+func (factory *Factory) GetReferenceTile(tileName string) *Tile {
 	return factory.referenceTiles[tileName]
 }
 
-func (factory *Factory) BuildTile(tileName string) Tile {
+func (factory *Factory) BuildTile(tileName string) *Tile {
 
 	//get tile info and bitmap from loaders
 	tileInfo, err := factory.tileInfoLoader.GetTileInfo(tileName)
@@ -120,5 +119,5 @@ func (factory *Factory) BuildTile(tileName string) Tile {
 	t.RoadSegments = ComputeRoadSegments(&t)
 	t.FarmMatrix = ComputeFarmMatrix(&t)
 
-	return t
+	return &t
 }

@@ -27,7 +27,7 @@ func TestFactoyBuiltTileReferences(t *testing.T) {
 	tileB := factory.BuildTile("RiverStraight")
 	tileC := factory.BuildTile("RiverStraight")
 
-	tileA.Neighbours[0] = &tileC
+	tileA.Neighbours[0] = tileC
 	if tileA.Neighbours[0] == tileB.Neighbours[0] {
 		t.Errorf("Tiles reference the same memory - Neighbours")
 	}
