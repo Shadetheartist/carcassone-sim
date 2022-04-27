@@ -119,9 +119,21 @@ func OrientedFarmMatrix(t *Tile, r int) [][]*FarmSegment {
 
 	case 2:
 		{
-			//transpose = 180 deg
-			//this copies the existing matrix
+
 			matrix = TransposeFarmMatrix(t.FarmMatrix)
+			matrix = TransposeFarmMatrix(matrix)
+
+			//reverse each row
+			for _, row := range matrix {
+				for i, j := 0, len(row)-1; i < j; i, j = i+1, j-1 {
+					row[i], row[j] = row[j], row[i]
+				}
+			}
+
+			//reverse each column
+			for i, j := 0, len(matrix)-1; i < j; i, j = i+1, j-1 {
+				matrix[i], matrix[j] = matrix[j], matrix[i]
+			}
 		}
 
 	case 3:
