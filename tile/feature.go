@@ -1,16 +1,35 @@
 package tile
 
-import "beeb/carcassonne/directions"
+type FeatureType int
 
-type Feature struct {
-	Id     int
-	Type   FeatureType
-	Shield bool
-	Curve  bool
-	Edges  []directions.Direction
+var featureTypeMap []string = []string{
+	"Farm",
+	"Road",
+	"Castle",
+	"Cloister",
+	"River",
+	"Shield",
 }
 
-var DefaultFeature = Feature{
-	Type:   Grass,
-	Shield: false,
+const (
+	Farm FeatureType = iota
+	Road
+	Castle
+	Cloister
+	River
+	Shield
+)
+
+func (ft FeatureType) String() string {
+	return featureTypeMap[ft]
+}
+
+type Feature struct {
+	Type              FeatureType
+	ParentTile        *Tile
+	ParentRefenceTile *ReferenceTile
+}
+
+func (f *Feature) String() string {
+	return f.Type.String()
 }
