@@ -2,12 +2,23 @@ package main
 
 import (
 	"beeb/carcassonne/data"
-	"fmt"
+	"beeb/carcassonne/simulator"
 )
 
 func main() {
-	gameData := data.LoadGameData()
-	fmt.Println(gameData)
+	runSimulator()
+	//runExplorer()
+}
+
+func runSimulator() {
+	gameData := data.LoadGameData("./data/bitmaps")
+
+	sim := simulator.NewSimulator(gameData, 32, 4)
+	sim.Simulate()
+}
+
+func runExplorer() {
+	gameData := data.LoadGameData("./data/bitmaps")
 
 	gameData.Explore()
 }

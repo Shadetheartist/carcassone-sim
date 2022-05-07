@@ -2,6 +2,7 @@ package tile
 
 import (
 	"beeb/carcassonne/matrix"
+	"beeb/carcassonne/util"
 	"image"
 )
 
@@ -15,4 +16,9 @@ type ReferenceTile struct {
 }
 
 type Tile struct {
+	Position      util.Position
+	Reference     *ReferenceTile
+	FeatureMatrix *matrix.Matrix[*Feature]
+	Features      []*Feature
+	EdgeFeatures  EdgeArray[*Feature]
 }

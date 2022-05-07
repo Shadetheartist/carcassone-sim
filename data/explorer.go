@@ -224,6 +224,15 @@ func (gde *GameDataExplorer) Draw(screen *ebiten.Image) {
 		color.White,
 	)
 
+	text.Draw(
+		screen,
+		fmt.Sprint("FPS:", int(ebiten.CurrentFPS()), " TPS: ", int(ebiten.CurrentTPS())),
+		gde.font,
+		10,
+		40,
+		color.White,
+	)
+
 }
 
 func (gde *GameDataExplorer) featureUnderCursor() *tile.Feature {

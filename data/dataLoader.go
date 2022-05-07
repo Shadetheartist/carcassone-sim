@@ -12,23 +12,25 @@ import (
 )
 
 type GameData struct {
-	TileNames      []string
-	Bitmaps        map[string]image.Image
+	TileNames []string
+	Bitmaps   map[string]image.Image
+
+	//mapped by name, then by orientation (0 = 0, 1 = 90, 2 = 180, 3 = 270 degrees)
 	ReferenceTiles map[string][]*tile.ReferenceTile
 }
 
-func LoadGameData() *GameData {
+func LoadGameData(bitmapDirectory string) *GameData {
 	gameData := &GameData{}
 
-	gameData.loadBitmaps()
+	gameData.loadBitmaps(bitmapDirectory)
 	gameData.compileReferenceTiles()
 
 	return gameData
 }
 
-func (gd *GameData) loadBitmaps() {
+func (gd *GameData) loadBitmaps(bitmapDirectory string) {
 	bitmapLoader := DirectoryBitmapLoader{}
-	bitmapLoader.LoadBitmapsFromDirectory("./data/bitmaps")
+	bitmapLoader.LoadBitmapsFromDirectory(bitmapDirectory)
 
 	gd.Bitmaps = bitmapLoader.bitmaps
 	gd.TileNames = bitmapLoader.Keys()
