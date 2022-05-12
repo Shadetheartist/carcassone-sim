@@ -43,7 +43,7 @@ func newGameDataExplorer(gameData *GameData) *GameDataExplorer {
 	gde.tileScale = 10
 	gde.cursorPosition = image.Point{}
 
-	gde.tilePositions = make(map[*tile.ReferenceTile]image.Point, len(gameData.ReferenceTiles))
+	gde.tilePositions = make(map[*tile.ReferenceTile]image.Point, len(gameData.ReferenceTileGroups))
 
 	gde.setupTileImages()
 	gde.setupTilesImage()
@@ -53,15 +53,15 @@ func newGameDataExplorer(gameData *GameData) *GameDataExplorer {
 }
 
 func (gde *GameDataExplorer) setupTileImages() {
-	gde.tileImages = make(map[*tile.ReferenceTile]*ebiten.Image, len(gde.gameData.ReferenceTiles))
+	gde.tileImages = make(map[*tile.ReferenceTile]*ebiten.Image, len(gde.gameData.ReferenceTileGroups))
 
 	row := 0
 	rowMargin := 20
 
 	for _, tileName := range gde.gameData.TileNames {
-		rts := gde.gameData.ReferenceTiles[tileName]
+		rtg := gde.gameData.ReferenceTileGroups[tileName]
 		for i := 0; i < 4; i++ {
-			rt := rts[i]
+			rt := rtg.Orientations[i]
 			gde.tilePositions[rt] = image.Pt(i*8, row*rowMargin)
 			gde.tileImages[rt] = ebiten.NewImageFromImage(rt.Image)
 		}
@@ -75,13 +75,13 @@ func (gde *GameDataExplorer) setupTilesImage() {
 	row := 0
 	rowMargin := 20
 
-	rtImageRect := image.Rect(0, 0, 4*8*int(gde.tileScale), len(gde.gameData.ReferenceTiles)*rowMargin*int(gde.tileScale))
+	rtImageRect := image.Rect(0, 0, 4*8*int(gde.tileScale), len(gde.gameData.ReferenceTileGroups)*rowMargin*int(gde.tileScale))
 	gde.tilesImage = ebiten.NewImage(rtImageRect.Dx(), rtImageRect.Dy())
 
 	for _, tileName := range gde.gameData.TileNames {
-		rts := gde.gameData.ReferenceTiles[tileName]
+		rtg := gde.gameData.ReferenceTileGroups[tileName]
 		for i := 0; i < 4; i++ {
-			rt := rts[i]
+			rt := rtg.Orientations[i]
 			pos := gde.tilePositions[rt]
 			eImg := gde.tileImages[rt]
 
@@ -116,7 +116,7 @@ func (gde *GameDataExplorer) setupTilesImage() {
 
 func (gde *GameDataExplorer) setupOverlayImage() {
 	rowMargin := 20
-	rtImageRect := image.Rect(0, 0, 4*8*int(gde.tileScale), len(gde.gameData.ReferenceTiles)*rowMargin*int(gde.tileScale))
+	rtImageRect := image.Rect(0, 0, 4*8*int(gde.tileScale), len(gde.gameData.ReferenceTileGroups)*rowMargin*int(gde.tileScale))
 	gde.overlayImage = ebiten.NewImage(rtImageRect.Dx(), rtImageRect.Dy())
 	gde.overlayCtx = gg.NewContext(rtImageRect.Dx()/int(gde.tileScale), rtImageRect.Dy()/int(gde.tileScale))
 }
@@ -160,9 +160,9 @@ func (gde *GameDataExplorer) drawFeatures() {
 	gde.overlayCtx.SetColor(colornames.Red300)
 
 	for _, tileName := range gde.gameData.TileNames {
-		rts := gde.gameData.ReferenceTiles[tileName]
+		rtg := gde.gameData.ReferenceTileGroups[tileName]
 		for i := 0; i < 4; i++ {
-			rt := rts[i]
+			rt := rtg.Orientations[i]
 			pos := gde.tilePositions[rt]
 
 			for _, f := range rt.Features {

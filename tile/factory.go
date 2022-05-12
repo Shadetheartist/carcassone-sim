@@ -6,6 +6,11 @@ type TileFactory struct {
 }
 
 func (f *TileFactory) NewTileFromReference(rt *ReferenceTile) *Tile {
+
+	if rt == nil {
+		panic("Dont send this a null reference tile")
+	}
+
 	tile := &Tile{}
 
 	tile.Reference = rt
@@ -21,7 +26,7 @@ func (f *TileFactory) NewTileFromReference(rt *ReferenceTile) *Tile {
 func (f *TileFactory) rebuildFeaturesFromReference(t *Tile, rt *ReferenceTile) {
 	t.FeatureMatrix = matrix.NewMatrix[*Feature](rt.FeatureMatrix.Size())
 	t.Features = make([]*Feature, len(rt.Features))
-	t.EdgeFeatures = EdgeArray[*Feature]{}
+	t.EdgeFeatures = &EdgeArray[*Feature]{}
 
 	// mapping original features to new features for easy lookup & replacement later
 	featureMap := make(map[*Feature]*Feature)
@@ -47,5 +52,7 @@ func (f *TileFactory) rebuildFeaturesFromReference(t *Tile, rt *ReferenceTile) {
 	rt.FeatureMatrix.Iterate(func(rt *Feature, x int, y int, idx int) {
 		t.FeatureMatrix.Set(x, y, featureMap[rt])
 	})
+
+	t.Neighbours = &EdgeArray[*Tile]{}
 
 }

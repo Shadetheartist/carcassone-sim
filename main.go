@@ -2,6 +2,7 @@ package main
 
 import (
 	"beeb/carcassonne/data"
+	"beeb/carcassonne/engine"
 	"beeb/carcassonne/simulator"
 )
 
@@ -11,14 +12,15 @@ func main() {
 }
 
 func runSimulator() {
-	gameData := data.LoadGameData("./data/bitmaps")
+	gameData := data.LoadGameData("./data/bitmaps", "./data/standard_deck.yml")
 
-	sim := simulator.NewSimulator(gameData, 32, 4)
+	engine := engine.NewEngine(gameData, 32, 4)
+	sim := simulator.NewSimulator(engine)
 	sim.Simulate()
 }
 
 func runExplorer() {
-	gameData := data.LoadGameData("./data/bitmaps")
+	gameData := data.LoadGameData("./data/bitmaps", "./data/standard_deck.yml")
 
 	gameData.Explore()
 }

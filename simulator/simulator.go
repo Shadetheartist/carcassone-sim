@@ -1,51 +1,24 @@
 package simulator
 
 import (
-	"beeb/carcassonne/board"
 	"beeb/carcassonne/data"
-	"fmt"
-	"image/color"
+	"beeb/carcassonne/engine"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"golang.org/x/exp/shiny/materialdesign/colornames"
 )
 
-var PLAYER_COLOR_LIST = [...]color.RGBA{
-	colornames.White,
-	colornames.Red500,
-	colornames.Blue500,
-	colornames.Green500,
-	colornames.Black,
-}
-
 type Simulator struct {
-	GameBoard *board.Board
-	GameData  *data.GameData
-	DrawData  *DrawData
+	Engine   *engine.Engine
+	GameData *data.GameData
 
-	Players       []*Player
-	CurrentPlayer int
+	drawData *DrawData
 }
 
-func NewSimulator(gameData *data.GameData, boardSize int, numPlayers int) *Simulator {
-
-	if numPlayers > len(PLAYER_COLOR_LIST) {
-		panic(fmt.Sprint("too many players, max ", len(PLAYER_COLOR_LIST)))
-	}
-
+func NewSimulator(engine *engine.Engine) *Simulator {
 	sim := &Simulator{}
-
-	sim.GameBoard = board.NewBoard(boardSize)
-	sim.GameData = gameData
-	sim.Players = make([]*Player, numPlayers)
-
-	for i := 0; i < numPlayers; i++ {
-		playerName := fmt.Sprint("Player ", i)
-		sim.Players[i] = NewPlayer(playerName, PLAYER_COLOR_LIST[i])
-	}
-
-	sim.DrawData = &DrawData{}
-	sim.setupFont()
+	sim.Engine = engine
+	sim.drawData = &DrawData{}
+	sim.initDraw()
 
 	return sim
 }
@@ -54,6 +27,7 @@ func (sim *Simulator) Simulate() {
 	ebiten.SetWindowSize(1200, 900)
 	ebiten.SetWindowTitle("Carcassonne Simulator")
 	ebiten.SetScreenClearedEveryFrame(false)
+	ebiten.SetMaxTPS(ebiten.SyncWithFPS)
 
 	if err := ebiten.RunGame(sim); err != nil {
 		panic(err)
@@ -61,5 +35,5 @@ func (sim *Simulator) Simulate() {
 }
 
 func (sim *Simulator) Layout(outsideWidth, outsideHeight int) (int, int) {
-	return 700, 700
+	return 700, 525
 }

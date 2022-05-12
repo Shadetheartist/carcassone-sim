@@ -4,6 +4,7 @@ import (
 	"beeb/carcassonne/imageHelpers"
 	"beeb/carcassonne/matrix"
 	"beeb/carcassonne/tile"
+	"fmt"
 	"image"
 	"image/color"
 	"sort"
@@ -11,21 +12,43 @@ import (
 	"github.com/disintegration/imaging"
 )
 
+type DeckInfo struct {
+	Deck map[string]int
+}
+
 type GameData struct {
 	TileNames []string
 	Bitmaps   map[string]image.Image
+	DeckInfo  DeckInfo
 
 	//mapped by name, then by orientation (0 = 0, 1 = 90, 2 = 180, 3 = 270 degrees)
-	ReferenceTiles map[string][]*tile.ReferenceTile
+	ReferenceTileGroups map[string]*tile.ReferenceTileGroup
 }
 
-func LoadGameData(bitmapDirectory string) *GameData {
+func LoadGameData(bitmapDirectory string, deckFilePath string) *GameData {
 	gameData := &GameData{}
 
 	gameData.loadBitmaps(bitmapDirectory)
+	gameData.loadDeckInfo(deckFilePath)
 	gameData.compileReferenceTiles()
 
 	return gameData
+}
+
+func (gd *GameData) loadDeckInfo(deckFilePath string) {
+	di, err := LoadDeckInfo(deckFilePath)
+
+	if err != nil {
+		panic(err)
+	}
+
+	for _, tileName := range gd.TileNames {
+		if _, exists := di.Deck[tileName]; !exists {
+			panic(fmt.Sprint("Mismapped Deck/Bitmap Name ", tileName))
+		}
+	}
+
+	gd.DeckInfo = di
 }
 
 func (gd *GameData) loadBitmaps(bitmapDirectory string) {
@@ -41,7 +64,7 @@ func (gd *GameData) loadBitmaps(bitmapDirectory string) {
 }
 
 func (gd *GameData) compileReferenceTiles() {
-	gd.ReferenceTiles = make(map[string][]*tile.ReferenceTile, len(gd.TileNames))
+	gd.ReferenceTileGroups = make(map[string]*tile.ReferenceTileGroup, len(gd.TileNames))
 
 	for _, tileName := range gd.TileNames {
 		img := gd.Bitmaps[tileName]
@@ -74,16 +97,35 @@ func (gd *GameData) compileReferenceTiles() {
 		//this rotates counter-clockwise, so we use the inverse
 		rotated270.Image = imaging.Rotate90(img)
 		orientedReferenceTiles[3] = &rotated270
-		gd.ReferenceTiles[tileName] = orientedReferenceTiles
+
+		rtg := &tile.ReferenceTileGroup{}
+		rtg.Orientations = orientedReferenceTiles
+		rtg.Name = tileName
+		gd.ReferenceTileGroups[tileName] = rtg
 	}
 
 	for _, tileName := range gd.TileNames {
 		for i := 0; i < 4; i++ {
-			rl := gd.ReferenceTiles[tileName][i]
-			rl.EdgeFeatures = determineEdgeFeatures(rl.FeatureMatrix)
+			rt := gd.ReferenceTileGroups[tileName].Orientations[i]
+			rt.EdgeFeatures = determineEdgeFeatures(rt.FeatureMatrix)
+			rt.EdgeSignature = compileEdgeSignature(rt.EdgeFeatures)
+
+			for _, f := range rt.Features {
+				f.ParentRefenceTile = rt
+			}
 		}
 	}
 
+}
+
+func compileEdgeSignature(edgeFeatures *tile.EdgeArray[*tile.Feature]) *tile.EdgeSignature {
+	sig := &tile.EdgeSignature{}
+
+	for i, f := range edgeFeatures {
+		sig[i] = f.Type
+	}
+
+	return sig
 }
 
 func (gd *GameData) compileTile(tileName string) tile.ReferenceTile {
@@ -213,11 +255,11 @@ func (gd *GameData) buildMatrix(img image.Image) (*matrix.Matrix[*tile.Feature],
 	return featureMatrix, features
 }
 
-func determineEdgeFeatures(featureMatrix *matrix.Matrix[*tile.Feature]) tile.EdgeArray[*tile.Feature] {
+func determineEdgeFeatures(featureMatrix *matrix.Matrix[*tile.Feature]) *tile.EdgeArray[*tile.Feature] {
 	centerPixel := 3
 	size := featureMatrix.Size()
 
-	edgeArray := tile.EdgeArray[*tile.Feature]{}
+	edgeArray := &tile.EdgeArray[*tile.Feature]{}
 
 	edgeArray.SetNorth(featureMatrix.Get(centerPixel, 0))
 	edgeArray.SetSouth(featureMatrix.Get(centerPixel, size-1))

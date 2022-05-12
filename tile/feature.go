@@ -3,6 +3,7 @@ package tile
 type FeatureType int
 
 var featureTypeMap []string = []string{
+	"None",
 	"Farm",
 	"Road",
 	"Castle",
@@ -12,7 +13,8 @@ var featureTypeMap []string = []string{
 }
 
 const (
-	Farm FeatureType = iota
+	None FeatureType = iota
+	Farm
 	Road
 	Castle
 	Cloister

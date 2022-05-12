@@ -1,4 +1,4 @@
-package simulator
+package engine
 
 import (
 	"beeb/carcassonne/tile"

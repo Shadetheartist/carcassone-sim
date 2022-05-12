@@ -2,7 +2,7 @@ package tile
 
 const EdgeArraySize int = 4
 
-type EdgeArray[T any] [EdgeArraySize]T
+type EdgeArray[T comparable] [EdgeArraySize]T
 
 func (edgeArray *EdgeArray[T]) GetNorth() T {
 	return edgeArray[0]
@@ -34,4 +34,14 @@ func (edgeArray *EdgeArray[T]) SetSouth(t T) {
 
 func (edgeArray *EdgeArray[T]) SetWest(t T) {
 	edgeArray[3] = t
+}
+
+func (edgeArray *EdgeArray[T]) Contains(t T) bool {
+	for i := 0; i < 4; i++ {
+		if edgeArray[i] == t {
+			return true
+		}
+	}
+
+	return false
 }

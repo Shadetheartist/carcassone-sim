@@ -1,6 +1,9 @@
 package matrix
 
-import "fmt"
+import (
+	"beeb/carcassonne/util"
+	"fmt"
+)
 
 type Matrix[T comparable] struct {
 	size int
@@ -69,7 +72,23 @@ func (m *Matrix[T]) Index(x int, y int) int {
 
 func (m *Matrix[T]) Get(x int, y int) T {
 	i := m.Index(x, y)
+
 	return m.data[i]
+}
+
+func (m *Matrix[T]) GetPt(pt util.Point[int]) (T, error) {
+	i := m.Index(pt.X, pt.Y)
+
+	if i < 0 || i >= len(m.data) {
+		var noop T
+		return noop, nil
+	}
+
+	return m.data[i], nil
+}
+
+func (m *Matrix[T]) GetI(index int) T {
+	return m.data[index]
 }
 
 func (m *Matrix[T]) Set(x int, y int, d T) {

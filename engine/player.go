@@ -1,4 +1,4 @@
-package simulator
+package engine
 
 import "image/color"
 
@@ -16,6 +16,7 @@ func NewPlayer(name string, color color.Color) *Player {
 
 	player.Name = name
 	player.Meeples = make([]*Meeple, meepleCount)
+	player.Color = color
 
 	for i := 0; i < meepleCount; i++ {
 		player.Meeples[i] = &Meeple{

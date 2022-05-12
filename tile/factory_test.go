@@ -8,10 +8,10 @@ import (
 )
 
 func TestTileFactory_NewTileFromReference(t *testing.T) {
-	gameData := data.LoadGameData("../data/bitmaps")
+	gameData := data.LoadGameData("../data/bitmaps", "../data/standard_deck.yml")
 
-	referenceTile := gameData.ReferenceTiles["CloisterRiverRoad"]
-	orientedReferenceTile := referenceTile[0]
+	referenceTile := gameData.ReferenceTileGroups["CloisterRiverRoad"]
+	orientedReferenceTile := referenceTile.Orientations[0]
 
 	tf := &tile.TileFactory{}
 
@@ -21,10 +21,10 @@ func TestTileFactory_NewTileFromReference(t *testing.T) {
 }
 
 func BenchmarkTileFactory_NewTileFromReference(b *testing.B) {
-	gameData := data.LoadGameData("../data/bitmaps")
+	gameData := data.LoadGameData("../data/bitmaps", "../data/standard_deck.yml")
 
-	referenceTile := gameData.ReferenceTiles["CloisterRiverRoad"]
-	orientedReferenceTile := referenceTile[0]
+	referenceTile := gameData.ReferenceTileGroups["CloisterRiverRoad"]
+	orientedReferenceTile := referenceTile.Orientations[0]
 
 	tf := &tile.TileFactory{}
 
