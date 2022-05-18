@@ -1,7 +1,7 @@
 package engine
 
 import (
-	"beeb/carcassonne/tile"
+	"beeb/carcassonne/engine/tile"
 
 	"github.com/google/uuid"
 )

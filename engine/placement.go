@@ -1,7 +1,7 @@
 package engine
 
 import (
-	"beeb/carcassonne/tile"
+	"beeb/carcassonne/engine/tile"
 	"beeb/carcassonne/util"
 	"beeb/carcassonne/util/directions"
 	"math/rand"
@@ -20,73 +20,86 @@ type Placement struct {
 	ConnectedFeatures []Connection
 }
 
+type PlacementFunction func(e *Engine, rtg *tile.ReferenceTileGroup) []Placement
+
 func (e *Engine) PossibleTilePlacements(rtg *tile.ReferenceTileGroup) []Placement {
-	return e.PossibleTilePlacementsDeterministic(rtg)
+	return e.placementFunction(e, rtg)
 }
 
-func (e *Engine) PossibleTilePlacementsNonDeterministic(rtg *tile.ReferenceTileGroup) []Placement {
+func possibleTilePlacementsNonDeterministic(e *Engine, rtg *tile.ReferenceTileGroup) []Placement {
 
 	if e.GameBoard.PlacedTileCount < 1 {
 		return e.defaultPlacements(rtg)
 	}
 
 	e.placementBuffer = e.placementBuffer[:0]
+	//all connections will share this one buffer, they will be sub-slices
+	e.connectionsBuffer = e.connectionsBuffer[:0]
 
+	lastConnectionLen := 0
 	for openPos := range e.GameBoard.OpenPositions {
 
-		connections := e.getPlaceableOrientations(e.orientationBuffer, openPos, rtg)
+		//this will fill the connection buffer
+		e.getPlaceableOrientations(openPos, rtg)
 
 		for _, rt := range e.orientationBuffer {
 			if rt != nil {
-
 				e.placementBuffer = append(e.placementBuffer, Placement{
 					Position:          openPos,
 					ReferenceTile:     rt,
-					ConnectedFeatures: connections,
+					ConnectedFeatures: e.connectionsBuffer[lastConnectionLen:len(e.connectionsBuffer)],
 				})
 			}
 		}
+
+		lastConnectionLen = len(e.connectionsBuffer)
 	}
 
 	return e.placementBuffer
 }
 
-func (e *Engine) PossibleTilePlacementsDeterministic(rtg *tile.ReferenceTileGroup) []Placement {
+func possibleTilePlacementsDeterministic(e *Engine, rtg *tile.ReferenceTileGroup) []Placement {
 
 	if e.GameBoard.PlacedTileCount < 1 {
 		return e.defaultPlacements(rtg)
 	}
 
 	e.placementBuffer = e.placementBuffer[:0]
+
+	//all connections will share this one buffer, they will be sub-slices
+	e.connectionsBuffer = e.connectionsBuffer[:0]
+
+	lastConnectionLen := 0
 
 	for _, openPos := range e.GameBoard.OpenPositionsList {
 
-		connections := e.getPlaceableOrientations(e.orientationBuffer, openPos, rtg)
+		//this will fill the connection buffer
+		e.getPlaceableOrientations(openPos, rtg)
 
 		for _, rt := range e.orientationBuffer {
 			if rt != nil {
-
 				e.placementBuffer = append(e.placementBuffer, Placement{
 					Position:          openPos,
 					ReferenceTile:     rt,
-					ConnectedFeatures: connections,
+					ConnectedFeatures: e.connectionsBuffer[lastConnectionLen:len(e.connectionsBuffer)],
 				})
 			}
 		}
+
+		lastConnectionLen = len(e.connectionsBuffer)
 	}
 
 	return e.placementBuffer
 }
 
-func (e *Engine) getPlaceableOrientations(buffer []*tile.ReferenceTile, openPosKey util.Point[int], rtg *tile.ReferenceTileGroup) []Connection {
+func (e *Engine) getPlaceableOrientations(openPosKey util.Point[int], rtg *tile.ReferenceTileGroup) {
 	openPositionEdgeSignature := e.GameBoard.OpenPositions[openPosKey]
-	connections := make([]Connection, 0, 4)
 
 	for i := 0; i < 4; i++ {
 		rt := rtg.Orientations[i]
 		tileEdgeSignature := rt.EdgeSignature
 		if tileEdgeSignature.Compatible(openPositionEdgeSignature) {
-			buffer[i] = rt
+			e.orientationBuffer[i] = rt
 
 			for edge, feature := range rt.EdgeFeatures {
 				edgeDir := directions.Direction(edge)
@@ -100,7 +113,7 @@ func (e *Engine) getPlaceableOrientations(buffer []*tile.ReferenceTile, openPosK
 				complimentDir := directions.Compliment[edgeDir]
 
 				if otherTile != nil {
-					connections = append(connections, Connection{
+					e.connectionsBuffer = append(e.connectionsBuffer, Connection{
 						FeatureA: feature,
 						EdgeA:    edgeDir,
 						FeatureB: otherTile.EdgeFeatures[complimentDir],
@@ -108,13 +121,10 @@ func (e *Engine) getPlaceableOrientations(buffer []*tile.ReferenceTile, openPosK
 					})
 				}
 			}
-
 		} else {
-			buffer[i] = nil
+			e.orientationBuffer[i] = nil
 		}
 	}
-
-	return connections
 }
 
 func (e *Engine) defaultPlacements(rtg *tile.ReferenceTileGroup) []Placement {

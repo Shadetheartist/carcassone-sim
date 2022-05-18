@@ -4,8 +4,8 @@ import (
 	"beeb/carcassonne/data"
 	"beeb/carcassonne/engine/board"
 	"beeb/carcassonne/engine/deck"
+	"beeb/carcassonne/engine/tile"
 	"beeb/carcassonne/engine/turnStage"
-	"beeb/carcassonne/tile"
 	"errors"
 	"fmt"
 	"image/color"
@@ -22,6 +22,8 @@ var PLAYER_COLOR_LIST = [...]color.RGBA{
 }
 
 type Engine struct {
+	Deterministic                 bool
+	BoardSize                     int
 	GameOver                      bool
 	GameBoard                     *board.Board
 	GameData                      *data.GameData
@@ -40,21 +42,32 @@ type Engine struct {
 	TileFactory       *tile.TileFactory
 	placementBuffer   []Placement
 	orientationBuffer []*tile.ReferenceTile
+	connectionsBuffer []Connection
+
+	placementFunction PlacementFunction
 }
 
-func NewEngine(gameData *data.GameData, boardSize int, numPlayers int) *Engine {
+func NewEngine(gameData *data.GameData, boardSize int, numPlayers int, deterministic bool) *Engine {
 	if numPlayers > len(PLAYER_COLOR_LIST) {
 		panic(fmt.Sprint("too many players, max ", len(PLAYER_COLOR_LIST)))
 	}
 
 	engine := &Engine{}
 
-	engine.GameBoard = board.NewBoard(boardSize)
+	engine.Deterministic = deterministic
+	engine.BoardSize = boardSize
 	engine.GameData = gameData
 	engine.Players = make([]*Player, numPlayers)
 	engine.TileFactory = &tile.TileFactory{}
 	engine.placementBuffer = make([]Placement, 0, 128)
 	engine.orientationBuffer = make([]*tile.ReferenceTile, 4)
+	engine.connectionsBuffer = make([]Connection, 0, 4)
+
+	if deterministic {
+		engine.placementFunction = possibleTilePlacementsDeterministic
+	} else {
+		engine.placementFunction = possibleTilePlacementsNonDeterministic
+	}
 
 	engine.InitGame()
 
@@ -67,7 +80,7 @@ func (e *Engine) InitGame() {
 		e.Players[i] = NewPlayer(playerName, PLAYER_COLOR_LIST[i])
 	}
 
-	e.GameBoard = board.NewBoard(e.GameBoard.TileMatrix.Size())
+	e.GameBoard = board.NewBoard(e.BoardSize, e.Deterministic)
 	e.RiverDeck = deck.BuildRiverDeck(e.GameData)
 	e.Deck = deck.BuildDeck(e.GameData)
 	e.GameOver = false

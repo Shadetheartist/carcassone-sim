@@ -1,9 +1,9 @@
 package data
 
 import (
+	"beeb/carcassonne/engine/tile"
 	"beeb/carcassonne/imageHelpers"
 	"beeb/carcassonne/matrix"
-	"beeb/carcassonne/tile"
 	"fmt"
 	"image"
 	"image/color"

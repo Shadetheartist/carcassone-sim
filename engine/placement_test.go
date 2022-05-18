@@ -8,7 +8,7 @@ import (
 
 func BenchmarkPossibleTilePlacements(b *testing.B) {
 	gameData := data.LoadGameData("../data/bitmaps", "../data/standard_deck.yml")
-	engine := engine.NewEngine(gameData, 32, 4)
+	engine := engine.NewEngine(gameData, 32, 4, true)
 
 	for i := 0; i < 32*5+1; i++ {
 		engine.Step()

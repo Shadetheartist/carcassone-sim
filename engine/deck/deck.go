@@ -1,7 +1,7 @@
 package deck
 
 import (
-	"beeb/carcassonne/tile"
+	"beeb/carcassonne/engine/tile"
 	"errors"
 	"math/rand"
 )

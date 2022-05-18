@@ -1,7 +1,7 @@
 package data
 
 import (
-	"beeb/carcassonne/tile"
+	"beeb/carcassonne/engine/tile"
 	"fmt"
 	"image"
 	"image/color"

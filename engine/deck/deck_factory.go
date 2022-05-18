@@ -2,7 +2,7 @@ package deck
 
 import (
 	"beeb/carcassonne/data"
-	"beeb/carcassonne/tile"
+	"beeb/carcassonne/engine/tile"
 )
 
 func BuildRiverDeck(gameData *data.GameData) *Deck {

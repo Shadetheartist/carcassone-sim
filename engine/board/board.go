@@ -1,8 +1,8 @@
 package board
 
 import (
+	"beeb/carcassonne/engine/tile"
 	"beeb/carcassonne/matrix"
-	"beeb/carcassonne/tile"
 	"beeb/carcassonne/util"
 	"beeb/carcassonne/util/directions"
 )
@@ -12,23 +12,32 @@ type Board struct {
 	PlacedTileCount   int
 	OpenPositions     map[util.Point[int]]*tile.EdgeSignature
 	OpenPositionsList []util.Point[int]
+	placeTileFunction PlaceTileFunction
 }
 
-func NewBoard(size int) *Board {
+type PlaceTileFunction func(b *Board, pos util.Point[int], t *tile.Tile)
+
+func NewBoard(size int, deterministic bool) *Board {
 	board := &Board{}
 
 	board.TileMatrix = matrix.NewMatrix[*tile.Tile](size)
 	board.OpenPositions = make(map[util.Point[int]]*tile.EdgeSignature, 128)
 	board.OpenPositionsList = make([]util.Point[int], 0, 128)
 
+	if deterministic {
+		board.placeTileFunction = placeTileDeterministic
+	} else {
+		board.placeTileFunction = placeTileNonDeterministic
+	}
+
 	return board
 }
 
 func (b *Board) PlaceTile(pos util.Point[int], t *tile.Tile) {
-	b.placeTileDeterministic(pos, t)
+	placeTileDeterministic(b, pos, t)
 }
 
-func (b *Board) placeTileNonDeterministic(pos util.Point[int], t *tile.Tile) {
+func placeTileNonDeterministic(b *Board, pos util.Point[int], t *tile.Tile) {
 	b.TileMatrix.Set(pos.X, pos.Y, t)
 	b.PlacedTileCount++
 
@@ -68,7 +77,7 @@ func (b *Board) placeTileNonDeterministic(pos util.Point[int], t *tile.Tile) {
 	delete(b.OpenPositions, pos)
 }
 
-func (b *Board) placeTileDeterministic(pos util.Point[int], t *tile.Tile) {
+func placeTileDeterministic(b *Board, pos util.Point[int], t *tile.Tile) {
 	b.TileMatrix.Set(pos.X, pos.Y, t)
 	b.PlacedTileCount++
 
