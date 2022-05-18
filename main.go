@@ -13,7 +13,7 @@ func main() {
 
 func runSimulator() {
 	gameData := data.LoadGameData("./data/bitmaps", "./data/standard_deck.yml")
-	engine := engine.NewEngine(gameData, 32, 4, false)
+	engine := engine.NewEngine(gameData, 32, 4)
 	sim := simulator.NewSimulator(engine)
 	sim.Simulate()
 }

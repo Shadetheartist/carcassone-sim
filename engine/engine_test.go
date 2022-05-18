@@ -12,7 +12,7 @@ func BenchmarkEngine(b *testing.B) {
 	gameData := data.LoadGameData("../data/bitmaps", "../data/standard_deck.yml")
 
 	rand.Seed(0)
-	e1 := engine.NewEngine(gameData, 32, 4, true)
+	e1 := engine.NewEngine(gameData, 32, 4)
 
 	steps := (e1.RiverDeck.Remaining() + e1.Deck.Remaining()) * 5
 

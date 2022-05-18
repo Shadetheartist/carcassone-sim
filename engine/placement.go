@@ -20,45 +20,7 @@ type Placement struct {
 	ConnectedFeatures []Connection
 }
 
-type PlacementFunction func(e *Engine, rtg *tile.ReferenceTileGroup) []Placement
-
 func (e *Engine) PossibleTilePlacements(rtg *tile.ReferenceTileGroup) []Placement {
-	return e.placementFunction(e, rtg)
-}
-
-func possibleTilePlacementsNonDeterministic(e *Engine, rtg *tile.ReferenceTileGroup) []Placement {
-
-	if e.GameBoard.PlacedTileCount < 1 {
-		return e.defaultPlacements(rtg)
-	}
-
-	e.placementBuffer = e.placementBuffer[:0]
-	//all connections will share this one buffer, they will be sub-slices
-	e.connectionsBuffer = e.connectionsBuffer[:0]
-
-	lastConnectionLen := 0
-	for openPos := range e.GameBoard.OpenPositions {
-
-		//this will fill the connection buffer
-		e.getPlaceableOrientations(openPos, rtg)
-
-		for _, rt := range e.orientationBuffer {
-			if rt != nil {
-				e.placementBuffer = append(e.placementBuffer, Placement{
-					Position:          openPos,
-					ReferenceTile:     rt,
-					ConnectedFeatures: e.connectionsBuffer[lastConnectionLen:len(e.connectionsBuffer)],
-				})
-			}
-		}
-
-		lastConnectionLen = len(e.connectionsBuffer)
-	}
-
-	return e.placementBuffer
-}
-
-func possibleTilePlacementsDeterministic(e *Engine, rtg *tile.ReferenceTileGroup) []Placement {
 
 	if e.GameBoard.PlacedTileCount < 1 {
 		return e.defaultPlacements(rtg)

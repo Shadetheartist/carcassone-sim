@@ -43,31 +43,22 @@ type Engine struct {
 	placementBuffer   []Placement
 	orientationBuffer []*tile.ReferenceTile
 	connectionsBuffer []Connection
-
-	placementFunction PlacementFunction
 }
 
-func NewEngine(gameData *data.GameData, boardSize int, numPlayers int, deterministic bool) *Engine {
+func NewEngine(gameData *data.GameData, boardSize int, numPlayers int) *Engine {
 	if numPlayers > len(PLAYER_COLOR_LIST) {
 		panic(fmt.Sprint("too many players, max ", len(PLAYER_COLOR_LIST)))
 	}
 
 	engine := &Engine{}
 
-	engine.Deterministic = deterministic
 	engine.BoardSize = boardSize
 	engine.GameData = gameData
 	engine.Players = make([]*Player, numPlayers)
 	engine.TileFactory = &tile.TileFactory{}
 	engine.placementBuffer = make([]Placement, 0, 128)
 	engine.orientationBuffer = make([]*tile.ReferenceTile, 4)
-	engine.connectionsBuffer = make([]Connection, 0, 4)
-
-	if deterministic {
-		engine.placementFunction = possibleTilePlacementsDeterministic
-	} else {
-		engine.placementFunction = possibleTilePlacementsNonDeterministic
-	}
+	engine.connectionsBuffer = make([]Connection, 0, 128)
 
 	engine.InitGame()
 
@@ -80,7 +71,7 @@ func (e *Engine) InitGame() {
 		e.Players[i] = NewPlayer(playerName, PLAYER_COLOR_LIST[i])
 	}
 
-	e.GameBoard = board.NewBoard(e.BoardSize, e.Deterministic)
+	e.GameBoard = board.NewBoard(e.BoardSize)
 	e.RiverDeck = deck.BuildRiverDeck(e.GameData)
 	e.Deck = deck.BuildDeck(e.GameData)
 	e.GameOver = false
