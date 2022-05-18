@@ -5,6 +5,7 @@ import (
 	"beeb/carcassonne/matrix"
 	"beeb/carcassonne/util"
 	"beeb/carcassonne/util/directions"
+	"image"
 )
 
 type Board struct {
@@ -12,6 +13,7 @@ type Board struct {
 	PlacedTileCount   int
 	OpenPositions     map[util.Point[int]]*tile.EdgeSignature
 	OpenPositionsList []util.Point[int]
+	EdgePixReference  [][]util.Point[int]
 }
 
 func NewBoard(size int) *Board {
@@ -20,6 +22,7 @@ func NewBoard(size int) *Board {
 	board.TileMatrix = matrix.NewMatrix[*tile.Tile](size)
 	board.OpenPositions = make(map[util.Point[int]]*tile.EdgeSignature, 128)
 	board.OpenPositionsList = make([]util.Point[int], 0, 128)
+	board.EdgePixReference = edgePix(image.Rect(0, 0, 7, 7))
 
 	return board
 }
@@ -64,11 +67,47 @@ func (b *Board) PlaceTile(pos util.Point[int], t *tile.Tile) {
 
 			//add position to map
 			b.OpenPositions[edgePos] = b.createOpenPositonSignature(edgePos)
-		} // else {
-		// 	dir := directions.Direction(d)
-		// 	complimentDirection := directions.Compliment[dir]
+		} else {
+			dir := directions.Direction(d)
+			complimentDir := directions.Compliment[dir]
 
-		// }
+			pix := b.EdgePixReference[dir]
+			complimentPix := b.EdgePixReference[complimentDir]
+
+			matrix := t.Reference.FeatureMatrix
+			neighbourFarmMatrix := n.Reference.FeatureMatrix
+
+			for i := range pix {
+				referenceFeature, err := matrix.GetPt(pix[i])
+
+				if err != nil {
+					panic(err)
+				}
+
+				if referenceFeature == nil {
+					continue
+				}
+
+				neighbourReferenceFeature, err := neighbourFarmMatrix.GetPt(complimentPix[i])
+
+				if err != nil {
+					panic(err)
+				}
+
+				if neighbourReferenceFeature == nil {
+					continue
+				}
+
+				if referenceFeature.Type == neighbourReferenceFeature.Type {
+					tileFeature := t.ReferenceFeatureMap[referenceFeature]
+					neighbourFeature := n.ReferenceFeatureMap[neighbourReferenceFeature]
+
+					tileFeature.Links[neighbourFeature] = neighbourFeature
+					neighbourFeature.Links[tileFeature] = tileFeature
+				}
+			}
+
+		}
 	}
 
 	//remove position from list
@@ -101,4 +140,55 @@ func (b *Board) createOpenPositonSignature(pos util.Point[int]) *tile.EdgeSignat
 	}
 
 	return sig
+}
+
+func edgePix(rect image.Rectangle) [][]util.Point[int] {
+	edgePix := make([][]util.Point[int], 4)
+
+	edgePix[0] = northPix(rect)
+	edgePix[1] = eastPix(rect)
+	edgePix[2] = southPix(rect)
+	edgePix[3] = westPix(rect)
+
+	return edgePix
+}
+
+func northPix(rect image.Rectangle) []util.Point[int] {
+	pix := make([]util.Point[int], rect.Max.X)
+
+	for i := 0; i < rect.Max.X; i++ {
+		pix[i] = util.Point[int]{X: i, Y: 0}
+	}
+
+	return pix
+}
+
+func southPix(rect image.Rectangle) []util.Point[int] {
+	pix := make([]util.Point[int], rect.Max.X)
+
+	for i := 0; i < rect.Max.X; i++ {
+		pix[i] = util.Point[int]{X: i, Y: rect.Max.X - 1}
+	}
+
+	return pix
+}
+
+func westPix(rect image.Rectangle) []util.Point[int] {
+	pix := make([]util.Point[int], rect.Max.X)
+
+	for i := 0; i < rect.Max.X; i++ {
+		pix[i] = util.Point[int]{X: 0, Y: i}
+	}
+
+	return pix
+}
+
+func eastPix(rect image.Rectangle) []util.Point[int] {
+	pix := make([]util.Point[int], rect.Max.X)
+
+	for i := 0; i < rect.Max.X; i++ {
+		pix[i] = util.Point[int]{X: rect.Max.X - 1, Y: i}
+	}
+
+	return pix
 }

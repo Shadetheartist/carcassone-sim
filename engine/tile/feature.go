@@ -33,6 +33,7 @@ type Feature struct {
 	Type              FeatureType
 	ParentTile        *Tile
 	ParentRefenceTile *ReferenceTile
+	Links             map[*Feature]*Feature
 }
 
 func (f *Feature) String() string {

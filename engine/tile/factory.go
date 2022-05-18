@@ -30,7 +30,7 @@ func (f *TileFactory) rebuildFeaturesFromReference(t *Tile, rt *ReferenceTile) {
 	t.EdgeFeatures = &EdgeArray[*Feature]{}
 
 	// mapping original features to new features for easy lookup & replacement later
-	t.ParentFeatureMap = make(map[*Feature]*Feature)
+	t.ReferenceFeatureMap = make(map[*Feature]*Feature)
 
 	for i, f := range rt.Features {
 		newFeature := &Feature{
@@ -40,14 +40,16 @@ func (f *TileFactory) rebuildFeaturesFromReference(t *Tile, rt *ReferenceTile) {
 			Type:              f.Type,
 		}
 
-		t.ParentFeatureMap[f] = newFeature
+		newFeature.Links = make(map[*Feature]*Feature)
+
+		t.ReferenceFeatureMap[f] = newFeature
 
 		t.Features[i] = newFeature
 	}
 
 	//use feature map to easily remap edge features
 	for i, f := range rt.EdgeFeatures {
-		t.EdgeFeatures[i] = t.ParentFeatureMap[f]
+		t.EdgeFeatures[i] = t.ReferenceFeatureMap[f]
 	}
 
 	t.Neighbours = &EdgeArray[*Tile]{}

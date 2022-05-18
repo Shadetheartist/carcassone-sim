@@ -24,7 +24,10 @@ func (sim *Simulator) Update() error {
 		mouseInitialX, mouseInitialY = ebiten.CursorPosition()
 		mouseDown = true
 		e := sim.GetObjectUnderCursor()
-		fmt.Println(e)
+
+		if e != nil {
+			fmt.Println(e)
+		}
 	}
 
 	if mouseDown {
@@ -68,7 +71,7 @@ func (sim *Simulator) Update() error {
 	return nil
 }
 
-func (sim *Simulator) GetObjectUnderCursor() *interface{} {
+func (sim *Simulator) GetObjectUnderCursor() interface{} {
 	cursorX, cursorY := ebiten.CursorPosition()
 	ssPoint := util.Point[int]{X: cursorX, Y: cursorY}
 	wPoint := sim.toWorldSpace(ssPoint)
@@ -76,5 +79,11 @@ func (sim *Simulator) GetObjectUnderCursor() *interface{} {
 
 	fmt.Println(ssPoint, wPoint, bPoint)
 
-	return nil
+	t, err := sim.Engine.GameBoard.TileMatrix.GetPt(bPoint)
+
+	if err != nil {
+		return nil
+	}
+
+	return t
 }
