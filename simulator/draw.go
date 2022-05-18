@@ -7,8 +7,8 @@ import (
 	"image/color"
 	"os"
 
-	"github.com/hajimehoshi/ebiten/examples/resources/fonts"
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/examples/resources/fonts"
 	"github.com/hajimehoshi/ebiten/v2/text"
 	"golang.org/x/exp/shiny/materialdesign/colornames"
 	"golang.org/x/image/bmp"
@@ -27,6 +27,7 @@ type DrawData struct {
 
 	boardImage                  *ebiten.Image
 	possibleTilePlacementsImage *ebiten.Image
+	overlayImg                  *ebiten.Image
 
 	riverDeckImage         *ebiten.Image
 	deckImage              *ebiten.Image
@@ -35,9 +36,12 @@ type DrawData struct {
 	scale        float64
 	boardScale   float64
 	uiScale      float64
+	hdScale      int
 	cameraOffset util.Point[int]
 
 	redrawBoard bool
+
+	blackShader *ebiten.Shader
 }
 
 func (sim *Simulator) initDraw() {
@@ -45,11 +49,13 @@ func (sim *Simulator) initDraw() {
 	sim.drawData.scale = 2
 	sim.drawData.uiScale = 4
 	sim.drawData.boardScale = 1
+	sim.drawData.hdScale = 4
 	sim.drawData.cameraOffset = util.Point[int]{}
 
 	boardPxSize := sim.Engine.GameBoard.TileMatrix.Size() * TILE_SIZE
 	sim.drawData.boardImage = ebiten.NewImage(boardPxSize, boardPxSize)
 	sim.drawData.possibleTilePlacementsImage = ebiten.NewImage(boardPxSize, boardPxSize)
+	sim.drawData.overlayImg = ebiten.NewImage(boardPxSize*sim.drawData.hdScale, boardPxSize*sim.drawData.hdScale)
 
 	sim.drawData.deckImage = ebiten.NewImage(TILE_SIZE, TILE_SIZE)
 	sim.drawData.riverDeckImage = ebiten.NewImage(TILE_SIZE, TILE_SIZE)
@@ -60,6 +66,8 @@ func (sim *Simulator) initDraw() {
 	sim.drawData.lightTileBackImage = loadImage("./simulator/images/tile_back_light.bmp")
 
 	sim.drawData.redrawBoard = true
+
+	sim.drawData.blackShader = loadShader("./simulator/shaders/black.kage")
 }
 
 func (sim *Simulator) Draw(screen *ebiten.Image) {
@@ -67,6 +75,7 @@ func (sim *Simulator) Draw(screen *ebiten.Image) {
 
 	if sim.drawData.redrawBoard {
 		sim.drawBoard()
+		sim.drawOverlay()
 		sim.drawData.redrawBoard = false
 	}
 
@@ -80,6 +89,14 @@ func (sim *Simulator) Draw(screen *ebiten.Image) {
 
 	screen.DrawImage(sim.drawData.boardImage, &op)
 	screen.DrawImage(sim.drawData.possibleTilePlacementsImage, &op)
+
+	hdInv := float64(1) / float64(sim.drawData.hdScale)
+	opHD := ebiten.DrawImageOptions{}
+	opHD.GeoM.Scale(sim.drawData.scale, sim.drawData.scale)
+	opHD.GeoM.Scale(sim.drawData.boardScale, sim.drawData.boardScale)
+	opHD.GeoM.Scale(hdInv, hdInv)
+	opHD.GeoM.Translate(float64(sim.drawData.cameraOffset.X), float64(sim.drawData.cameraOffset.Y))
+	screen.DrawImage(sim.drawData.overlayImg, &opHD)
 
 	sim.drawUI(screen)
 }
@@ -116,6 +133,22 @@ func loadImage(fileName string) *ebiten.Image {
 	return ebiten.NewImageFromImage(image)
 }
 
+func loadShader(fileName string) *ebiten.Shader {
+	shaderCode, err := os.ReadFile(fileName)
+
+	if err != nil {
+		panic(err)
+	}
+
+	shader, err := ebiten.NewShader(shaderCode)
+
+	if err != nil {
+		panic(err)
+	}
+
+	return shader
+}
+
 func (sim *Simulator) drawBoard() {
 	sim.drawData.boardImage.Clear()
 
@@ -135,6 +168,33 @@ func (sim *Simulator) drawBoard() {
 
 			} else {
 				sim.drawData.boardImage.DrawImage(sim.drawData.emptyTileImage, &op)
+			}
+
+			op.GeoM.Translate(-tx, -ty)
+		}
+	}
+}
+
+func (sim *Simulator) drawOverlay() {
+	sim.drawData.overlayImg.Clear()
+
+	boardSize := sim.Engine.GameBoard.TileMatrix.Size()
+	op := &ebiten.DrawRectShaderOptions{}
+	s := float64(sim.drawData.hdScale)
+
+	for y := 0; y < boardSize; y++ {
+		for x := 0; x < boardSize; x++ {
+			tile := sim.Engine.GameBoard.TileMatrix.Get(x, y)
+			tx, ty := float64(x*TILE_SIZE)*s+1, float64(y*TILE_SIZE)*s+1
+			op.GeoM.Translate(tx, ty)
+
+			if tile != nil {
+				for _, rf := range tile.Reference.Features {
+					avgPos := tile.Reference.AvgFeaturePos[rf]
+					op.GeoM.Translate(avgPos.X*s, avgPos.Y*s)
+					sim.drawData.overlayImg.DrawRectShader(1, 1, sim.drawData.blackShader, op)
+					op.GeoM.Translate(-avgPos.X*s, -avgPos.Y*s)
+				}
 			}
 
 			op.GeoM.Translate(-tx, -ty)
