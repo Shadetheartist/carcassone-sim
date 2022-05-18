@@ -5,6 +5,8 @@ import (
 	"beeb/carcassonne/util"
 	"image"
 	"strings"
+
+	"github.com/google/uuid"
 )
 
 type ReferenceTileGroup struct {
@@ -23,6 +25,7 @@ type ReferenceTile struct {
 }
 
 type Tile struct {
+	Id            uuid.UUID
 	Position      util.Point[int]
 	Reference     *ReferenceTile
 	FeatureMatrix *matrix.Matrix[*Feature]

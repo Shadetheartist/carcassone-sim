@@ -16,6 +16,7 @@ require (
 	github.com/disintegration/imaging v1.6.2
 	github.com/fogleman/gg v1.3.0
 	github.com/go-gl/glfw/v3.3/glfw v0.0.0-20210727001814-0db043d8d5be // indirect
+	github.com/google/uuid v1.3.0
 	github.com/hajimehoshi/ebiten v1.12.12
 	github.com/jezek/xgb v0.0.0-20210312150743-0e0f116e1240 // indirect
 	golang.org/x/exp v0.0.0-20190731235908-ec7cb31e5a56 // indirect

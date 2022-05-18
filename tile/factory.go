@@ -1,6 +1,10 @@
 package tile
 
-import "beeb/carcassonne/matrix"
+import (
+	"beeb/carcassonne/matrix"
+
+	"github.com/google/uuid"
+)
 
 type TileFactory struct {
 }
@@ -12,7 +16,7 @@ func (f *TileFactory) NewTileFromReference(rt *ReferenceTile) *Tile {
 	}
 
 	tile := &Tile{}
-
+	tile.Id = uuid.New()
 	tile.Reference = rt
 
 	f.rebuildFeaturesFromReference(tile, rt)
@@ -33,6 +37,7 @@ func (f *TileFactory) rebuildFeaturesFromReference(t *Tile, rt *ReferenceTile) {
 
 	for i, f := range rt.Features {
 		newFeature := &Feature{
+			Id:                uuid.New(),
 			ParentTile:        t,
 			ParentRefenceTile: rt,
 			Type:              f.Type,

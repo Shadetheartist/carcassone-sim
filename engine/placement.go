@@ -21,31 +21,25 @@ type Placement struct {
 }
 
 func (e *Engine) PossibleTilePlacements(rtg *tile.ReferenceTileGroup) []Placement {
+	return e.PossibleTilePlacementsDeterministic(rtg)
+}
+
+func (e *Engine) PossibleTilePlacementsNonDeterministic(rtg *tile.ReferenceTileGroup) []Placement {
 
 	if e.GameBoard.PlacedTileCount < 1 {
 		return e.defaultPlacements(rtg)
 	}
 
-	placements := make([]Placement, 0, len(e.GameBoard.OpenPositions))
-
-	//reused when checking placable orientations of each position
-	orientationBuffer := make([]*tile.ReferenceTile, 4)
+	e.placementBuffer = e.placementBuffer[:0]
 
 	for openPos := range e.GameBoard.OpenPositions {
 
-		if openPos.X < 0 || openPos.X >= e.GameBoard.TileMatrix.Size() {
-			continue
-		}
+		connections := e.getPlaceableOrientations(e.orientationBuffer, openPos, rtg)
 
-		if openPos.Y < 0 || openPos.Y >= e.GameBoard.TileMatrix.Size() {
-			continue
-		}
-
-		connections := e.getPlaceableOrientations(orientationBuffer, openPos, rtg)
-
-		for _, rt := range orientationBuffer {
+		for _, rt := range e.orientationBuffer {
 			if rt != nil {
-				placements = append(placements, Placement{
+
+				e.placementBuffer = append(e.placementBuffer, Placement{
 					Position:          openPos,
 					ReferenceTile:     rt,
 					ConnectedFeatures: connections,
@@ -54,7 +48,34 @@ func (e *Engine) PossibleTilePlacements(rtg *tile.ReferenceTileGroup) []Placemen
 		}
 	}
 
-	return placements
+	return e.placementBuffer
+}
+
+func (e *Engine) PossibleTilePlacementsDeterministic(rtg *tile.ReferenceTileGroup) []Placement {
+
+	if e.GameBoard.PlacedTileCount < 1 {
+		return e.defaultPlacements(rtg)
+	}
+
+	e.placementBuffer = e.placementBuffer[:0]
+
+	for _, openPos := range e.GameBoard.OpenPositionsList {
+
+		connections := e.getPlaceableOrientations(e.orientationBuffer, openPos, rtg)
+
+		for _, rt := range e.orientationBuffer {
+			if rt != nil {
+
+				e.placementBuffer = append(e.placementBuffer, Placement{
+					Position:          openPos,
+					ReferenceTile:     rt,
+					ConnectedFeatures: connections,
+				})
+			}
+		}
+	}
+
+	return e.placementBuffer
 }
 
 func (e *Engine) getPlaceableOrientations(buffer []*tile.ReferenceTile, openPosKey util.Point[int], rtg *tile.ReferenceTileGroup) []Connection {
@@ -123,4 +144,15 @@ func RandomPlacement(placements []Placement) *Placement {
 
 	randN := rand.Int() % len(placements)
 	return &placements[randN]
+}
+
+//eek!
+
+type Evaluation struct {
+	Score  int
+	Meeple int
+}
+
+func EvaluatePlacement(placement Placement) Evaluation {
+	return Evaluation{}
 }

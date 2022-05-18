@@ -1,5 +1,7 @@
 package tile
 
+import "github.com/google/uuid"
+
 type FeatureType int
 
 var featureTypeMap []string = []string{
@@ -27,6 +29,7 @@ func (ft FeatureType) String() string {
 }
 
 type Feature struct {
+	Id                uuid.UUID
 	Type              FeatureType
 	ParentTile        *Tile
 	ParentRefenceTile *ReferenceTile

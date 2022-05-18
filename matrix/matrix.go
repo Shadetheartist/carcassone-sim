@@ -2,6 +2,7 @@ package matrix
 
 import (
 	"beeb/carcassonne/util"
+	"errors"
 	"fmt"
 )
 
@@ -77,12 +78,13 @@ func (m *Matrix[T]) Get(x int, y int) T {
 }
 
 func (m *Matrix[T]) GetPt(pt util.Point[int]) (T, error) {
-	i := m.Index(pt.X, pt.Y)
 
-	if i < 0 || i >= len(m.data) {
+	if !m.IsInBounds(pt.X, pt.Y) {
 		var noop T
-		return noop, nil
+		return noop, errors.New("point not within bounds")
 	}
+
+	i := m.Index(pt.X, pt.Y)
 
 	return m.data[i], nil
 }
@@ -93,6 +95,22 @@ func (m *Matrix[T]) GetI(index int) T {
 
 func (m *Matrix[T]) Set(x int, y int, d T) {
 	i := m.Index(x, y)
+	m.data[i] = d
+}
+
+func (m *Matrix[T]) SetPt(pt util.Point[int], d T) error {
+	if !m.IsInBounds(pt.X, pt.Y) {
+		return errors.New("point not within bounds")
+	}
+
+	i := m.Index(pt.X, pt.Y)
+
+	m.data[i] = d
+
+	return nil
+}
+
+func (m *Matrix[T]) SetI(i int, d T) {
 	m.data[i] = d
 }
 
@@ -179,4 +197,16 @@ func (m *Matrix[T]) Iterate(iter MatrixIterator[T]) {
 
 func (m *Matrix[T]) Size() int {
 	return m.size
+}
+
+func (m *Matrix[T]) Len() int {
+	return len(m.data)
+}
+
+func (m *Matrix[T]) IsInBounds(x int, y int) bool {
+	return x >= 0 && x < m.size && y >= 0 && y < m.size
+}
+
+func (m *Matrix[T]) IsIndexInBounds(i int) bool {
+	return i >= 0 && i < len(m.data)
 }

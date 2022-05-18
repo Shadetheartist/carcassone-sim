@@ -1,8 +1,8 @@
 package engine
 
 import (
-	"beeb/carcassonne/board"
 	"beeb/carcassonne/data"
+	"beeb/carcassonne/engine/board"
 	"beeb/carcassonne/engine/deck"
 	"beeb/carcassonne/engine/turnStage"
 	"beeb/carcassonne/tile"
@@ -37,7 +37,9 @@ type Engine struct {
 	RiverDeck *deck.Deck
 	Deck      *deck.Deck
 
-	TileFactory *tile.TileFactory
+	TileFactory       *tile.TileFactory
+	placementBuffer   []Placement
+	orientationBuffer []*tile.ReferenceTile
 }
 
 func NewEngine(gameData *data.GameData, boardSize int, numPlayers int) *Engine {
@@ -51,6 +53,8 @@ func NewEngine(gameData *data.GameData, boardSize int, numPlayers int) *Engine {
 	engine.GameData = gameData
 	engine.Players = make([]*Player, numPlayers)
 	engine.TileFactory = &tile.TileFactory{}
+	engine.placementBuffer = make([]Placement, 0, 128)
+	engine.orientationBuffer = make([]*tile.ReferenceTile, 4)
 
 	engine.InitGame()
 

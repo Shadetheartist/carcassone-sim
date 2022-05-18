@@ -1,0 +1,2172 @@
+{
+	"Players": {
+		"37708f7e-9668-4b4a-9a06-c3ee09895a55": {
+			"Id": "37708f7e-9668-4b4a-9a06-c3ee09895a55",
+			"Name": "Player 3",
+			"Color": {
+				"R": 76,
+				"G": 175,
+				"B": 80,
+				"A": 255
+			},
+			"Score": 0,
+			"Meeples": [
+				"455e6e2a-88fb-4434-ba6e-ac879f6ac30a",
+				"bf6b1862-7384-485b-af65-dcc8f07fa156",
+				"f465f3e4-fd42-4727-8dd7-f6d7ad95d858",
+				"dfab0be7-de30-425b-a227-ead0e5f4b912",
+				"9563ae3c-8144-416b-96b5-f46173f3b47d",
+				"26ddc562-5eef-4416-a829-3879382e9447",
+				"76948436-bf11-49aa-a344-cb91b4d3fe69"
+			]
+		},
+		"8f70c778-fe59-4005-9d5d-1ea570e056ac": {
+			"Id": "8f70c778-fe59-4005-9d5d-1ea570e056ac",
+			"Name": "Player 1",
+			"Color": {
+				"R": 244,
+				"G": 67,
+				"B": 54,
+				"A": 255
+			},
+			"Score": 0,
+			"Meeples": [
+				"3b400ffa-8e16-4537-bd7e-fdae4e9ff77f",
+				"9877b7de-e9a1-44bc-943c-788a05ec5a1c",
+				"6319af63-8913-47a4-a785-e7051132d507",
+				"28934231-0ace-4671-ac67-ba2f27de2084",
+				"725d8408-7c7b-4ca7-8c95-a4275c3b77c4",
+				"fe5bd539-8553-48f9-b760-0c6cda7f238c",
+				"0ccf1424-1169-489f-b0d2-7c296abc2e45"
+			]
+		},
+		"a053b83f-0c68-46cf-9a60-03728bc6f7b5": {
+			"Id": "a053b83f-0c68-46cf-9a60-03728bc6f7b5",
+			"Name": "Player 0",
+			"Color": {
+				"R": 255,
+				"G": 255,
+				"B": 255,
+				"A": 255
+			},
+			"Score": 0,
+			"Meeples": [
+				"1038f610-a924-42f4-964b-70995ddd91e8",
+				"9ef2e859-d0e5-471d-8c0f-5bf1a6c7c63d",
+				"3f0a8a4b-3fab-46ca-9351-9e49339175ec",
+				"a6078f87-1120-4e0c-a3e3-c82951ce46d9",
+				"1a5c0449-a2be-4900-a069-a8ce147b7a7d",
+				"6c6716f7-38aa-4ad3-a854-4783d469f480",
+				"bce40c21-1e7e-4518-940d-90c690f9f0d9"
+			]
+		},
+		"f10de054-6ef3-4e11-ac1f-7e256f53ebcb": {
+			"Id": "f10de054-6ef3-4e11-ac1f-7e256f53ebcb",
+			"Name": "Player 2",
+			"Color": {
+				"R": 33,
+				"G": 150,
+				"B": 243,
+				"A": 255
+			},
+			"Score": 0,
+			"Meeples": [
+				"03f182af-0142-4283-b103-e32130757add",
+				"05b957bb-3aae-4d46-9c1c-d12db455fd58",
+				"389b4049-2912-4300-9890-bde64999c551",
+				"09278560-51e9-4588-8f59-a5a1b51390a9",
+				"86ab197b-ca85-4099-bf8c-7f0198c4144d",
+				"57a758bb-cee5-45ec-a2b0-c1967cabf89c",
+				"c642138b-38b7-40d2-8213-d18c2b4cb43f"
+			]
+		}
+	},
+	"Meeples": {
+		"03f182af-0142-4283-b103-e32130757add": {
+			"Id": "03f182af-0142-4283-b103-e32130757add",
+			"Power": 1
+		},
+		"05b957bb-3aae-4d46-9c1c-d12db455fd58": {
+			"Id": "05b957bb-3aae-4d46-9c1c-d12db455fd58",
+			"Power": 1
+		},
+		"09278560-51e9-4588-8f59-a5a1b51390a9": {
+			"Id": "09278560-51e9-4588-8f59-a5a1b51390a9",
+			"Power": 1
+		},
+		"0ccf1424-1169-489f-b0d2-7c296abc2e45": {
+			"Id": "0ccf1424-1169-489f-b0d2-7c296abc2e45",
+			"Power": 1
+		},
+		"1038f610-a924-42f4-964b-70995ddd91e8": {
+			"Id": "1038f610-a924-42f4-964b-70995ddd91e8",
+			"Power": 1
+		},
+		"1a5c0449-a2be-4900-a069-a8ce147b7a7d": {
+			"Id": "1a5c0449-a2be-4900-a069-a8ce147b7a7d",
+			"Power": 1
+		},
+		"26ddc562-5eef-4416-a829-3879382e9447": {
+			"Id": "26ddc562-5eef-4416-a829-3879382e9447",
+			"Power": 1
+		},
+		"28934231-0ace-4671-ac67-ba2f27de2084": {
+			"Id": "28934231-0ace-4671-ac67-ba2f27de2084",
+			"Power": 1
+		},
+		"389b4049-2912-4300-9890-bde64999c551": {
+			"Id": "389b4049-2912-4300-9890-bde64999c551",
+			"Power": 1
+		},
+		"3b400ffa-8e16-4537-bd7e-fdae4e9ff77f": {
+			"Id": "3b400ffa-8e16-4537-bd7e-fdae4e9ff77f",
+			"Power": 1
+		},
+		"3f0a8a4b-3fab-46ca-9351-9e49339175ec": {
+			"Id": "3f0a8a4b-3fab-46ca-9351-9e49339175ec",
+			"Power": 1
+		},
+		"455e6e2a-88fb-4434-ba6e-ac879f6ac30a": {
+			"Id": "455e6e2a-88fb-4434-ba6e-ac879f6ac30a",
+			"Power": 1
+		},
+		"57a758bb-cee5-45ec-a2b0-c1967cabf89c": {
+			"Id": "57a758bb-cee5-45ec-a2b0-c1967cabf89c",
+			"Power": 1
+		},
+		"6319af63-8913-47a4-a785-e7051132d507": {
+			"Id": "6319af63-8913-47a4-a785-e7051132d507",
+			"Power": 1
+		},
+		"6c6716f7-38aa-4ad3-a854-4783d469f480": {
+			"Id": "6c6716f7-38aa-4ad3-a854-4783d469f480",
+			"Power": 1
+		},
+		"725d8408-7c7b-4ca7-8c95-a4275c3b77c4": {
+			"Id": "725d8408-7c7b-4ca7-8c95-a4275c3b77c4",
+			"Power": 1
+		},
+		"76948436-bf11-49aa-a344-cb91b4d3fe69": {
+			"Id": "76948436-bf11-49aa-a344-cb91b4d3fe69",
+			"Power": 1
+		},
+		"86ab197b-ca85-4099-bf8c-7f0198c4144d": {
+			"Id": "86ab197b-ca85-4099-bf8c-7f0198c4144d",
+			"Power": 1
+		},
+		"9563ae3c-8144-416b-96b5-f46173f3b47d": {
+			"Id": "9563ae3c-8144-416b-96b5-f46173f3b47d",
+			"Power": 1
+		},
+		"9877b7de-e9a1-44bc-943c-788a05ec5a1c": {
+			"Id": "9877b7de-e9a1-44bc-943c-788a05ec5a1c",
+			"Power": 1
+		},
+		"9ef2e859-d0e5-471d-8c0f-5bf1a6c7c63d": {
+			"Id": "9ef2e859-d0e5-471d-8c0f-5bf1a6c7c63d",
+			"Power": 1
+		},
+		"a6078f87-1120-4e0c-a3e3-c82951ce46d9": {
+			"Id": "a6078f87-1120-4e0c-a3e3-c82951ce46d9",
+			"Power": 1
+		},
+		"bce40c21-1e7e-4518-940d-90c690f9f0d9": {
+			"Id": "bce40c21-1e7e-4518-940d-90c690f9f0d9",
+			"Power": 1
+		},
+		"bf6b1862-7384-485b-af65-dcc8f07fa156": {
+			"Id": "bf6b1862-7384-485b-af65-dcc8f07fa156",
+			"Power": 1
+		},
+		"c642138b-38b7-40d2-8213-d18c2b4cb43f": {
+			"Id": "c642138b-38b7-40d2-8213-d18c2b4cb43f",
+			"Power": 1
+		},
+		"dfab0be7-de30-425b-a227-ead0e5f4b912": {
+			"Id": "dfab0be7-de30-425b-a227-ead0e5f4b912",
+			"Power": 1
+		},
+		"f465f3e4-fd42-4727-8dd7-f6d7ad95d858": {
+			"Id": "f465f3e4-fd42-4727-8dd7-f6d7ad95d858",
+			"Power": 1
+		},
+		"fe5bd539-8553-48f9-b760-0c6cda7f238c": {
+			"Id": "fe5bd539-8553-48f9-b760-0c6cda7f238c",
+			"Power": 1
+		}
+	},
+	"Tiles": {
+		"005a44fe-6f2a-48bc-9b68-d2b2ddad0bad": {
+			"Id": "005a44fe-6f2a-48bc-9b68-d2b2ddad0bad",
+			"Name": "RoadStraight",
+			"Position": {
+				"X": 21,
+				"Y": 27
+			},
+			"Features": [
+				{
+					"Id": "c387e1cc-490b-4ca9-9ac9-ac0d04b7c982",
+					"Type": "Farm"
+				},
+				{
+					"Id": "69f97b75-3f7d-44bb-9322-ec577dbff61c",
+					"Type": "Road"
+				},
+				{
+					"Id": "09391637-f5a6-4ca9-b4c8-bc53cf0df704",
+					"Type": "Farm"
+				}
+			],
+			"EdgeFeatures": [
+				"69f97b75-3f7d-44bb-9322-ec577dbff61c",
+				"09391637-f5a6-4ca9-b4c8-bc53cf0df704",
+				"69f97b75-3f7d-44bb-9322-ec577dbff61c",
+				"c387e1cc-490b-4ca9-9ac9-ac0d04b7c982"
+			]
+		},
+		"01a1a3aa-62d2-4e2b-8dda-3c42914d773a": {
+			"Id": "01a1a3aa-62d2-4e2b-8dda-3c42914d773a",
+			"Name": "CastleCornerRoadCurve",
+			"Position": {
+				"X": 24,
+				"Y": 26
+			},
+			"Features": [
+				{
+					"Id": "93a3cf1f-f53c-42fb-8def-ee207cd44afa",
+					"Type": "Castle"
+				},
+				{
+					"Id": "6821e222-1062-403a-94d0-3a7f661d3ea2",
+					"Type": "Farm"
+				},
+				{
+					"Id": "27cf4b2d-9946-4db8-9b7f-4ae582a786d8",
+					"Type": "Road"
+				},
+				{
+					"Id": "6d0c6afc-63b9-41ae-9242-b5564bdfd2b8",
+					"Type": "Farm"
+				}
+			],
+			"EdgeFeatures": [
+				"27cf4b2d-9946-4db8-9b7f-4ae582a786d8",
+				"27cf4b2d-9946-4db8-9b7f-4ae582a786d8",
+				"93a3cf1f-f53c-42fb-8def-ee207cd44afa",
+				"93a3cf1f-f53c-42fb-8def-ee207cd44afa"
+			]
+		},
+		"049f8a6c-1c53-47f1-9621-0ad84949b658": {
+			"Id": "049f8a6c-1c53-47f1-9621-0ad84949b658",
+			"Name": "CastleRoadStraight",
+			"Position": {
+				"X": 23,
+				"Y": 26
+			},
+			"Features": [
+				{
+					"Id": "0eafe172-88ee-469c-8c02-e93760e71c21",
+					"Type": "Castle"
+				},
+				{
+					"Id": "aba848b5-938a-4547-afb6-487479435eac",
+					"Type": "Farm"
+				},
+				{
+					"Id": "a443a0ca-8500-47ac-bb41-14315e0194a6",
+					"Type": "Road"
+				},
+				{
+					"Id": "b3ac2d45-1331-4cf5-b53b-ab9f7fa5f043",
+					"Type": "Farm"
+				}
+			],
+			"EdgeFeatures": [
+				"a443a0ca-8500-47ac-bb41-14315e0194a6",
+				"0eafe172-88ee-469c-8c02-e93760e71c21",
+				"a443a0ca-8500-47ac-bb41-14315e0194a6",
+				"b3ac2d45-1331-4cf5-b53b-ab9f7fa5f043"
+			]
+		},
+		"05e22330-04ec-4b46-b5bc-4dbe2b5e3df6": {
+			"Id": "05e22330-04ec-4b46-b5bc-4dbe2b5e3df6",
+			"Name": "RoadTerminal3",
+			"Position": {
+				"X": 11,
+				"Y": 25
+			},
+			"Features": [
+				{
+					"Id": "919a3d0b-2731-4301-b16d-71b1d18af566",
+					"Type": "Farm"
+				},
+				{
+					"Id": "8d7fb56d-c56b-41ac-a2f5-e2f0d7f91f6b",
+					"Type": "Road"
+				},
+				{
+					"Id": "285d7b7c-b925-4e7e-acc2-f815892626dc",
+					"Type": "Farm"
+				},
+				{
+					"Id": "a579a21c-585d-4a60-8dc1-5127efe54b26",
+					"Type": "Farm"
+				}
+			],
+			"EdgeFeatures": [
+				"919a3d0b-2731-4301-b16d-71b1d18af566",
+				"8d7fb56d-c56b-41ac-a2f5-e2f0d7f91f6b",
+				"8d7fb56d-c56b-41ac-a2f5-e2f0d7f91f6b",
+				"8d7fb56d-c56b-41ac-a2f5-e2f0d7f91f6b"
+			]
+		},
+		"07597773-4359-4c93-aff1-ef4e628c7cc9": {
+			"Id": "07597773-4359-4c93-aff1-ef4e628c7cc9",
+			"Name": "CastleRiverRoad",
+			"Position": {
+				"X": 16,
+				"Y": 23
+			},
+			"Features": [
+				{
+					"Id": "5e1fa615-b8cd-47f8-82b6-f54039aa16a6",
+					"Type": "Castle"
+				},
+				{
+					"Id": "7f456fe2-c326-45af-9ca5-d3e26b3bf0f9",
+					"Type": "Farm"
+				},
+				{
+					"Id": "a67be690-65d7-4ad2-8fb4-daa93b200517",
+					"Type": "Farm"
+				},
+				{
+					"Id": "76a49b97-cd15-496a-8ce1-dfbd477230e9",
+					"Type": "Road"
+				},
+				{
+					"Id": "7138ca67-decc-4743-b480-e720c98936f4",
+					"Type": "River"
+				},
+				{
+					"Id": "88cec642-ecc5-4abb-a5ba-bcd0a20f840c",
+					"Type": "River"
+				},
+				{
+					"Id": "1a5a2067-05ec-4f6e-b417-c68f48e672b3",
+					"Type": "Farm"
+				},
+				{
+					"Id": "06d934da-4f91-41bc-9cd0-7353a486087a",
+					"Type": "Farm"
+				}
+			],
+			"EdgeFeatures": [
+				"76a49b97-cd15-496a-8ce1-dfbd477230e9",
+				"88cec642-ecc5-4abb-a5ba-bcd0a20f840c",
+				"5e1fa615-b8cd-47f8-82b6-f54039aa16a6",
+				"88cec642-ecc5-4abb-a5ba-bcd0a20f840c"
+			]
+		},
+		"07f489dd-a40a-47f1-86c6-86e96b82e484": {
+			"Id": "07f489dd-a40a-47f1-86c6-86e96b82e484",
+			"Name": "CastleRoadCurveEast",
+			"Position": {
+				"X": 25,
+				"Y": 25
+			},
+			"Features": [
+				{
+					"Id": "09877646-d3a3-4aa3-a7ba-8c7f230cdfd5",
+					"Type": "Castle"
+				},
+				{
+					"Id": "0eb6c95e-5905-47b3-bbfe-8e1a144f4fe4",
+					"Type": "Farm"
+				},
+				{
+					"Id": "04451f1a-709f-4210-91bf-350b159ad85d",
+					"Type": "Road"
+				},
+				{
+					"Id": "ce2263f9-60a9-40d3-9fee-67dcdb2068ba",
+					"Type": "Farm"
+				}
+			],
+			"EdgeFeatures": [
+				"0eb6c95e-5905-47b3-bbfe-8e1a144f4fe4",
+				"09877646-d3a3-4aa3-a7ba-8c7f230cdfd5",
+				"04451f1a-709f-4210-91bf-350b159ad85d",
+				"04451f1a-709f-4210-91bf-350b159ad85d"
+			]
+		},
+		"0a68c7e0-7cd8-4ad0-baab-9bde5a780bf0": {
+			"Id": "0a68c7e0-7cd8-4ad0-baab-9bde5a780bf0",
+			"Name": "CastleRoadTerminal3",
+			"Position": {
+				"X": 11,
+				"Y": 27
+			},
+			"Features": [
+				{
+					"Id": "95583daf-14bd-4261-9f7f-376805ef0a6a",
+					"Type": "Castle"
+				},
+				{
+					"Id": "d7dc5f38-4503-4c13-b62d-b4b63f2f2409",
+					"Type": "Farm"
+				},
+				{
+					"Id": "4b8d851c-5cf3-4cc4-8c6c-0e9591342bb3",
+					"Type": "Road"
+				},
+				{
+					"Id": "01e7ce2e-1b66-488e-93cc-7c44c075801f",
+					"Type": "Farm"
+				},
+				{
+					"Id": "dbd48180-ae60-405e-8aa0-bfe887c98118",
+					"Type": "Farm"
+				}
+			],
+			"EdgeFeatures": [
+				"4b8d851c-5cf3-4cc4-8c6c-0e9591342bb3",
+				"4b8d851c-5cf3-4cc4-8c6c-0e9591342bb3",
+				"4b8d851c-5cf3-4cc4-8c6c-0e9591342bb3",
+				"95583daf-14bd-4261-9f7f-376805ef0a6a"
+			]
+		},
+		"0eb8fc3b-f061-4e6f-887c-79f48f1d3db0": {
+			"Id": "0eb8fc3b-f061-4e6f-887c-79f48f1d3db0",
+			"Name": "RoadTerminal3",
+			"Position": {
+				"X": 13,
+				"Y": 27
+			},
+			"Features": [
+				{
+					"Id": "77b416ab-cb47-491a-a975-9e33868941e1",
+					"Type": "Farm"
+				},
+				{
+					"Id": "708c9635-b209-417c-bf36-9007d2386ae4",
+					"Type": "Road"
+				},
+				{
+					"Id": "4b4f420a-2270-46a3-9f2e-f2eb1ea3708c",
+					"Type": "Farm"
+				},
+				{
+					"Id": "9099de2d-83d1-480c-aac0-33ceaf1bd0bc",
+					"Type": "Farm"
+				}
+			],
+			"EdgeFeatures": [
+				"708c9635-b209-417c-bf36-9007d2386ae4",
+				"77b416ab-cb47-491a-a975-9e33868941e1",
+				"708c9635-b209-417c-bf36-9007d2386ae4",
+				"708c9635-b209-417c-bf36-9007d2386ae4"
+			]
+		},
+		"146cb539-2bde-4b7c-a5f6-5b32a4ed77fc": {
+			"Id": "146cb539-2bde-4b7c-a5f6-5b32a4ed77fc",
+			"Name": "RiverTerminus",
+			"Position": {
+				"X": 22,
+				"Y": 22
+			},
+			"Features": [
+				{
+					"Id": "ffd37f24-be9f-4f0e-82f2-5b18b83634d8",
+					"Type": "Farm"
+				},
+				{
+					"Id": "7b940e26-0967-40f7-84f5-18aa524be37b",
+					"Type": "Shield"
+				},
+				{
+					"Id": "c5d67627-997d-4c51-96fe-eda2e81b4650",
+					"Type": "River"
+				},
+				{
+					"Id": "d44b114e-8c08-4362-b5dd-709f622a5c0e",
+					"Type": "Shield"
+				}
+			],
+			"EdgeFeatures": [
+				"ffd37f24-be9f-4f0e-82f2-5b18b83634d8",
+				"ffd37f24-be9f-4f0e-82f2-5b18b83634d8",
+				"ffd37f24-be9f-4f0e-82f2-5b18b83634d8",
+				"c5d67627-997d-4c51-96fe-eda2e81b4650"
+			]
+		},
+		"1aa6e654-b7f1-40d8-982a-5d361c5fa49e": {
+			"Id": "1aa6e654-b7f1-40d8-982a-5d361c5fa49e",
+			"Name": "CastleFill3",
+			"Position": {
+				"X": 21,
+				"Y": 21
+			},
+			"Features": [
+				{
+					"Id": "56a31592-7dcb-4bbb-a4d6-25d630402d1a",
+					"Type": "Castle"
+				},
+				{
+					"Id": "475e2830-f9b3-4d2a-baaf-549f5f6957d2",
+					"Type": "Farm"
+				}
+			],
+			"EdgeFeatures": [
+				"56a31592-7dcb-4bbb-a4d6-25d630402d1a",
+				"475e2830-f9b3-4d2a-baaf-549f5f6957d2",
+				"56a31592-7dcb-4bbb-a4d6-25d630402d1a",
+				"56a31592-7dcb-4bbb-a4d6-25d630402d1a"
+			]
+		},
+		"1b75cfd1-7980-4609-8805-bfa434a9d1ec": {
+			"Id": "1b75cfd1-7980-4609-8805-bfa434a9d1ec",
+			"Name": "RoadCurve",
+			"Position": {
+				"X": 19,
+				"Y": 22
+			},
+			"Features": [
+				{
+					"Id": "dc668f88-dba7-4caa-800d-8e4fe55dc392",
+					"Type": "Farm"
+				},
+				{
+					"Id": "fb2a3d34-7f07-4970-bddb-73d5379e6d47",
+					"Type": "Road"
+				},
+				{
+					"Id": "b1fea86d-8f07-498a-9a1d-2c2b9fc2aa00",
+					"Type": "Farm"
+				}
+			],
+			"EdgeFeatures": [
+				"dc668f88-dba7-4caa-800d-8e4fe55dc392",
+				"fb2a3d34-7f07-4970-bddb-73d5379e6d47",
+				"fb2a3d34-7f07-4970-bddb-73d5379e6d47",
+				"dc668f88-dba7-4caa-800d-8e4fe55dc392"
+			]
+		},
+		"1de31942-1c3e-43ba-b56d-340754175952": {
+			"Id": "1de31942-1c3e-43ba-b56d-340754175952",
+			"Name": "RoadCurve",
+			"Position": {
+				"X": 12,
+				"Y": 26
+			},
+			"Features": [
+				{
+					"Id": "344fc543-b15c-4c12-8c8c-362397b47135",
+					"Type": "Farm"
+				},
+				{
+					"Id": "1ecade94-2289-4c11-8809-6ca48249ec43",
+					"Type": "Road"
+				},
+				{
+					"Id": "f1f6cb58-a7e2-4616-bac0-2032bfa3ea96",
+					"Type": "Farm"
+				}
+			],
+			"EdgeFeatures": [
+				"1ecade94-2289-4c11-8809-6ca48249ec43",
+				"1ecade94-2289-4c11-8809-6ca48249ec43",
+				"344fc543-b15c-4c12-8c8c-362397b47135",
+				"344fc543-b15c-4c12-8c8c-362397b47135"
+			]
+		},
+		"1e94a6a6-8a72-41c7-afe1-cae04ec2def2": {
+			"Id": "1e94a6a6-8a72-41c7-afe1-cae04ec2def2",
+			"Name": "CastleCornerRoadCurve",
+			"Position": {
+				"X": 18,
+				"Y": 20
+			},
+			"Features": [
+				{
+					"Id": "f9deb27a-05c7-46e2-ac0d-4af5302c49ef",
+					"Type": "Castle"
+				},
+				{
+					"Id": "a71703bd-0709-476b-b354-14ffa149f3ff",
+					"Type": "Farm"
+				},
+				{
+					"Id": "713d4abd-9c51-4891-9677-1ce28a77605d",
+					"Type": "Road"
+				},
+				{
+					"Id": "21a2a961-24cc-4acf-8853-563f5cd2468c",
+					"Type": "Farm"
+				}
+			],
+			"EdgeFeatures": [
+				"713d4abd-9c51-4891-9677-1ce28a77605d",
+				"f9deb27a-05c7-46e2-ac0d-4af5302c49ef",
+				"f9deb27a-05c7-46e2-ac0d-4af5302c49ef",
+				"713d4abd-9c51-4891-9677-1ce28a77605d"
+			]
+		},
+		"236e54b8-7571-49a6-b718-1f774dcade0f": {
+			"Id": "236e54b8-7571-49a6-b718-1f774dcade0f",
+			"Name": "RoadStraight",
+			"Position": {
+				"X": 15,
+				"Y": 21
+			},
+			"Features": [
+				{
+					"Id": "ad42dcda-b1bf-4d94-8711-9b2108865c24",
+					"Type": "Farm"
+				},
+				{
+					"Id": "8cdc6aec-cf52-4d28-94dc-586c80114898",
+					"Type": "Road"
+				},
+				{
+					"Id": "41f1c255-4146-4c23-95b1-43760d1c83a5",
+					"Type": "Farm"
+				}
+			],
+			"EdgeFeatures": [
+				"ad42dcda-b1bf-4d94-8711-9b2108865c24",
+				"8cdc6aec-cf52-4d28-94dc-586c80114898",
+				"41f1c255-4146-4c23-95b1-43760d1c83a5",
+				"8cdc6aec-cf52-4d28-94dc-586c80114898"
+			]
+		},
+		"2770344d-1a97-4211-a1bf-84a80447390e": {
+			"Id": "2770344d-1a97-4211-a1bf-84a80447390e",
+			"Name": "RoadTerminal3",
+			"Position": {
+				"X": 12,
+				"Y": 27
+			},
+			"Features": [
+				{
+					"Id": "bb3315f0-0f30-4768-ba09-4e761b481950",
+					"Type": "Farm"
+				},
+				{
+					"Id": "3dfe5fee-87a7-469d-a82f-db95a694ba84",
+					"Type": "Road"
+				},
+				{
+					"Id": "24ad1537-0d2f-42cb-b781-b68c7a1645ec",
+					"Type": "Farm"
+				},
+				{
+					"Id": "620c09c8-37a2-4935-9ed8-a46d909eb555",
+					"Type": "Farm"
+				}
+			],
+			"EdgeFeatures": [
+				"bb3315f0-0f30-4768-ba09-4e761b481950",
+				"3dfe5fee-87a7-469d-a82f-db95a694ba84",
+				"3dfe5fee-87a7-469d-a82f-db95a694ba84",
+				"3dfe5fee-87a7-469d-a82f-db95a694ba84"
+			]
+		},
+		"2adb2234-c859-4c7a-ad28-6a94ed038d0d": {
+			"Id": "2adb2234-c859-4c7a-ad28-6a94ed038d0d",
+			"Name": "CastleCornerRoadCurveShield",
+			"Position": {
+				"X": 11,
+				"Y": 23
+			},
+			"Features": [
+				{
+					"Id": "e7a51cd4-ba6c-491c-b227-5ebd7bf0e14c",
+					"Type": "Castle"
+				},
+				{
+					"Id": "d3010211-83fe-4585-907f-1e125b017754",
+					"Type": "Farm"
+				},
+				{
+					"Id": "f1aef1e1-7438-467f-a162-b564aa7064fe",
+					"Type": "Shield"
+				},
+				{
+					"Id": "afcc167d-44db-4c1b-88c3-a714e0ae9962",
+					"Type": "Road"
+				},
+				{
+					"Id": "009dd902-630d-478c-9b09-7a26422747e3",
+					"Type": "Farm"
+				}
+			],
+			"EdgeFeatures": [
+				"e7a51cd4-ba6c-491c-b227-5ebd7bf0e14c",
+				"afcc167d-44db-4c1b-88c3-a714e0ae9962",
+				"afcc167d-44db-4c1b-88c3-a714e0ae9962",
+				"e7a51cd4-ba6c-491c-b227-5ebd7bf0e14c"
+			]
+		},
+		"2b32c801-8755-4a14-a2b9-02b7f7a29ffa": {
+			"Id": "2b32c801-8755-4a14-a2b9-02b7f7a29ffa",
+			"Name": "RoadTerminal3",
+			"Position": {
+				"X": 24,
+				"Y": 25
+			},
+			"Features": [
+				{
+					"Id": "4f66e3ee-28db-4967-bfe5-940bb2a51635",
+					"Type": "Farm"
+				},
+				{
+					"Id": "4b6bb1dc-5d9a-4003-aa3a-a1814b60be04",
+					"Type": "Road"
+				},
+				{
+					"Id": "6cc687bd-769b-48da-922d-b3b2c6163a42",
+					"Type": "Farm"
+				},
+				{
+					"Id": "348895f3-f53b-4968-bab5-98628f4338e6",
+					"Type": "Farm"
+				}
+			],
+			"EdgeFeatures": [
+				"4f66e3ee-28db-4967-bfe5-940bb2a51635",
+				"4b6bb1dc-5d9a-4003-aa3a-a1814b60be04",
+				"4b6bb1dc-5d9a-4003-aa3a-a1814b60be04",
+				"4b6bb1dc-5d9a-4003-aa3a-a1814b60be04"
+			]
+		},
+		"41173690-4148-4ccf-9a4e-ddfaf578c5ef": {
+			"Id": "41173690-4148-4ccf-9a4e-ddfaf578c5ef",
+			"Name": "CastleRoadCurveEast",
+			"Position": {
+				"X": 13,
+				"Y": 26
+			},
+			"Features": [
+				{
+					"Id": "076c0c4d-43f4-412b-a9a0-1211fc834ddc",
+					"Type": "Castle"
+				},
+				{
+					"Id": "403992f4-32a6-4df4-8476-da9d6c7833f4",
+					"Type": "Farm"
+				},
+				{
+					"Id": "17ac0b01-b0f1-486a-8904-40c9956617ea",
+					"Type": "Road"
+				},
+				{
+					"Id": "02aa3cf3-bc2b-409c-a2bd-5e47713ba172",
+					"Type": "Farm"
+				}
+			],
+			"EdgeFeatures": [
+				"403992f4-32a6-4df4-8476-da9d6c7833f4",
+				"076c0c4d-43f4-412b-a9a0-1211fc834ddc",
+				"17ac0b01-b0f1-486a-8904-40c9956617ea",
+				"17ac0b01-b0f1-486a-8904-40c9956617ea"
+			]
+		},
+		"48308804-bcf2-4f36-ab19-4c4e7b226fd5": {
+			"Id": "48308804-bcf2-4f36-ab19-4c4e7b226fd5",
+			"Name": "CastleFill3",
+			"Position": {
+				"X": 16,
+				"Y": 24
+			},
+			"Features": [
+				{
+					"Id": "36196067-bc38-428f-84a5-3a074dfd9ffe",
+					"Type": "Castle"
+				},
+				{
+					"Id": "d3513850-3afd-4fc2-9b6c-084b800f52dd",
+					"Type": "Farm"
+				}
+			],
+			"EdgeFeatures": [
+				"36196067-bc38-428f-84a5-3a074dfd9ffe",
+				"d3513850-3afd-4fc2-9b6c-084b800f52dd",
+				"36196067-bc38-428f-84a5-3a074dfd9ffe",
+				"36196067-bc38-428f-84a5-3a074dfd9ffe"
+			]
+		},
+		"491513f9-e297-4215-865b-4f6f68ca92a5": {
+			"Id": "491513f9-e297-4215-865b-4f6f68ca92a5",
+			"Name": "CastleFill3ShieldRoad",
+			"Position": {
+				"X": 23,
+				"Y": 23
+			},
+			"Features": [
+				{
+					"Id": "aa2730a9-70e6-425c-a3f9-bdba014ca83f",
+					"Type": "Castle"
+				},
+				{
+					"Id": "05722427-5215-4524-949e-ddcce67d96fd",
+					"Type": "Shield"
+				},
+				{
+					"Id": "30954a7d-f5d6-441f-a5d6-68d6b0029ea4",
+					"Type": "Farm"
+				},
+				{
+					"Id": "22046a9b-0a5d-4802-b5f3-2dfba0548c9e",
+					"Type": "Road"
+				},
+				{
+					"Id": "be18be84-0576-4745-9fd0-c32c6a38fd53",
+					"Type": "Farm"
+				}
+			],
+			"EdgeFeatures": [
+				"aa2730a9-70e6-425c-a3f9-bdba014ca83f",
+				"aa2730a9-70e6-425c-a3f9-bdba014ca83f",
+				"aa2730a9-70e6-425c-a3f9-bdba014ca83f",
+				"22046a9b-0a5d-4802-b5f3-2dfba0548c9e"
+			]
+		},
+		"4a14c20e-3eb1-4545-b81a-21176d89f57f": {
+			"Id": "4a14c20e-3eb1-4545-b81a-21176d89f57f",
+			"Name": "CastleRoadStraight",
+			"Position": {
+				"X": 12,
+				"Y": 23
+			},
+			"Features": [
+				{
+					"Id": "d16bd99e-4bc2-4088-a42d-086743c0f7e4",
+					"Type": "Castle"
+				},
+				{
+					"Id": "3fa7ae35-d45f-4087-8a05-1bf7a0c4ce59",
+					"Type": "Farm"
+				},
+				{
+					"Id": "fb401a7b-6c54-4ea1-a511-b2d64b2ea725",
+					"Type": "Road"
+				},
+				{
+					"Id": "4cb11e8e-1a51-4317-8896-47bdf562fe67",
+					"Type": "Farm"
+				}
+			],
+			"EdgeFeatures": [
+				"4cb11e8e-1a51-4317-8896-47bdf562fe67",
+				"fb401a7b-6c54-4ea1-a511-b2d64b2ea725",
+				"d16bd99e-4bc2-4088-a42d-086743c0f7e4",
+				"fb401a7b-6c54-4ea1-a511-b2d64b2ea725"
+			]
+		},
+		"4fcfd35a-b200-4762-b2fc-1433d41515ef": {
+			"Id": "4fcfd35a-b200-4762-b2fc-1433d41515ef",
+			"Name": "Cloister",
+			"Position": {
+				"X": 10,
+				"Y": 22
+			},
+			"Features": [
+				{
+					"Id": "70a86a0a-cc8e-4396-97b0-df46321877ed",
+					"Type": "Farm"
+				},
+				{
+					"Id": "0df0f9cf-68d3-432b-8455-c14a0ecbed9d",
+					"Type": "Cloister"
+				}
+			],
+			"EdgeFeatures": [
+				"70a86a0a-cc8e-4396-97b0-df46321877ed",
+				"70a86a0a-cc8e-4396-97b0-df46321877ed",
+				"70a86a0a-cc8e-4396-97b0-df46321877ed",
+				"70a86a0a-cc8e-4396-97b0-df46321877ed"
+			]
+		},
+		"51af8a4a-3f96-4b18-a0db-598a7e65bbd2": {
+			"Id": "51af8a4a-3f96-4b18-a0db-598a7e65bbd2",
+			"Name": "RoadStraight",
+			"Position": {
+				"X": 21,
+				"Y": 25
+			},
+			"Features": [
+				{
+					"Id": "67b87d3f-a90d-43d6-b75d-74f461f6b790",
+					"Type": "Farm"
+				},
+				{
+					"Id": "159266dd-c4c8-4de1-91bc-a54fec7d19ad",
+					"Type": "Road"
+				},
+				{
+					"Id": "4c60dcd9-ccec-4011-a18b-b9f5e2b63168",
+					"Type": "Farm"
+				}
+			],
+			"EdgeFeatures": [
+				"159266dd-c4c8-4de1-91bc-a54fec7d19ad",
+				"67b87d3f-a90d-43d6-b75d-74f461f6b790",
+				"159266dd-c4c8-4de1-91bc-a54fec7d19ad",
+				"4c60dcd9-ccec-4011-a18b-b9f5e2b63168"
+			]
+		},
+		"55b780e6-cd71-4c2c-b997-8b07b7c7a563": {
+			"Id": "55b780e6-cd71-4c2c-b997-8b07b7c7a563",
+			"Name": "CastleFill4Shield",
+			"Position": {
+				"X": 18,
+				"Y": 21
+			},
+			"Features": [
+				{
+					"Id": "ef5e23e1-693a-4a2b-8cd3-0fc27376cd99",
+					"Type": "Castle"
+				},
+				{
+					"Id": "7b102fda-5035-43d7-9d72-8a4948d1bcde",
+					"Type": "Shield"
+				}
+			],
+			"EdgeFeatures": [
+				"ef5e23e1-693a-4a2b-8cd3-0fc27376cd99",
+				"ef5e23e1-693a-4a2b-8cd3-0fc27376cd99",
+				"ef5e23e1-693a-4a2b-8cd3-0fc27376cd99",
+				"ef5e23e1-693a-4a2b-8cd3-0fc27376cd99"
+			]
+		},
+		"560b9f69-ca3e-4385-841c-5beb65081425": {
+			"Id": "560b9f69-ca3e-4385-841c-5beb65081425",
+			"Name": "CastleLongShield",
+			"Position": {
+				"X": 19,
+				"Y": 21
+			},
+			"Features": [
+				{
+					"Id": "e8c0e5ab-c71c-4cb9-8743-04a6780b6b2f",
+					"Type": "Farm"
+				},
+				{
+					"Id": "c05ba98d-127d-49b2-a951-f89970e4fe43",
+					"Type": "Castle"
+				},
+				{
+					"Id": "d32485c7-2ef1-42f7-9579-eb2b260d6259",
+					"Type": "Shield"
+				},
+				{
+					"Id": "840e08ec-3a1e-4980-9f6b-ca360640bf6e",
+					"Type": "Farm"
+				}
+			],
+			"EdgeFeatures": [
+				"840e08ec-3a1e-4980-9f6b-ca360640bf6e",
+				"c05ba98d-127d-49b2-a951-f89970e4fe43",
+				"e8c0e5ab-c71c-4cb9-8743-04a6780b6b2f",
+				"c05ba98d-127d-49b2-a951-f89970e4fe43"
+			]
+		},
+		"5634035c-3a0a-443c-8950-2aa1174c41a2": {
+			"Id": "5634035c-3a0a-443c-8950-2aa1174c41a2",
+			"Name": "CastleEndCap",
+			"Position": {
+				"X": 23,
+				"Y": 21
+			},
+			"Features": [
+				{
+					"Id": "daedb82f-e3cb-4c2b-a278-51f76867bbc9",
+					"Type": "Castle"
+				},
+				{
+					"Id": "d9ff5e12-85cd-4aca-97bc-46143d4bff71",
+					"Type": "Farm"
+				}
+			],
+			"EdgeFeatures": [
+				"d9ff5e12-85cd-4aca-97bc-46143d4bff71",
+				"d9ff5e12-85cd-4aca-97bc-46143d4bff71",
+				"daedb82f-e3cb-4c2b-a278-51f76867bbc9",
+				"d9ff5e12-85cd-4aca-97bc-46143d4bff71"
+			]
+		},
+		"5bfc5379-cec6-4209-8dd6-697c88e729a5": {
+			"Id": "5bfc5379-cec6-4209-8dd6-697c88e729a5",
+			"Name": "CastleCornerShield",
+			"Position": {
+				"X": 17,
+				"Y": 22
+			},
+			"Features": [
+				{
+					"Id": "edccd874-df57-41c9-90c7-1f97bde82fb2",
+					"Type": "Castle"
+				},
+				{
+					"Id": "aeeb56d0-118b-466a-a524-c91c5c12362f",
+					"Type": "Farm"
+				},
+				{
+					"Id": "e8cbf417-c2ca-47ee-a852-11cf77b8c600",
+					"Type": "Shield"
+				}
+			],
+			"EdgeFeatures": [
+				"edccd874-df57-41c9-90c7-1f97bde82fb2",
+				"edccd874-df57-41c9-90c7-1f97bde82fb2",
+				"aeeb56d0-118b-466a-a524-c91c5c12362f",
+				"aeeb56d0-118b-466a-a524-c91c5c12362f"
+			]
+		},
+		"6273ab34-5a6a-4988-ae95-abc0345ae8c6": {
+			"Id": "6273ab34-5a6a-4988-ae95-abc0345ae8c6",
+			"Name": "RoadStraight",
+			"Position": {
+				"X": 14,
+				"Y": 27
+			},
+			"Features": [
+				{
+					"Id": "d3353284-29fb-4590-abe0-866c1ed0d7f4",
+					"Type": "Farm"
+				},
+				{
+					"Id": "c2eb8579-668f-408f-aa1e-74879523c484",
+					"Type": "Road"
+				},
+				{
+					"Id": "7c220c50-f691-4f9a-8b42-02adc2eee5c3",
+					"Type": "Farm"
+				}
+			],
+			"EdgeFeatures": [
+				"c2eb8579-668f-408f-aa1e-74879523c484",
+				"d3353284-29fb-4590-abe0-866c1ed0d7f4",
+				"c2eb8579-668f-408f-aa1e-74879523c484",
+				"7c220c50-f691-4f9a-8b42-02adc2eee5c3"
+			]
+		},
+		"6c990ff9-e08b-4146-9d69-a88a0654a0c8": {
+			"Id": "6c990ff9-e08b-4146-9d69-a88a0654a0c8",
+			"Name": "CastleRoadCurveWest",
+			"Position": {
+				"X": 9,
+				"Y": 26
+			},
+			"Features": [
+				{
+					"Id": "9ec2e8b4-8e65-428d-a445-3d911f64052d",
+					"Type": "Castle"
+				},
+				{
+					"Id": "2697b38c-1325-48bb-ab53-686724e2a3c3",
+					"Type": "Farm"
+				},
+				{
+					"Id": "4f0a06e8-bcf2-4242-a1bd-9f130c8abc92",
+					"Type": "Road"
+				},
+				{
+					"Id": "a79adeeb-e776-4876-9b19-c5d42769b483",
+					"Type": "Farm"
+				}
+			],
+			"EdgeFeatures": [
+				"4f0a06e8-bcf2-4242-a1bd-9f130c8abc92",
+				"9ec2e8b4-8e65-428d-a445-3d911f64052d",
+				"2697b38c-1325-48bb-ab53-686724e2a3c3",
+				"4f0a06e8-bcf2-4242-a1bd-9f130c8abc92"
+			]
+		},
+		"6d583ecb-16e8-4e1b-b685-fcfaca6e369d": {
+			"Id": "6d583ecb-16e8-4e1b-b685-fcfaca6e369d",
+			"Name": "DoubleCastleEndCapNorthSouth",
+			"Position": {
+				"X": 13,
+				"Y": 25
+			},
+			"Features": [
+				{
+					"Id": "3f5f6a57-fb32-468b-ac35-14a6d51c079a",
+					"Type": "Castle"
+				},
+				{
+					"Id": "9d359b81-107e-4637-a852-3fb76d595d3f",
+					"Type": "Farm"
+				},
+				{
+					"Id": "265340dd-aa19-4eca-8a0f-f887cfbd026f",
+					"Type": "Castle"
+				}
+			],
+			"EdgeFeatures": [
+				"9d359b81-107e-4637-a852-3fb76d595d3f",
+				"3f5f6a57-fb32-468b-ac35-14a6d51c079a",
+				"9d359b81-107e-4637-a852-3fb76d595d3f",
+				"265340dd-aa19-4eca-8a0f-f887cfbd026f"
+			]
+		},
+		"6edc8b52-3058-40f9-afa9-9e5f0bae9db3": {
+			"Id": "6edc8b52-3058-40f9-afa9-9e5f0bae9db3",
+			"Name": "RoadCurve",
+			"Position": {
+				"X": 11,
+				"Y": 21
+			},
+			"Features": [
+				{
+					"Id": "7a6d613a-24f3-49f2-8186-1ee4c4e53c1e",
+					"Type": "Farm"
+				},
+				{
+					"Id": "4c49fae9-a0f3-4509-8bf8-e6f30f565c08",
+					"Type": "Road"
+				},
+				{
+					"Id": "037745ef-95b0-4aee-828a-3ab21ce8b0e6",
+					"Type": "Farm"
+				}
+			],
+			"EdgeFeatures": [
+				"4c49fae9-a0f3-4509-8bf8-e6f30f565c08",
+				"4c49fae9-a0f3-4509-8bf8-e6f30f565c08",
+				"7a6d613a-24f3-49f2-8186-1ee4c4e53c1e",
+				"7a6d613a-24f3-49f2-8186-1ee4c4e53c1e"
+			]
+		},
+		"6ee4ecaa-4048-4ee4-af89-5cc9e64ddde1": {
+			"Id": "6ee4ecaa-4048-4ee4-af89-5cc9e64ddde1",
+			"Name": "RoadStraight",
+			"Position": {
+				"X": 16,
+				"Y": 22
+			},
+			"Features": [
+				{
+					"Id": "b1e432d3-51dd-4900-be10-0c296ebfe896",
+					"Type": "Farm"
+				},
+				{
+					"Id": "f65e135c-abb0-4951-8540-28e42075ccb4",
+					"Type": "Road"
+				},
+				{
+					"Id": "8735917d-18d5-4bf1-aa46-51c24356baec",
+					"Type": "Farm"
+				}
+			],
+			"EdgeFeatures": [
+				"f65e135c-abb0-4951-8540-28e42075ccb4",
+				"b1e432d3-51dd-4900-be10-0c296ebfe896",
+				"f65e135c-abb0-4951-8540-28e42075ccb4",
+				"8735917d-18d5-4bf1-aa46-51c24356baec"
+			]
+		},
+		"6f1ed2d3-5fe7-4574-a262-99bb9c43ae87": {
+			"Id": "6f1ed2d3-5fe7-4574-a262-99bb9c43ae87",
+			"Name": "RiverRoadCurve",
+			"Position": {
+				"X": 20,
+				"Y": 22
+			},
+			"Features": [
+				{
+					"Id": "24777a2b-3c96-428b-9162-82385d75b9ea",
+					"Type": "Farm"
+				},
+				{
+					"Id": "c1be7408-5dbb-4dda-b93d-6f443eeab82d",
+					"Type": "Road"
+				},
+				{
+					"Id": "ebddb88f-51e3-4b70-9368-182044950091",
+					"Type": "Farm"
+				},
+				{
+					"Id": "319545e9-054d-450e-a0fb-45c1ee859c8b",
+					"Type": "River"
+				},
+				{
+					"Id": "1f76f602-a4e4-4c68-82d7-3fc3e6c35347",
+					"Type": "Farm"
+				}
+			],
+			"EdgeFeatures": [
+				"c1be7408-5dbb-4dda-b93d-6f443eeab82d",
+				"319545e9-054d-450e-a0fb-45c1ee859c8b",
+				"319545e9-054d-450e-a0fb-45c1ee859c8b",
+				"c1be7408-5dbb-4dda-b93d-6f443eeab82d"
+			]
+		},
+		"72e30645-f321-482c-acc9-0a23710cc862": {
+			"Id": "72e30645-f321-482c-acc9-0a23710cc862",
+			"Name": "Cloister",
+			"Position": {
+				"X": 24,
+				"Y": 22
+			},
+			"Features": [
+				{
+					"Id": "7eaebc5e-157a-4642-94eb-99208882fec8",
+					"Type": "Farm"
+				},
+				{
+					"Id": "9fb2e427-d2fb-41e7-98d4-c1e90da480e5",
+					"Type": "Cloister"
+				}
+			],
+			"EdgeFeatures": [
+				"7eaebc5e-157a-4642-94eb-99208882fec8",
+				"7eaebc5e-157a-4642-94eb-99208882fec8",
+				"7eaebc5e-157a-4642-94eb-99208882fec8",
+				"7eaebc5e-157a-4642-94eb-99208882fec8"
+			]
+		},
+		"741d8f70-8dda-4b55-8f5f-a7c12efbf7dc": {
+			"Id": "741d8f70-8dda-4b55-8f5f-a7c12efbf7dc",
+			"Name": "CastleRoadStraight",
+			"Position": {
+				"X": 11,
+				"Y": 28
+			},
+			"Features": [
+				{
+					"Id": "923c6557-6d00-420a-9c09-4b38490202a1",
+					"Type": "Castle"
+				},
+				{
+					"Id": "762d7b89-08d9-40e6-97be-2aa2367c2ae5",
+					"Type": "Farm"
+				},
+				{
+					"Id": "abdb5661-da28-4f5d-8c27-866558ee9f12",
+					"Type": "Road"
+				},
+				{
+					"Id": "cc291de4-52dc-4691-a1b9-697d5faa0a65",
+					"Type": "Farm"
+				}
+			],
+			"EdgeFeatures": [
+				"abdb5661-da28-4f5d-8c27-866558ee9f12",
+				"923c6557-6d00-420a-9c09-4b38490202a1",
+				"abdb5661-da28-4f5d-8c27-866558ee9f12",
+				"cc291de4-52dc-4691-a1b9-697d5faa0a65"
+			]
+		},
+		"7a2e4bd0-8201-4418-8e1e-79c723b8811e": {
+			"Id": "7a2e4bd0-8201-4418-8e1e-79c723b8811e",
+			"Name": "Cloister",
+			"Position": {
+				"X": 10,
+				"Y": 21
+			},
+			"Features": [
+				{
+					"Id": "89ce26ab-e6c9-4c12-92f4-50ecf4ce35ad",
+					"Type": "Farm"
+				},
+				{
+					"Id": "768a64c8-4339-4cf1-813f-8b85d4a94b69",
+					"Type": "Cloister"
+				}
+			],
+			"EdgeFeatures": [
+				"89ce26ab-e6c9-4c12-92f4-50ecf4ce35ad",
+				"89ce26ab-e6c9-4c12-92f4-50ecf4ce35ad",
+				"89ce26ab-e6c9-4c12-92f4-50ecf4ce35ad",
+				"89ce26ab-e6c9-4c12-92f4-50ecf4ce35ad"
+			]
+		},
+		"7d6ed221-c75f-498a-95f8-11a2739e71a8": {
+			"Id": "7d6ed221-c75f-498a-95f8-11a2739e71a8",
+			"Name": "CloisterRoad",
+			"Position": {
+				"X": 21,
+				"Y": 24
+			},
+			"Features": [
+				{
+					"Id": "a403d095-b493-4f32-9a31-02f5edd55a4a",
+					"Type": "Farm"
+				},
+				{
+					"Id": "ce149179-699f-402a-bd48-a7021419c8ad",
+					"Type": "Cloister"
+				},
+				{
+					"Id": "d5538b4f-705f-4b5c-ab98-d3820b88e87a",
+					"Type": "Road"
+				}
+			],
+			"EdgeFeatures": [
+				"a403d095-b493-4f32-9a31-02f5edd55a4a",
+				"a403d095-b493-4f32-9a31-02f5edd55a4a",
+				"d5538b4f-705f-4b5c-ab98-d3820b88e87a",
+				"a403d095-b493-4f32-9a31-02f5edd55a4a"
+			]
+		},
+		"7f3dab2f-99d4-4d49-ac90-c7b97f761f12": {
+			"Id": "7f3dab2f-99d4-4d49-ac90-c7b97f761f12",
+			"Name": "CastleCornerShield",
+			"Position": {
+				"X": 21,
+				"Y": 23
+			},
+			"Features": [
+				{
+					"Id": "d20d0cf6-c29a-47d1-84c1-da1b02c4a32e",
+					"Type": "Castle"
+				},
+				{
+					"Id": "f4a6f351-71d0-4847-bb6f-71521f673748",
+					"Type": "Farm"
+				},
+				{
+					"Id": "de88a8d9-ce9f-45bb-adbe-8159d9234247",
+					"Type": "Shield"
+				}
+			],
+			"EdgeFeatures": [
+				"d20d0cf6-c29a-47d1-84c1-da1b02c4a32e",
+				"d20d0cf6-c29a-47d1-84c1-da1b02c4a32e",
+				"f4a6f351-71d0-4847-bb6f-71521f673748",
+				"f4a6f351-71d0-4847-bb6f-71521f673748"
+			]
+		},
+		"81fb94c3-c416-4852-b27b-542418637a55": {
+			"Id": "81fb94c3-c416-4852-b27b-542418637a55",
+			"Name": "CloisterRiverRoad",
+			"Position": {
+				"X": 18,
+				"Y": 23
+			},
+			"Features": [
+				{
+					"Id": "e26c7951-d1ad-4613-97b8-4b225d903ae5",
+					"Type": "Farm"
+				},
+				{
+					"Id": "66336b8a-81d8-4c27-b0ed-8629a834ac4b",
+					"Type": "Cloister"
+				},
+				{
+					"Id": "cea65796-43ab-4784-8934-f79133f531e8",
+					"Type": "River"
+				},
+				{
+					"Id": "f8849667-5176-4e6e-bc88-acad5beacc9e",
+					"Type": "Road"
+				},
+				{
+					"Id": "224a1feb-620e-4b51-bb1e-d5332eda1ec9",
+					"Type": "River"
+				},
+				{
+					"Id": "f21ace66-38f0-454b-819e-9afbcc4d2eee",
+					"Type": "Farm"
+				},
+				{
+					"Id": "0ee79046-2e07-4bf9-9dfd-414eb9d84a42",
+					"Type": "Farm"
+				}
+			],
+			"EdgeFeatures": [
+				"e26c7951-d1ad-4613-97b8-4b225d903ae5",
+				"224a1feb-620e-4b51-bb1e-d5332eda1ec9",
+				"f8849667-5176-4e6e-bc88-acad5beacc9e",
+				"224a1feb-620e-4b51-bb1e-d5332eda1ec9"
+			]
+		},
+		"853af286-9688-43f3-b718-0c95de558423": {
+			"Id": "853af286-9688-43f3-b718-0c95de558423",
+			"Name": "CastleRoadCurveWest",
+			"Position": {
+				"X": 14,
+				"Y": 25
+			},
+			"Features": [
+				{
+					"Id": "cc0420f6-d5b1-4062-a05a-a8aab583310d",
+					"Type": "Castle"
+				},
+				{
+					"Id": "7b91d0b9-9c69-4ee1-8445-da2f9ab6923a",
+					"Type": "Farm"
+				},
+				{
+					"Id": "987910d0-32c5-4872-8082-7d2ff6f70117",
+					"Type": "Road"
+				},
+				{
+					"Id": "9305b71d-d9ea-4447-b105-8a30f9672d22",
+					"Type": "Farm"
+				}
+			],
+			"EdgeFeatures": [
+				"7b91d0b9-9c69-4ee1-8445-da2f9ab6923a",
+				"987910d0-32c5-4872-8082-7d2ff6f70117",
+				"987910d0-32c5-4872-8082-7d2ff6f70117",
+				"cc0420f6-d5b1-4062-a05a-a8aab583310d"
+			]
+		},
+		"86ba3efa-4207-4534-baa8-a6954b89d26e": {
+			"Id": "86ba3efa-4207-4534-baa8-a6954b89d26e",
+			"Name": "RiverStraight",
+			"Position": {
+				"X": 17,
+				"Y": 23
+			},
+			"Features": [
+				{
+					"Id": "65f0a25b-e41a-4205-916d-50082b851404",
+					"Type": "Farm"
+				},
+				{
+					"Id": "79cee4fa-3752-45fa-8153-9d7ae2dbce42",
+					"Type": "River"
+				},
+				{
+					"Id": "b74df451-d0b9-4336-970d-6c18fe8103e6",
+					"Type": "Farm"
+				}
+			],
+			"EdgeFeatures": [
+				"b74df451-d0b9-4336-970d-6c18fe8103e6",
+				"79cee4fa-3752-45fa-8153-9d7ae2dbce42",
+				"65f0a25b-e41a-4205-916d-50082b851404",
+				"79cee4fa-3752-45fa-8153-9d7ae2dbce42"
+			]
+		},
+		"8c22c443-bd26-40fa-a98d-516f36e887d2": {
+			"Id": "8c22c443-bd26-40fa-a98d-516f36e887d2",
+			"Name": "CastleCorner",
+			"Position": {
+				"X": 11,
+				"Y": 22
+			},
+			"Features": [
+				{
+					"Id": "302ef8cd-dd2f-4b38-a3e5-f6d485ba5266",
+					"Type": "Castle"
+				},
+				{
+					"Id": "c030e3d3-e695-4c20-ad12-4b6df9c43d3b",
+					"Type": "Farm"
+				}
+			],
+			"EdgeFeatures": [
+				"c030e3d3-e695-4c20-ad12-4b6df9c43d3b",
+				"302ef8cd-dd2f-4b38-a3e5-f6d485ba5266",
+				"302ef8cd-dd2f-4b38-a3e5-f6d485ba5266",
+				"c030e3d3-e695-4c20-ad12-4b6df9c43d3b"
+			]
+		},
+		"928d35e0-1fea-4461-8f54-44f414d9505c": {
+			"Id": "928d35e0-1fea-4461-8f54-44f414d9505c",
+			"Name": "Cloister",
+			"Position": {
+				"X": 15,
+				"Y": 22
+			},
+			"Features": [
+				{
+					"Id": "407e6a91-5b8b-45ea-ae6f-50c3f06b7119",
+					"Type": "Farm"
+				},
+				{
+					"Id": "9b476f2f-be7b-47f7-a5e4-4cc847175d22",
+					"Type": "Cloister"
+				}
+			],
+			"EdgeFeatures": [
+				"407e6a91-5b8b-45ea-ae6f-50c3f06b7119",
+				"407e6a91-5b8b-45ea-ae6f-50c3f06b7119",
+				"407e6a91-5b8b-45ea-ae6f-50c3f06b7119",
+				"407e6a91-5b8b-45ea-ae6f-50c3f06b7119"
+			]
+		},
+		"92f9bd85-a647-4ca1-8b46-7bc113bd24d7": {
+			"Id": "92f9bd85-a647-4ca1-8b46-7bc113bd24d7",
+			"Name": "RoadStraight",
+			"Position": {
+				"X": 11,
+				"Y": 26
+			},
+			"Features": [
+				{
+					"Id": "e7613736-411f-4ed6-a781-72a7a1c686e5",
+					"Type": "Farm"
+				},
+				{
+					"Id": "56971d6d-5baf-4736-b8f1-9caf62aa47ad",
+					"Type": "Road"
+				},
+				{
+					"Id": "14a0bd49-d006-4e4e-a871-4f2d97964c63",
+					"Type": "Farm"
+				}
+			],
+			"EdgeFeatures": [
+				"56971d6d-5baf-4736-b8f1-9caf62aa47ad",
+				"14a0bd49-d006-4e4e-a871-4f2d97964c63",
+				"56971d6d-5baf-4736-b8f1-9caf62aa47ad",
+				"e7613736-411f-4ed6-a781-72a7a1c686e5"
+			]
+		},
+		"9603da99-53e1-4534-a3e7-7eeb104c0f33": {
+			"Id": "9603da99-53e1-4534-a3e7-7eeb104c0f33",
+			"Name": "RoadCurve",
+			"Position": {
+				"X": 13,
+				"Y": 28
+			},
+			"Features": [
+				{
+					"Id": "d080fc1c-8302-449f-a9b0-c2ef42e7260d",
+					"Type": "Farm"
+				},
+				{
+					"Id": "a12e3bb1-df54-4d67-b17e-00bd6cdd90fe",
+					"Type": "Road"
+				},
+				{
+					"Id": "6b134d1e-7313-45a6-9cd5-2e312697fb5a",
+					"Type": "Farm"
+				}
+			],
+			"EdgeFeatures": [
+				"a12e3bb1-df54-4d67-b17e-00bd6cdd90fe",
+				"a12e3bb1-df54-4d67-b17e-00bd6cdd90fe",
+				"d080fc1c-8302-449f-a9b0-c2ef42e7260d",
+				"d080fc1c-8302-449f-a9b0-c2ef42e7260d"
+			]
+		},
+		"9e85a998-d077-4f22-8185-aa7d3838a00a": {
+			"Id": "9e85a998-d077-4f22-8185-aa7d3838a00a",
+			"Name": "CloisterRoad",
+			"Position": {
+				"X": 22,
+				"Y": 25
+			},
+			"Features": [
+				{
+					"Id": "f20fc4b0-76f6-4149-8fe7-938231551805",
+					"Type": "Farm"
+				},
+				{
+					"Id": "74bfd084-14cf-4893-b9bb-ec5d99c934be",
+					"Type": "Cloister"
+				},
+				{
+					"Id": "cbcb746f-9cf7-445c-893b-bc317e56a1f4",
+					"Type": "Road"
+				}
+			],
+			"EdgeFeatures": [
+				"f20fc4b0-76f6-4149-8fe7-938231551805",
+				"cbcb746f-9cf7-445c-893b-bc317e56a1f4",
+				"f20fc4b0-76f6-4149-8fe7-938231551805",
+				"f20fc4b0-76f6-4149-8fe7-938231551805"
+			]
+		},
+		"9fb1c3b9-1c37-4195-a9ed-f78373882c63": {
+			"Id": "9fb1c3b9-1c37-4195-a9ed-f78373882c63",
+			"Name": "RiverCurve",
+			"Position": {
+				"X": 15,
+				"Y": 23
+			},
+			"Features": [
+				{
+					"Id": "d8c5efd3-8246-431c-a979-480fe4c46c52",
+					"Type": "Farm"
+				},
+				{
+					"Id": "30532fa2-c6c0-4c03-8aee-240160d1cdbd",
+					"Type": "River"
+				},
+				{
+					"Id": "392b2aff-3fb1-4ed3-9967-230a31b52a49",
+					"Type": "Farm"
+				}
+			],
+			"EdgeFeatures": [
+				"d8c5efd3-8246-431c-a979-480fe4c46c52",
+				"30532fa2-c6c0-4c03-8aee-240160d1cdbd",
+				"30532fa2-c6c0-4c03-8aee-240160d1cdbd",
+				"d8c5efd3-8246-431c-a979-480fe4c46c52"
+			]
+		},
+		"a302b606-96e8-40d8-8207-29009c7a2662": {
+			"Id": "a302b606-96e8-40d8-8207-29009c7a2662",
+			"Name": "CastleRoadCurveWest",
+			"Position": {
+				"X": 8,
+				"Y": 26
+			},
+			"Features": [
+				{
+					"Id": "e12bac02-0d1a-49b2-a236-e282dba129d5",
+					"Type": "Castle"
+				},
+				{
+					"Id": "cbc9fca8-a817-4f86-ac13-f12b3037f6eb",
+					"Type": "Farm"
+				},
+				{
+					"Id": "0acecbff-a5b6-4465-8617-6040d83cfdb3",
+					"Type": "Road"
+				},
+				{
+					"Id": "112a65fb-c3c8-4ae4-8a73-eb23fadc8da3",
+					"Type": "Farm"
+				}
+			],
+			"EdgeFeatures": [
+				"cbc9fca8-a817-4f86-ac13-f12b3037f6eb",
+				"0acecbff-a5b6-4465-8617-6040d83cfdb3",
+				"0acecbff-a5b6-4465-8617-6040d83cfdb3",
+				"e12bac02-0d1a-49b2-a236-e282dba129d5"
+			]
+		},
+		"b22e652c-a70e-4674-a762-15da2c12ef5f": {
+			"Id": "b22e652c-a70e-4674-a762-15da2c12ef5f",
+			"Name": "RoadCurve",
+			"Position": {
+				"X": 14,
+				"Y": 23
+			},
+			"Features": [
+				{
+					"Id": "56529c1b-3250-447b-aea4-cc6cbbd8c607",
+					"Type": "Farm"
+				},
+				{
+					"Id": "17d6ae2b-912e-4ac9-9c58-660aead5c05d",
+					"Type": "Road"
+				},
+				{
+					"Id": "ce493230-9758-4337-99ed-88df070c59e3",
+					"Type": "Farm"
+				}
+			],
+			"EdgeFeatures": [
+				"17d6ae2b-912e-4ac9-9c58-660aead5c05d",
+				"56529c1b-3250-447b-aea4-cc6cbbd8c607",
+				"56529c1b-3250-447b-aea4-cc6cbbd8c607",
+				"17d6ae2b-912e-4ac9-9c58-660aead5c05d"
+			]
+		},
+		"b2709ea8-76ed-4b05-a192-2ae13cb95236": {
+			"Id": "b2709ea8-76ed-4b05-a192-2ae13cb95236",
+			"Name": "RiverCurve",
+			"Position": {
+				"X": 20,
+				"Y": 23
+			},
+			"Features": [
+				{
+					"Id": "d9673780-3391-47bb-aefd-2895ff827a6b",
+					"Type": "Farm"
+				},
+				{
+					"Id": "890632a9-e610-4002-9052-ed526beb126e",
+					"Type": "River"
+				},
+				{
+					"Id": "2f4a73c4-d5c9-48b6-9d01-e9bef01e8efb",
+					"Type": "Farm"
+				}
+			],
+			"EdgeFeatures": [
+				"890632a9-e610-4002-9052-ed526beb126e",
+				"d9673780-3391-47bb-aefd-2895ff827a6b",
+				"d9673780-3391-47bb-aefd-2895ff827a6b",
+				"890632a9-e610-4002-9052-ed526beb126e"
+			]
+		},
+		"b759a930-74aa-499c-930b-893185167b88": {
+			"Id": "b759a930-74aa-499c-930b-893185167b88",
+			"Name": "CastleCornerRoadCurve",
+			"Position": {
+				"X": 7,
+				"Y": 26
+			},
+			"Features": [
+				{
+					"Id": "7471bd98-fcbe-4090-b9bf-ee7484cd8785",
+					"Type": "Castle"
+				},
+				{
+					"Id": "af4002b9-a5ff-406f-803f-d107949680c2",
+					"Type": "Farm"
+				},
+				{
+					"Id": "c6a3e1d6-c817-4f84-a4b3-25e80d7e2a09",
+					"Type": "Road"
+				},
+				{
+					"Id": "7e3da5bb-44bd-45e3-9d48-5b8a8b3f3496",
+					"Type": "Farm"
+				}
+			],
+			"EdgeFeatures": [
+				"7471bd98-fcbe-4090-b9bf-ee7484cd8785",
+				"7471bd98-fcbe-4090-b9bf-ee7484cd8785",
+				"c6a3e1d6-c817-4f84-a4b3-25e80d7e2a09",
+				"c6a3e1d6-c817-4f84-a4b3-25e80d7e2a09"
+			]
+		},
+		"b777d58f-4988-4a04-914d-a0691f1c4757": {
+			"Id": "b777d58f-4988-4a04-914d-a0691f1c4757",
+			"Name": "RiverTerminus",
+			"Position": {
+				"X": 13,
+				"Y": 24
+			},
+			"Features": [
+				{
+					"Id": "9d538ab0-56b8-402f-8cca-3d15726effec",
+					"Type": "Farm"
+				},
+				{
+					"Id": "7388b3fb-d5fc-4c14-b2cc-cb643513e3f4",
+					"Type": "Shield"
+				},
+				{
+					"Id": "bf20e732-aead-4fc5-889c-0c7d3affbc9b",
+					"Type": "River"
+				},
+				{
+					"Id": "8e89eaf5-dcd3-4dde-a565-fc839a24a961",
+					"Type": "Shield"
+				}
+			],
+			"EdgeFeatures": [
+				"9d538ab0-56b8-402f-8cca-3d15726effec",
+				"bf20e732-aead-4fc5-889c-0c7d3affbc9b",
+				"9d538ab0-56b8-402f-8cca-3d15726effec",
+				"9d538ab0-56b8-402f-8cca-3d15726effec"
+			]
+		},
+		"b91fbc6d-b2f6-4550-a8e9-2bd025aa0855": {
+			"Id": "b91fbc6d-b2f6-4550-a8e9-2bd025aa0855",
+			"Name": "CastleDoubleEndCapNorthEast",
+			"Position": {
+				"X": 10,
+				"Y": 26
+			},
+			"Features": [
+				{
+					"Id": "be116277-630e-45a5-9096-5decf116d9e3",
+					"Type": "Castle"
+				},
+				{
+					"Id": "5a447471-5a8d-4b79-836a-f28babfb09e8",
+					"Type": "Farm"
+				},
+				{
+					"Id": "827d0804-65eb-4310-9793-995c91e4c68a",
+					"Type": "Castle"
+				}
+			],
+			"EdgeFeatures": [
+				"5a447471-5a8d-4b79-836a-f28babfb09e8",
+				"5a447471-5a8d-4b79-836a-f28babfb09e8",
+				"be116277-630e-45a5-9096-5decf116d9e3",
+				"827d0804-65eb-4310-9793-995c91e4c68a"
+			]
+		},
+		"ba7b4984-b6d3-4fae-aa6c-c0de54161aad": {
+			"Id": "ba7b4984-b6d3-4fae-aa6c-c0de54161aad",
+			"Name": "CastleRoadStraight",
+			"Position": {
+				"X": 21,
+				"Y": 26
+			},
+			"Features": [
+				{
+					"Id": "9bab4401-cb8f-4b13-a13e-b6aad1b92949",
+					"Type": "Castle"
+				},
+				{
+					"Id": "ffb4e0f8-6e36-41a5-b986-f3219e066df2",
+					"Type": "Farm"
+				},
+				{
+					"Id": "d5d9cb45-d264-4319-9d29-70c229867b8a",
+					"Type": "Road"
+				},
+				{
+					"Id": "cf958e28-04f0-4c93-8e77-9f55165220e7",
+					"Type": "Farm"
+				}
+			],
+			"EdgeFeatures": [
+				"d5d9cb45-d264-4319-9d29-70c229867b8a",
+				"9bab4401-cb8f-4b13-a13e-b6aad1b92949",
+				"d5d9cb45-d264-4319-9d29-70c229867b8a",
+				"cf958e28-04f0-4c93-8e77-9f55165220e7"
+			]
+		},
+		"c0024f7b-7ad3-4dc0-b46b-58a7de561faa": {
+			"Id": "c0024f7b-7ad3-4dc0-b46b-58a7de561faa",
+			"Name": "CastleCornerRoadCurveShield",
+			"Position": {
+				"X": 18,
+				"Y": 19
+			},
+			"Features": [
+				{
+					"Id": "a6ddf8a2-f065-408a-ab4e-6ad528d6625d",
+					"Type": "Castle"
+				},
+				{
+					"Id": "c8f76737-0b16-430d-90f6-a07882bd375b",
+					"Type": "Farm"
+				},
+				{
+					"Id": "e436b25c-aa83-4fd1-bcdb-e233ccf44cce",
+					"Type": "Shield"
+				},
+				{
+					"Id": "b9918f19-61cd-4112-803d-5fa95fe739d2",
+					"Type": "Road"
+				},
+				{
+					"Id": "1ad5a93a-34ed-49e6-b140-5c04ed9403f0",
+					"Type": "Farm"
+				}
+			],
+			"EdgeFeatures": [
+				"a6ddf8a2-f065-408a-ab4e-6ad528d6625d",
+				"b9918f19-61cd-4112-803d-5fa95fe739d2",
+				"b9918f19-61cd-4112-803d-5fa95fe739d2",
+				"a6ddf8a2-f065-408a-ab4e-6ad528d6625d"
+			]
+		},
+		"c111a831-2a70-4d7b-83f0-6def2160882e": {
+			"Id": "c111a831-2a70-4d7b-83f0-6def2160882e",
+			"Name": "DoubleCastleEndCapNorthSouth",
+			"Position": {
+				"X": 12,
+				"Y": 24
+			},
+			"Features": [
+				{
+					"Id": "98b4a529-8470-4db1-9bec-68b78155c3b8",
+					"Type": "Castle"
+				},
+				{
+					"Id": "91795525-8925-42e5-a5ee-92d6c1bfb21c",
+					"Type": "Farm"
+				},
+				{
+					"Id": "e4fb9e0b-65e4-467d-b7c4-cd185fa71d68",
+					"Type": "Castle"
+				}
+			],
+			"EdgeFeatures": [
+				"98b4a529-8470-4db1-9bec-68b78155c3b8",
+				"91795525-8925-42e5-a5ee-92d6c1bfb21c",
+				"e4fb9e0b-65e4-467d-b7c4-cd185fa71d68",
+				"91795525-8925-42e5-a5ee-92d6c1bfb21c"
+			]
+		},
+		"c34e009c-6830-4df3-81ca-e27119fb2b17": {
+			"Id": "c34e009c-6830-4df3-81ca-e27119fb2b17",
+			"Name": "RoadTerminal4",
+			"Position": {
+				"X": 23,
+				"Y": 25
+			},
+			"Features": [
+				{
+					"Id": "78fcdd68-717a-4c9c-9a54-c81d7578ae51",
+					"Type": "Farm"
+				},
+				{
+					"Id": "9fc8c728-b066-4630-aa2b-31b26f198621",
+					"Type": "Road"
+				},
+				{
+					"Id": "7dea3620-2a8c-4759-89df-3657a301e15b",
+					"Type": "Farm"
+				},
+				{
+					"Id": "39aac419-d98e-45a0-899b-352ed222f47a",
+					"Type": "Farm"
+				},
+				{
+					"Id": "ad3ab149-5503-4efb-a7fb-4d021d2cba2a",
+					"Type": "Farm"
+				}
+			],
+			"EdgeFeatures": [
+				"9fc8c728-b066-4630-aa2b-31b26f198621",
+				"9fc8c728-b066-4630-aa2b-31b26f198621",
+				"9fc8c728-b066-4630-aa2b-31b26f198621",
+				"9fc8c728-b066-4630-aa2b-31b26f198621"
+			]
+		},
+		"ce2fda8a-9e72-40ca-844e-a178fb06d55e": {
+			"Id": "ce2fda8a-9e72-40ca-844e-a178fb06d55e",
+			"Name": "RoadCurve",
+			"Position": {
+				"X": 9,
+				"Y": 25
+			},
+			"Features": [
+				{
+					"Id": "371024b7-d12e-44ef-94fd-110773923acd",
+					"Type": "Farm"
+				},
+				{
+					"Id": "7254938d-a866-4938-9975-9478da6e6180",
+					"Type": "Road"
+				},
+				{
+					"Id": "618f8c8e-1b0b-4882-94f0-948a53c23510",
+					"Type": "Farm"
+				}
+			],
+			"EdgeFeatures": [
+				"371024b7-d12e-44ef-94fd-110773923acd",
+				"7254938d-a866-4938-9975-9478da6e6180",
+				"7254938d-a866-4938-9975-9478da6e6180",
+				"371024b7-d12e-44ef-94fd-110773923acd"
+			]
+		},
+		"d057aa0a-d7c2-4fe4-9c6d-d2adecf3decb": {
+			"Id": "d057aa0a-d7c2-4fe4-9c6d-d2adecf3decb",
+			"Name": "CastleCorner",
+			"Position": {
+				"X": 12,
+				"Y": 22
+			},
+			"Features": [
+				{
+					"Id": "30f5ac59-d52f-4a4c-8694-0744f98eb6df",
+					"Type": "Castle"
+				},
+				{
+					"Id": "e82f3593-d0d5-4458-a7d0-190dacfcf230",
+					"Type": "Farm"
+				}
+			],
+			"EdgeFeatures": [
+				"30f5ac59-d52f-4a4c-8694-0744f98eb6df",
+				"e82f3593-d0d5-4458-a7d0-190dacfcf230",
+				"e82f3593-d0d5-4458-a7d0-190dacfcf230",
+				"30f5ac59-d52f-4a4c-8694-0744f98eb6df"
+			]
+		},
+		"d2e24e07-0509-4c80-9714-2a74310f05af": {
+			"Id": "d2e24e07-0509-4c80-9714-2a74310f05af",
+			"Name": "DoubleCastleRiver",
+			"Position": {
+				"X": 21,
+				"Y": 22
+			},
+			"Features": [
+				{
+					"Id": "de81627f-47d8-468d-bf1e-6098521cde46",
+					"Type": "Castle"
+				},
+				{
+					"Id": "16f8c775-e55f-436a-8597-4961fb2abc3e",
+					"Type": "Farm"
+				},
+				{
+					"Id": "d6ff4211-5cb2-4db8-a055-ae05ae2ca944",
+					"Type": "River"
+				},
+				{
+					"Id": "2d72bdf9-584f-4af3-88d5-b2edcacbfc7a",
+					"Type": "Farm"
+				},
+				{
+					"Id": "7720dc90-9c5a-469a-8467-8a26dd380fb7",
+					"Type": "Castle"
+				}
+			],
+			"EdgeFeatures": [
+				"7720dc90-9c5a-469a-8467-8a26dd380fb7",
+				"d6ff4211-5cb2-4db8-a055-ae05ae2ca944",
+				"de81627f-47d8-468d-bf1e-6098521cde46",
+				"d6ff4211-5cb2-4db8-a055-ae05ae2ca944"
+			]
+		},
+		"deb5b9fa-1770-49c5-8752-baf2e1332477": {
+			"Id": "deb5b9fa-1770-49c5-8752-baf2e1332477",
+			"Name": "CornerCastleRiver",
+			"Position": {
+				"X": 15,
+				"Y": 24
+			},
+			"Features": [
+				{
+					"Id": "ec0868ae-c4e8-4c76-b8ed-c3807d00442c",
+					"Type": "Castle"
+				},
+				{
+					"Id": "6b79edda-b48d-4447-9242-f3f313eeb4da",
+					"Type": "Farm"
+				},
+				{
+					"Id": "cdae5c35-ab0c-4313-aa2e-a7374e11fc78",
+					"Type": "River"
+				},
+				{
+					"Id": "6625ad2a-d26a-458d-b0b7-1e1484cdf094",
+					"Type": "Farm"
+				}
+			],
+			"EdgeFeatures": [
+				"cdae5c35-ab0c-4313-aa2e-a7374e11fc78",
+				"ec0868ae-c4e8-4c76-b8ed-c3807d00442c",
+				"ec0868ae-c4e8-4c76-b8ed-c3807d00442c",
+				"cdae5c35-ab0c-4313-aa2e-a7374e11fc78"
+			]
+		},
+		"e9714641-a3ba-4d98-bda9-868c05db6d62": {
+			"Id": "e9714641-a3ba-4d98-bda9-868c05db6d62",
+			"Name": "RiverStraight",
+			"Position": {
+				"X": 14,
+				"Y": 24
+			},
+			"Features": [
+				{
+					"Id": "c52c6ee3-b526-4aa4-a0db-9d6e58562bad",
+					"Type": "Farm"
+				},
+				{
+					"Id": "17600a24-18c4-49af-b40d-c9015e559fa0",
+					"Type": "River"
+				},
+				{
+					"Id": "a674480c-88ff-4026-953c-33ee2d7ed814",
+					"Type": "Farm"
+				}
+			],
+			"EdgeFeatures": [
+				"a674480c-88ff-4026-953c-33ee2d7ed814",
+				"17600a24-18c4-49af-b40d-c9015e559fa0",
+				"c52c6ee3-b526-4aa4-a0db-9d6e58562bad",
+				"17600a24-18c4-49af-b40d-c9015e559fa0"
+			]
+		},
+		"ed632872-e111-40e3-aeb5-6eb9c13c5db3": {
+			"Id": "ed632872-e111-40e3-aeb5-6eb9c13c5db3",
+			"Name": "CastleLongShield",
+			"Position": {
+				"X": 23,
+				"Y": 22
+			},
+			"Features": [
+				{
+					"Id": "b8ef42fd-f9b8-475e-9c46-019ef053f7cb",
+					"Type": "Farm"
+				},
+				{
+					"Id": "be894313-ed4e-4623-8480-f527c47bbf7b",
+					"Type": "Castle"
+				},
+				{
+					"Id": "301bd6bf-1451-4bd3-8182-32f17ac31b53",
+					"Type": "Shield"
+				},
+				{
+					"Id": "b37835c0-115e-45a6-9c55-36c64c8849f5",
+					"Type": "Farm"
+				}
+			],
+			"EdgeFeatures": [
+				"be894313-ed4e-4623-8480-f527c47bbf7b",
+				"b37835c0-115e-45a6-9c55-36c64c8849f5",
+				"be894313-ed4e-4623-8480-f527c47bbf7b",
+				"b8ef42fd-f9b8-475e-9c46-019ef053f7cb"
+			]
+		},
+		"f0080068-a61d-4c44-9e70-c2397bd2676b": {
+			"Id": "f0080068-a61d-4c44-9e70-c2397bd2676b",
+			"Name": "RoadCurve",
+			"Position": {
+				"X": 19,
+				"Y": 24
+			},
+			"Features": [
+				{
+					"Id": "5f2b65e4-62c6-49c4-a167-f97d1d030166",
+					"Type": "Farm"
+				},
+				{
+					"Id": "de101fed-855f-405a-bb98-d3ff6ed5a303",
+					"Type": "Road"
+				},
+				{
+					"Id": "20abc4bb-6ae7-41aa-b699-db927b790991",
+					"Type": "Farm"
+				}
+			],
+			"EdgeFeatures": [
+				"de101fed-855f-405a-bb98-d3ff6ed5a303",
+				"de101fed-855f-405a-bb98-d3ff6ed5a303",
+				"5f2b65e4-62c6-49c4-a167-f97d1d030166",
+				"5f2b65e4-62c6-49c4-a167-f97d1d030166"
+			]
+		},
+		"f6f119b8-f516-48ab-bef3-6a021571f244": {
+			"Id": "f6f119b8-f516-48ab-bef3-6a021571f244",
+			"Name": "RiverRoad",
+			"Position": {
+				"X": 19,
+				"Y": 23
+			},
+			"Features": [
+				{
+					"Id": "1a8964c5-7d52-4cf6-805d-ba41ca4c1d60",
+					"Type": "Farm"
+				},
+				{
+					"Id": "d8d1cd97-8e34-40f3-8440-9e8b67748bdd",
+					"Type": "Road"
+				},
+				{
+					"Id": "0c5a9b90-bf45-4879-8ba5-40b5b1492231",
+					"Type": "Farm"
+				},
+				{
+					"Id": "f30dfe8e-4911-4796-a5ce-327582793054",
+					"Type": "River"
+				},
+				{
+					"Id": "542ed950-946f-49ec-9e1d-2dc8f266e3a3",
+					"Type": "River"
+				},
+				{
+					"Id": "74cb4060-7ad8-47e9-af8f-bd3d2e6113ad",
+					"Type": "Farm"
+				},
+				{
+					"Id": "f3074282-6178-47bd-bebd-5c48cef8cdd6",
+					"Type": "Farm"
+				}
+			],
+			"EdgeFeatures": [
+				"d8d1cd97-8e34-40f3-8440-9e8b67748bdd",
+				"542ed950-946f-49ec-9e1d-2dc8f266e3a3",
+				"d8d1cd97-8e34-40f3-8440-9e8b67748bdd",
+				"542ed950-946f-49ec-9e1d-2dc8f266e3a3"
+			]
+		}
+	}
+}

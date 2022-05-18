@@ -45,12 +45,19 @@ func (sim *Simulator) Update() error {
 		}
 	}
 
-	if ebiten.IsMouseButtonPressed(ebiten.MouseButtonRight) {
+	if !rMouseDown && ebiten.IsMouseButtonPressed(ebiten.MouseButtonRight) {
+		tileCount := sim.Engine.GameBoard.PlacedTileCount
 
-		sim.Engine.InitGame()
-		steps := (sim.Engine.RiverDeck.Remaining() + sim.Engine.Deck.Remaining()) * 5
+		steps := 1 //(sim.Engine.RiverDeck.Remaining() + sim.Engine.Deck.Remaining()) * 5
 		for i := 0; i < steps; i++ {
 			sim.Engine.Step()
+
+			//a tile was added this step, we need to redraw
+			if tileCount != sim.Engine.GameBoard.PlacedTileCount {
+				sim.drawData.redrawBoard = true
+				sim.Engine.ExportEngineState()
+			}
+
 		}
 
 		rMouseDown = true

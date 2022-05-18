@@ -10,6 +10,7 @@ import (
 	"sort"
 
 	"github.com/disintegration/imaging"
+	"github.com/google/uuid"
 )
 
 type DeckInfo struct {
@@ -48,6 +49,12 @@ func (gd *GameData) loadDeckInfo(deckFilePath string) {
 		}
 	}
 
+	for _, tileName := range gd.TileNames {
+		if _, exists := di.Deck[tileName]; !exists {
+			panic(fmt.Sprint("Mismapped Deck/Bitmap Name ", tileName))
+		}
+	}
+
 	gd.DeckInfo = di
 }
 
@@ -58,7 +65,7 @@ func (gd *GameData) loadBitmaps(bitmapDirectory string) {
 	gd.Bitmaps = bitmapLoader.bitmaps
 	gd.TileNames = bitmapLoader.Keys()
 
-	sort.Slice(gd.TileNames, func(i, j int) bool {
+	sort.SliceStable(gd.TileNames, func(i, j int) bool {
 		return gd.TileNames[i] < gd.TileNames[j]
 	})
 }
@@ -204,6 +211,7 @@ func (gd *GameData) buildMatrix(img image.Image) (*matrix.Matrix[*tile.Feature],
 	segmentCallback := func(img image.Image, p image.Point, idx int) bool {
 		featureColor = img.At(p.X, p.Y)
 		feature = &tile.Feature{}
+		feature.Id = uuid.New()
 
 		fillOrthoganallyOnly = true
 

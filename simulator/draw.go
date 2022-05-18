@@ -36,6 +36,8 @@ type DrawData struct {
 	boardScale   float64
 	uiScale      float64
 	cameraOffset util.Point[int]
+
+	redrawBoard bool
 }
 
 func (sim *Simulator) initDraw() {
@@ -57,12 +59,17 @@ func (sim *Simulator) initDraw() {
 	sim.drawData.darkTileBackImage = loadImage("./simulator/images/tile_back_dark.bmp")
 	sim.drawData.lightTileBackImage = loadImage("./simulator/images/tile_back_light.bmp")
 
+	sim.drawData.redrawBoard = true
 }
 
 func (sim *Simulator) Draw(screen *ebiten.Image) {
 	screen.Fill(colornames.Grey200)
 
-	sim.drawBoard()
+	if sim.drawData.redrawBoard {
+		sim.drawBoard()
+		sim.drawData.redrawBoard = false
+	}
+
 	sim.drawPossibleTilePlacements()
 
 	op := ebiten.DrawImageOptions{}

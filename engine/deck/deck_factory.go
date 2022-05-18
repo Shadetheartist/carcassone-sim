@@ -8,7 +8,10 @@ import (
 func BuildRiverDeck(gameData *data.GameData) *Deck {
 	riverTiles := make([]*tile.ReferenceTileGroup, 0)
 
-	for _, referenceTileGroup := range gameData.ReferenceTileGroups {
+	for _, tileName := range gameData.TileNames {
+
+		referenceTileGroup := gameData.ReferenceTileGroups[tileName]
+
 		if referenceTileGroup.IsRiverTerminus() {
 			continue
 		}
@@ -41,7 +44,10 @@ func BuildRiverDeck(gameData *data.GameData) *Deck {
 func BuildDeck(gameData *data.GameData) *Deck {
 	nonRiverTiles := make([]*tile.ReferenceTileGroup, 0)
 
-	for _, referenceTileGroup := range gameData.ReferenceTileGroups {
+	for _, tileName := range gameData.TileNames {
+
+		referenceTileGroup := gameData.ReferenceTileGroups[tileName]
+
 		if !referenceTileGroup.IsRiverTile() {
 			nonRiverTiles = append(nonRiverTiles, referenceTileGroup)
 		}
