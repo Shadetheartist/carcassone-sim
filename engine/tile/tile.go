@@ -26,13 +26,13 @@ type ReferenceTile struct {
 }
 
 type Tile struct {
-	Id            uuid.UUID
-	Position      util.Point[int]
-	Reference     *ReferenceTile
-	FeatureMatrix *matrix.Matrix[*Feature]
-	Features      []*Feature
-	EdgeFeatures  *EdgeArray[*Feature]
-	Neighbours    *EdgeArray[*Tile]
+	Id               uuid.UUID
+	Position         util.Point[int]
+	Reference        *ReferenceTile
+	Features         []*Feature
+	EdgeFeatures     *EdgeArray[*Feature]
+	Neighbours       *EdgeArray[*Tile]
+	ParentFeatureMap map[*Feature]*Feature
 }
 
 func (rtg *ReferenceTileGroup) IsRiverTile() bool {

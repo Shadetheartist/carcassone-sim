@@ -1,8 +1,6 @@
 package tile
 
 import (
-	"beeb/carcassonne/matrix"
-
 	"github.com/google/uuid"
 )
 
@@ -28,12 +26,11 @@ func (f *TileFactory) NewTileFromReference(rt *ReferenceTile) *Tile {
 // this way, the new tile can modify and reference them as unique memory
 // and not affect every tile built from this reference tile
 func (f *TileFactory) rebuildFeaturesFromReference(t *Tile, rt *ReferenceTile) {
-	t.FeatureMatrix = matrix.NewMatrix[*Feature](rt.FeatureMatrix.Size())
 	t.Features = make([]*Feature, len(rt.Features))
 	t.EdgeFeatures = &EdgeArray[*Feature]{}
 
 	// mapping original features to new features for easy lookup & replacement later
-	featureMap := make(map[*Feature]*Feature)
+	t.ParentFeatureMap = make(map[*Feature]*Feature)
 
 	for i, f := range rt.Features {
 		newFeature := &Feature{
@@ -43,20 +40,15 @@ func (f *TileFactory) rebuildFeaturesFromReference(t *Tile, rt *ReferenceTile) {
 			Type:              f.Type,
 		}
 
-		featureMap[f] = newFeature
+		t.ParentFeatureMap[f] = newFeature
 
 		t.Features[i] = newFeature
 	}
 
 	//use feature map to easily remap edge features
 	for i, f := range rt.EdgeFeatures {
-		t.EdgeFeatures[i] = featureMap[f]
+		t.EdgeFeatures[i] = t.ParentFeatureMap[f]
 	}
-
-	//use feature map to easily remap feature matrix
-	rt.FeatureMatrix.Iterate(func(rt *Feature, x int, y int, idx int) {
-		t.FeatureMatrix.Set(x, y, featureMap[rt])
-	})
 
 	t.Neighbours = &EdgeArray[*Tile]{}
 
