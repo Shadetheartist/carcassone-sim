@@ -64,7 +64,11 @@ func (b *Board) PlaceTile(pos util.Point[int], t *tile.Tile) {
 
 			//add position to map
 			b.OpenPositions[edgePos] = b.createOpenPositonSignature(edgePos)
-		}
+		} // else {
+		// 	dir := directions.Direction(d)
+		// 	complimentDirection := directions.Compliment[dir]
+
+		// }
 	}
 
 	//remove position from list

@@ -22,6 +22,7 @@ type ReferenceTile struct {
 	Image         image.Image
 	EdgeFeatures  *EdgeArray[*Feature]
 	EdgeSignature *EdgeSignature
+	AvgFeaturePos map[*Feature]util.Point[float64]
 }
 
 type Tile struct {

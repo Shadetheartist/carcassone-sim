@@ -4,6 +4,7 @@ import (
 	"beeb/carcassonne/engine/tile"
 	"beeb/carcassonne/imageHelpers"
 	"beeb/carcassonne/matrix"
+	"beeb/carcassonne/util"
 	"fmt"
 	"image"
 	"image/color"
@@ -112,8 +113,12 @@ func (gd *GameData) compileReferenceTiles() {
 	}
 
 	for _, tileName := range gd.TileNames {
+		rtg := gd.ReferenceTileGroups[tileName]
+
+		compileAvgFeaturePositions(rtg)
+
 		for i := 0; i < 4; i++ {
-			rt := gd.ReferenceTileGroups[tileName].Orientations[i]
+			rt := rtg.Orientations[i]
 			rt.EdgeFeatures = determineEdgeFeatures(rt.FeatureMatrix)
 			rt.EdgeSignature = compileEdgeSignature(rt.EdgeFeatures)
 
@@ -121,8 +126,42 @@ func (gd *GameData) compileReferenceTiles() {
 				f.ParentRefenceTile = rt
 			}
 		}
+
 	}
 
+}
+
+func compileAvgFeaturePositions(rtg *tile.ReferenceTileGroup) {
+	for _, rt := range rtg.Orientations {
+		rt.AvgFeaturePos = make(map[*tile.Feature]util.Point[float64])
+		for _, f := range rt.Features {
+			rt.AvgFeaturePos[f] = avgFeaturePos(f, rt.FeatureMatrix)
+		}
+	}
+}
+
+func avgFeaturePos(f *tile.Feature, m *matrix.Matrix[*tile.Feature]) util.Point[float64] {
+	var totalX int
+	var totalY int
+	var n float64
+
+	m.Iterate(func(mf *tile.Feature, x int, y int, idx int) {
+		if mf == f {
+			totalX += x
+			totalY += y
+			n++
+		}
+	})
+
+	//no dividing by zero!
+	if n == 0 {
+		return util.Point[float64]{X: -1, Y: -1}
+	}
+
+	avgX := float64(totalX) / n
+	avgY := float64(totalY) / n
+
+	return util.Point[float64]{X: avgX, Y: avgY}
 }
 
 func compileEdgeSignature(edgeFeatures *tile.EdgeArray[*tile.Feature]) *tile.EdgeSignature {

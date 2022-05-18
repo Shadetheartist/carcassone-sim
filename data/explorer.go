@@ -31,6 +31,8 @@ type GameDataExplorer struct {
 	tilesImage           *ebiten.Image
 	overlayImage         *ebiten.Image
 	overlayCtx           *gg.Context
+	hdOverlayImage       *ebiten.Image
+	hdOverlayCtx         *gg.Context
 }
 
 func newGameDataExplorer(gameData *GameData) *GameDataExplorer {
@@ -48,6 +50,7 @@ func newGameDataExplorer(gameData *GameData) *GameDataExplorer {
 	gde.setupTileImages()
 	gde.setupTilesImage()
 	gde.setupOverlayImage()
+	gde.setupHDOverlayImage()
 
 	return &gde
 }
@@ -121,6 +124,13 @@ func (gde *GameDataExplorer) setupOverlayImage() {
 	gde.overlayCtx = gg.NewContext(rtImageRect.Dx()/int(gde.tileScale), rtImageRect.Dy()/int(gde.tileScale))
 }
 
+func (gde *GameDataExplorer) setupHDOverlayImage() {
+	rowMargin := 20
+	rtImageRect := image.Rect(0, 0, 4*8*int(gde.tileScale), len(gde.gameData.ReferenceTileGroups)*rowMargin*int(gde.tileScale))
+	gde.hdOverlayImage = ebiten.NewImage(rtImageRect.Dx(), rtImageRect.Dy())
+	gde.hdOverlayCtx = gg.NewContext(rtImageRect.Dx(), rtImageRect.Dy())
+}
+
 func (gde *GameDataExplorer) setupFont() {
 	const dpi = 72
 
@@ -157,15 +167,19 @@ func (gde *GameDataExplorer) drawFeatures() {
 	gde.overlayCtx.SetColor(color.Transparent)
 	gde.overlayCtx.Clear()
 
-	gde.overlayCtx.SetColor(colornames.Red300)
+	gde.hdOverlayCtx.SetColor(color.Transparent)
+	gde.hdOverlayCtx.Clear()
 
 	for _, tileName := range gde.gameData.TileNames {
+
 		rtg := gde.gameData.ReferenceTileGroups[tileName]
 		for i := 0; i < 4; i++ {
 			rt := rtg.Orientations[i]
 			pos := gde.tilePositions[rt]
 
 			for _, f := range rt.Features {
+
+				gde.overlayCtx.SetColor(colornames.Red300)
 				if f == gde.selectedFeature {
 					rt.FeatureMatrix.Iterate(func(f *tile.Feature, x int, y int, idx int) {
 						if f == gde.selectedFeature {
@@ -174,7 +188,15 @@ func (gde *GameDataExplorer) drawFeatures() {
 					})
 					break
 				}
+
+				fPos := rt.AvgFeaturePos[f]
+				gde.hdOverlayCtx.SetColor(colornames.Black)
+				gde.hdOverlayCtx.SetPixel(
+					int((float64(pos.X)+fPos.X)*gde.tileScale)+int(gde.tileScale)/2-1,
+					int((float64(pos.Y)+fPos.Y)*gde.tileScale)+int(gde.tileScale)/2-1,
+				)
 			}
+
 		}
 
 		row++
@@ -187,6 +209,12 @@ func (gde *GameDataExplorer) drawFeatures() {
 	op.GeoM.Scale(float64(gde.tileScale), float64(gde.tileScale))
 
 	gde.overlayImage.DrawImage(ebiImg, &op)
+
+	hdGGImg := gde.hdOverlayCtx.Image()
+	hdEBIImg := ebiten.NewImageFromImage(hdGGImg)
+
+	opHD := ebiten.DrawImageOptions{}
+	gde.hdOverlayImage.DrawImage(hdEBIImg, &opHD)
 }
 
 func (gde *GameDataExplorer) Draw(screen *ebiten.Image) {
@@ -204,6 +232,7 @@ func (gde *GameDataExplorer) Draw(screen *ebiten.Image) {
 
 	screen.DrawImage(gde.tilesImage, &op)
 	screen.DrawImage(gde.overlayImage, &op)
+	screen.DrawImage(gde.hdOverlayImage, &op)
 
 	tx, ty := gde.tilePixelSpace(gde.cursorPosition.X, gde.cursorPosition.Y)
 	text.Draw(
@@ -304,8 +333,9 @@ func (gde *GameDataExplorer) Layout(outsideWidth, outsideHeight int) (int, int) 
 
 func (gd *GameData) Explore() {
 	ebiten.SetWindowSize(1200, 900)
-	ebiten.SetWindowTitle("Carcassonne Simulator")
+	ebiten.SetWindowTitle("Carcassonne Data Explorer")
 	ebiten.SetScreenClearedEveryFrame(false)
+	ebiten.SetMaxTPS(ebiten.SyncWithFPS)
 
 	explorer := newGameDataExplorer(gd)
 
