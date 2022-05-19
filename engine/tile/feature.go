@@ -29,11 +29,12 @@ func (ft FeatureType) String() string {
 }
 
 type Feature struct {
-	Id                uuid.UUID
-	Type              FeatureType
-	ParentTile        *Tile
-	ParentRefenceTile *ReferenceTile
-	Links             map[*Feature]*Feature
+	Id                     uuid.UUID
+	Type                   FeatureType
+	ParentTile             *Tile
+	ParentRefenceTileGroup *ReferenceTileGroup
+	ParentFeature          *Feature
+	Links                  map[*Feature]*Feature
 }
 
 func (f *Feature) String() string {

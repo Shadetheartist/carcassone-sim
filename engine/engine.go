@@ -214,7 +214,7 @@ func (e *Engine) restictRiverPlacement() ([]Placement, error) {
 			//dont let the river turn the same way twice
 			//if the new tile is curving, keep track of which way it was oriented
 			//the next curved tile must be oriented 180 deg different from this tile
-			if cf.FeatureA.ParentRefenceTile.EdgeSignature.Curving() {
+			if cf.FeatureA.ParentRefenceTileGroup.Orientations[0].EdgeSignature.Curving() {
 
 				//this is the first curve of the river, it can go either way
 				if lastRiverTurn == 1 {

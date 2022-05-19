@@ -2,6 +2,7 @@ package simulator
 
 import (
 	"beeb/carcassonne/engine/deck"
+	"beeb/carcassonne/engine/tile"
 	"beeb/carcassonne/util"
 	"fmt"
 	"image/color"
@@ -10,13 +11,14 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/examples/resources/fonts"
 	"github.com/hajimehoshi/ebiten/v2/text"
+	"github.com/hajimehoshi/ebiten/v2/vector"
 	"golang.org/x/exp/shiny/materialdesign/colornames"
 	"golang.org/x/image/bmp"
 	"golang.org/x/image/font"
 	"golang.org/x/image/font/opentype"
 )
 
-const TILE_SIZE int = 7
+const TILE_SIZE int = 8
 
 type DrawData struct {
 	font font.Face
@@ -49,7 +51,7 @@ func (sim *Simulator) initDraw() {
 	sim.drawData.scale = 2
 	sim.drawData.uiScale = 4
 	sim.drawData.boardScale = 1
-	sim.drawData.hdScale = 4
+	sim.drawData.hdScale = 8
 	sim.drawData.cameraOffset = util.Point[int]{}
 
 	boardPxSize := sim.Engine.GameBoard.TileMatrix.Size() * TILE_SIZE
@@ -176,30 +178,61 @@ func (sim *Simulator) drawBoard() {
 }
 
 func (sim *Simulator) drawOverlay() {
-	sim.drawData.overlayImg.Clear()
+	var path vector.Path
+
+	drawnFeatures := make(map[*tile.Feature]*tile.Feature)
 
 	boardSize := sim.Engine.GameBoard.TileMatrix.Size()
-	op := &ebiten.DrawRectShaderOptions{}
 	s := float64(sim.drawData.hdScale)
-
+	var m float32 = 2
 	for y := 0; y < boardSize; y++ {
 		for x := 0; x < boardSize; x++ {
-			tile := sim.Engine.GameBoard.TileMatrix.Get(x, y)
-			tx, ty := float64(x*TILE_SIZE)*s+1, float64(y*TILE_SIZE)*s+1
-			op.GeoM.Translate(tx, ty)
+			t := sim.Engine.GameBoard.TileMatrix.Get(x, y)
+			tx, ty := float32(float64(x*TILE_SIZE)*s), float32(float64(y*TILE_SIZE)*s)
 
-			if tile != nil {
-				for _, rf := range tile.Reference.Features {
-					avgPos := tile.Reference.AvgFeaturePos[rf]
-					op.GeoM.Translate(avgPos.X*s, avgPos.Y*s)
-					sim.drawData.overlayImg.DrawRectShader(1, 1, sim.drawData.blackShader, op)
-					op.GeoM.Translate(-avgPos.X*s, -avgPos.Y*s)
+			if t != nil {
+				for _, rf := range t.Reference.Features {
+
+					tileFeature := t.ReferenceFeatureMap[rf]
+					avgPos := t.Reference.AvgFeaturePos[rf]
+					aX := tx + float32(avgPos.X*s)
+					aY := ty + float32(avgPos.Y*s)
+					path.MoveTo(aX, aY)
+
+					for _, lf := range tileFeature.Links {
+
+						//dont redraw
+						if _, exists := drawnFeatures[lf]; exists {
+							continue
+						}
+
+						lfRefTile := lf.ParentTile.Reference
+						lfAvgPos := lfRefTile.AvgFeaturePos[lf.ParentFeature]
+
+						lfPos := lf.ParentTile.Position
+						lfTx, lfTy := float32(float64(lfPos.X*TILE_SIZE)*s), float32(float64(lfPos.Y*TILE_SIZE)*s)
+						lfaX := lfTx + float32(lfAvgPos.X*s)
+						lfaY := lfTy + float32(lfAvgPos.Y*s)
+						path.LineTo(lfaX-m, lfaY-m)
+						path.LineTo(lfaX+m, lfaY+m)
+						path.LineTo(aX+m, aY+m)
+						path.LineTo(aX-m, aY-m)
+						path.MoveTo(aX, aY)
+					}
+
+					drawnFeatures[tileFeature] = tileFeature
 				}
 			}
-
-			op.GeoM.Translate(-tx, -ty)
 		}
 	}
+
+	op := &ebiten.DrawTrianglesShaderOptions{
+		FillRule: ebiten.EvenOdd,
+	}
+
+	vs, is := path.AppendVerticesAndIndicesForFilling(nil, nil)
+
+	sim.drawData.overlayImg.DrawTrianglesShader(vs, is, sim.drawData.blackShader, op)
 }
 
 func (sim *Simulator) drawPossibleTilePlacements() {

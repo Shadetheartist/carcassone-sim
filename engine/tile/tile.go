@@ -11,6 +11,7 @@ import (
 
 type ReferenceTileGroup struct {
 	Name         string
+	Features     []*Feature
 	Orientations []*ReferenceTile
 }
 
@@ -26,12 +27,13 @@ type ReferenceTile struct {
 }
 
 type Tile struct {
-	Id                  uuid.UUID
-	Position            util.Point[int]
-	Reference           *ReferenceTile
-	Features            []*Feature
-	EdgeFeatures        *EdgeArray[*Feature]
-	Neighbours          *EdgeArray[*Tile]
+	Id           uuid.UUID
+	Position     util.Point[int]
+	Reference    *ReferenceTile
+	Features     []*Feature
+	EdgeFeatures *EdgeArray[*Feature]
+	Neighbours   *EdgeArray[*Tile]
+	//this one points from the reference tile feature to this tiles' feature
 	ReferenceFeatureMap map[*Feature]*Feature
 }
 

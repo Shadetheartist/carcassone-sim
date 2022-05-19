@@ -297,7 +297,8 @@ func (gde *GameDataExplorer) Update() error {
 		if f != nil && f != gde.selectedFeature {
 			gde.selectedFeature = f
 			gde.redrawFeatures = true
-			fmt.Printf("%s %s %p\n", gde.selectedFeature.ParentRefenceTile.Name, gde.selectedFeature.Type, gde.selectedFeature)
+
+			fmt.Printf("%s %s %p\n", gde.selectedFeature.ParentRefenceTileGroup.Name, gde.selectedFeature.Type, gde.selectedFeature)
 		}
 	}
 

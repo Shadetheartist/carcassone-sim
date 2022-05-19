@@ -121,12 +121,12 @@ func (gd *GameData) compileReferenceTiles() {
 			rt := rtg.Orientations[i]
 			rt.EdgeFeatures = determineEdgeFeatures(rt.FeatureMatrix)
 			rt.EdgeSignature = compileEdgeSignature(rt.EdgeFeatures)
-
-			for _, f := range rt.Features {
-				f.ParentRefenceTile = rt
-			}
 		}
 
+		rtg.Features = rtg.Orientations[0].Features
+		for _, f := range rtg.Features {
+			f.ParentRefenceTileGroup = rtg
+		}
 	}
 
 }
@@ -182,10 +182,6 @@ func (gd *GameData) compileTile(tileName string) tile.ReferenceTile {
 	rt.Name = tileName
 
 	rt.FeatureMatrix, rt.Features = gd.buildMatrix(img)
-
-	for _, f := range rt.Features {
-		f.ParentRefenceTile = &rt
-	}
 
 	return rt
 }

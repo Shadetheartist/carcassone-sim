@@ -34,10 +34,10 @@ func (f *TileFactory) rebuildFeaturesFromReference(t *Tile, rt *ReferenceTile) {
 
 	for i, f := range rt.Features {
 		newFeature := &Feature{
-			Id:                uuid.New(),
-			ParentTile:        t,
-			ParentRefenceTile: rt,
-			Type:              f.Type,
+			Id:            uuid.New(),
+			ParentTile:    t,
+			ParentFeature: f,
+			Type:          f.Type,
 		}
 
 		newFeature.Links = make(map[*Feature]*Feature)
