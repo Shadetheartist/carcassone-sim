@@ -11,7 +11,13 @@ type Point[T numeric] struct {
 	Y T
 }
 
-func (pt Point[T]) OrthogonalNeighbours() {
+func (p Point[T]) OrthogonalNeighbours() [4]Point[T] {
+	return [4]Point[T]{
+		p.North(),
+		p.South(),
+		p.East(),
+		p.West(),
+	}
 }
 
 func (p Point[T]) North() Point[T] {

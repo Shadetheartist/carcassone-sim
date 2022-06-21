@@ -5,6 +5,7 @@ import (
 	"beeb/carcassonne/util"
 	"beeb/carcassonne/util/directions"
 	"math/rand"
+	"sync"
 )
 
 type Connection struct {
@@ -20,48 +21,100 @@ type Placement struct {
 	ConnectedFeatures []Connection
 }
 
-func (e *Engine) PossibleTilePlacements(rtg *tile.ReferenceTileGroup) []Placement {
+type TilePlacementManager struct {
+	engine       *Engine
+	agents       []*TilePlacementAgent
+	outputBuffer []Placement
+}
 
-	if e.GameBoard.PlacedTileCount < 1 {
-		return e.defaultPlacements(rtg)
+func NewTilePlacementManager(e *Engine) *TilePlacementManager {
+
+	tpm := &TilePlacementManager{}
+	tpm.engine = e
+
+	agentCount := 1
+
+	tpm.outputBuffer = make([]Placement, 0, 128)
+
+	tpm.agents = make([]*TilePlacementAgent, agentCount)
+
+	for i := 0; i < agentCount; i++ {
+		tpm.agents[i] = NewTilePlacementAgent(e)
 	}
 
-	e.placementBuffer = e.placementBuffer[:0]
+	return tpm
+}
+
+func (tpm *TilePlacementManager) PossibleTilePlacements(rtg *tile.ReferenceTileGroup) []Placement {
+
+	if tpm.engine.GameBoard.PlacedTileCount < 1 {
+		return tpm.defaultPlacements(rtg)
+	}
+
+	return tpm.agents[0].PossibleTilePlacements(nil, rtg, tpm.engine.GameBoard.OpenPositionsList)
+}
+
+type TilePlacementAgent struct {
+	engine            *Engine
+	placementBuffer   []Placement
+	orientationBuffer []*tile.ReferenceTile
+	connectionsBuffer []Connection
+}
+
+func NewTilePlacementAgent(e *Engine) *TilePlacementAgent {
+	tpa := &TilePlacementAgent{}
+
+	tpa.engine = e
+	tpa.orientationBuffer = make([]*tile.ReferenceTile, 4)
+	tpa.placementBuffer = make([]Placement, 0, 128)
+	tpa.connectionsBuffer = make([]Connection, 0, 128)
+
+	return tpa
+}
+
+func (tpa *TilePlacementAgent) PossibleTilePlacements(wg *sync.WaitGroup, rtg *tile.ReferenceTileGroup, openPositionsList []util.Point[int]) []Placement {
+	if wg != nil {
+		defer wg.Done()
+	}
+
+	tpa.placementBuffer = tpa.placementBuffer[:0]
 
 	//all connections will share this one buffer, they will be sub-slices
-	e.connectionsBuffer = e.connectionsBuffer[:0]
+	tpa.connectionsBuffer = tpa.connectionsBuffer[:0]
 
 	lastConnectionLen := 0
 
-	for _, openPos := range e.GameBoard.OpenPositionsList {
+	for _, openPos := range openPositionsList {
 
 		//this will fill the connection buffer
-		e.getPlaceableOrientations(openPos, rtg)
+		tpa.getPlaceableOrientations(openPos, rtg)
 
-		for _, rt := range e.orientationBuffer {
+		for _, rt := range tpa.orientationBuffer {
 			if rt != nil {
-				e.placementBuffer = append(e.placementBuffer, Placement{
+				tpa.placementBuffer = append(tpa.placementBuffer, Placement{
 					Position:          openPos,
 					ReferenceTile:     rt,
-					ConnectedFeatures: e.connectionsBuffer[lastConnectionLen:len(e.connectionsBuffer)],
+					ConnectedFeatures: tpa.connectionsBuffer[lastConnectionLen:len(tpa.connectionsBuffer)],
 				})
 			}
 		}
 
-		lastConnectionLen = len(e.connectionsBuffer)
+		lastConnectionLen = len(tpa.connectionsBuffer)
 	}
 
-	return e.placementBuffer
+	return tpa.placementBuffer
 }
 
-func (e *Engine) getPlaceableOrientations(openPosKey util.Point[int], rtg *tile.ReferenceTileGroup) {
+func (tpa *TilePlacementAgent) getPlaceableOrientations(openPosKey util.Point[int], rtg *tile.ReferenceTileGroup) {
+	e := tpa.engine
+
 	openPositionEdgeSignature := e.GameBoard.OpenPositions[openPosKey]
 
 	for i := 0; i < 4; i++ {
 		rt := rtg.Orientations[i]
 		tileEdgeSignature := rt.EdgeSignature
 		if tileEdgeSignature.Compatible(openPositionEdgeSignature) {
-			e.orientationBuffer[i] = rt
+			tpa.orientationBuffer[i] = rt
 
 			for edge, feature := range rt.EdgeFeatures {
 				edgeDir := directions.Direction(edge)
@@ -75,7 +128,7 @@ func (e *Engine) getPlaceableOrientations(openPosKey util.Point[int], rtg *tile.
 				complimentDir := directions.Compliment[edgeDir]
 
 				if otherTile != nil {
-					e.connectionsBuffer = append(e.connectionsBuffer, Connection{
+					tpa.connectionsBuffer = append(tpa.connectionsBuffer, Connection{
 						FeatureA: feature,
 						EdgeA:    edgeDir,
 						FeatureB: otherTile.EdgeFeatures[complimentDir],
@@ -84,12 +137,13 @@ func (e *Engine) getPlaceableOrientations(openPosKey util.Point[int], rtg *tile.
 				}
 			}
 		} else {
-			e.orientationBuffer[i] = nil
+			tpa.orientationBuffer[i] = nil
 		}
 	}
 }
 
-func (e *Engine) defaultPlacements(rtg *tile.ReferenceTileGroup) []Placement {
+func (tpm *TilePlacementManager) defaultPlacements(rtg *tile.ReferenceTileGroup) []Placement {
+	e := tpm.engine
 	placements := make([]Placement, 0, len(e.GameBoard.OpenPositions))
 
 	middle := e.GameBoard.TileMatrix.Size() / 2
@@ -116,15 +170,4 @@ func RandomPlacement(placements []Placement) *Placement {
 
 	randN := rand.Int() % len(placements)
 	return &placements[randN]
-}
-
-//eek!
-
-type Evaluation struct {
-	Score  int
-	Meeple int
-}
-
-func EvaluatePlacement(placement Placement) Evaluation {
-	return Evaluation{}
 }

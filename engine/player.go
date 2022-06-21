@@ -2,6 +2,7 @@ package engine
 
 import (
 	"image/color"
+	"math/rand"
 
 	"github.com/google/uuid"
 )
@@ -34,4 +35,27 @@ func NewPlayer(name string, color color.Color) *Player {
 	}
 
 	return player
+}
+
+func (p *Player) DeterminePlacement(options []Placement, e *Engine) *Placement {
+	if len(options) == 0 {
+		return nil
+	}
+
+	//for _, pl := range options {
+	//	p.EvaluatePlacement(pl, e)
+	//}
+
+	randN := rand.Int() % len(options)
+	return &options[randN]
+}
+
+type Evaluation struct {
+	Score  int
+	Meeple int
+}
+
+func (p *Player) EvaluatePlacement(placement Placement, e *Engine) Evaluation {
+
+	return Evaluation{}
 }

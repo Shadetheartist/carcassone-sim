@@ -7,36 +7,33 @@ import (
 )
 
 type Deck struct {
-	Index int
 	Tiles []*tile.ReferenceTileGroup
 }
 
 func (d *Deck) Scry() (*tile.ReferenceTileGroup, error) {
 
-	if d.Index >= len(d.Tiles) {
+	if len(d.Tiles) < 1 {
 		return nil, errors.New("Deck is Empty")
 	}
 
-	tile := d.Tiles[d.Index]
-
-	return tile, nil
+	return d.Tiles[0], nil
 }
 
 func (d *Deck) Pop() (*tile.ReferenceTileGroup, error) {
 
-	if d.Index >= len(d.Tiles) {
+	if len(d.Tiles) < 1 {
 		return nil, errors.New("Deck is Empty")
 	}
 
-	tile := d.Tiles[d.Index]
+	tile := d.Tiles[0]
 
-	d.Index++
+	d.Tiles = d.Tiles[1:]
 
 	return tile, nil
 }
 
 func (d *Deck) Remaining() int {
-	return len(d.Tiles) - d.Index
+	return len(d.Tiles)
 }
 
 func (d *Deck) Shuffle() {

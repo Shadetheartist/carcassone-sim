@@ -65,6 +65,11 @@ func (sim *Simulator) Update() error {
 
 		rMouseDown = true
 	} else {
+		//for holding down
+		rMouseDown = false
+	}
+
+	if !ebiten.IsMouseButtonPressed(ebiten.MouseButtonRight) {
 		rMouseDown = false
 	}
 

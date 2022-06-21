@@ -39,10 +39,9 @@ type Engine struct {
 	RiverDeck *deck.Deck
 	Deck      *deck.Deck
 
-	TileFactory       *tile.TileFactory
-	placementBuffer   []Placement
-	orientationBuffer []*tile.ReferenceTile
-	connectionsBuffer []Connection
+	TileFactory *tile.TileFactory
+
+	TilePlacementManager *TilePlacementManager
 }
 
 func NewEngine(gameData *data.GameData, boardSize int, numPlayers int) *Engine {
@@ -56,9 +55,7 @@ func NewEngine(gameData *data.GameData, boardSize int, numPlayers int) *Engine {
 	engine.GameData = gameData
 	engine.Players = make([]*Player, numPlayers)
 	engine.TileFactory = &tile.TileFactory{}
-	engine.placementBuffer = make([]Placement, 0, 128)
-	engine.orientationBuffer = make([]*tile.ReferenceTile, 4)
-	engine.connectionsBuffer = make([]Connection, 0, 128)
+	engine.TilePlacementManager = NewTilePlacementManager(engine)
 
 	engine.InitGame()
 
@@ -89,33 +86,51 @@ func (e *Engine) Step() {
 		return
 	}
 
+	player := e.CurrentPlayer()
+
 	switch e.TurnStage {
 	case turnStage.Draw:
 
-		rtg, tileTakeErr := e.TakeNextTile()
+		//retry getting possible tiles a few times if we don't have a place to put one
+		for i := 0; i < 3; i++ {
+			rtg, tileTakeErr := e.TakeNextTile()
 
-		if tileTakeErr != nil {
-			panic("Attempted to take a tile from an empty deck.")
+			if tileTakeErr != nil {
+				panic("Attempted to take a tile from an empty deck.")
+			}
+
+			e.HeldRefTileGroup = rtg
+
+			e.CurrentPossibleTilePlacements = e.TilePlacementManager.PossibleTilePlacements(rtg)
+
+			if e.GameBoard.PlacedTileCount > 0 && (e.RiverDeck.Remaining() > 0 || rtg.IsRiverTile()) {
+				e.CurrentPossibleTilePlacements, _ = e.restictRiverPlacement()
+			}
+
+			//this clause shuffles a tile back in when it is not playable
+
+			// this should never happen to the river
+			if len(e.CurrentPossibleTilePlacements) < 1 {
+				//replace tile
+				e.Deck.Append(e.HeldRefTileGroup)
+				e.Deck.Shuffle()
+				continue
+			}
+
+			break
 		}
-
-		e.HeldRefTileGroup = rtg
-		e.CurrentPossibleTilePlacements = e.PossibleTilePlacements(rtg)
-
-		if e.GameBoard.PlacedTileCount > 0 && (e.RiverDeck.Remaining() > 0 || rtg.IsRiverTile()) {
-			e.CurrentPossibleTilePlacements, _ = e.restictRiverPlacement()
-		}
-
-		//here would be a 'shuffle tile into deck when not playable' clause
 
 		e.TurnStage++
 
 	case turnStage.PlaceTile:
-		randomPlacement := RandomPlacement(e.CurrentPossibleTilePlacements)
-		if randomPlacement == nil {
-			return
+		selectedPlacement := player.DeterminePlacement(e.CurrentPossibleTilePlacements, e)
+
+		if selectedPlacement == nil {
+			e.CurrentPossibleTilePlacements = e.TilePlacementManager.PossibleTilePlacements(e.HeldRefTileGroup)
+			panic("No Placement Determined By Player")
 		}
 
-		e.PlaceTile(*randomPlacement)
+		e.PlaceTile(*selectedPlacement)
 		e.CurrentPossibleTilePlacements = nil
 		e.HeldRefTileGroup = nil
 		e.TurnStage++
@@ -147,7 +162,12 @@ func (e *Engine) PlaceTile(placement Placement) {
 		if newTile.Reference.EdgeSignature.Curving() {
 			lastRiverTurn = newTile.Reference.Orientation
 		}
+	} else {
+		if e.TurnCounter != 0 && e.TurnCounter%3 == 0 {
+			//e.GameBoard.RemoveTileAt(placement.Position)
+		}
 	}
+
 }
 
 func (e *Engine) TakeNextTile() (*tile.ReferenceTileGroup, error) {
@@ -235,4 +255,8 @@ func (e *Engine) restictRiverPlacement() ([]Placement, error) {
 	}
 
 	return permittedPlacements, nil
+}
+
+func (e *Engine) CurrentPlayer() *Player {
+	return e.Players[e.CurrentPlayerIndex]
 }

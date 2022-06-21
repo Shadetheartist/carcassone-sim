@@ -14,7 +14,7 @@ func (f *TileFactory) NewTileFromReference(rt *ReferenceTile) *Tile {
 	}
 
 	tile := &Tile{}
-	tile.Id = uuid.New()
+	tile.Id = uuid.Nil
 	tile.Reference = rt
 
 	f.rebuildFeaturesFromReference(tile, rt)
@@ -34,7 +34,7 @@ func (f *TileFactory) rebuildFeaturesFromReference(t *Tile, rt *ReferenceTile) {
 
 	for i, f := range rt.Features {
 		newFeature := &Feature{
-			Id:            uuid.New(),
+			Id:            uuid.Nil,
 			ParentTile:    t,
 			ParentFeature: f,
 			Type:          f.Type,

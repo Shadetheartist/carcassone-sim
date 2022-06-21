@@ -5,7 +5,9 @@ import (
 	"beeb/carcassonne/matrix"
 	"beeb/carcassonne/util"
 	"beeb/carcassonne/util/directions"
+	"fmt"
 	"image"
+	"time"
 )
 
 type Board struct {
@@ -27,28 +29,108 @@ func NewBoard(size int) *Board {
 	return board
 }
 
+func (b *Board) RemoveTileAt(pos util.Point[int]) {
+	tStart := time.Now()
+
+	t := b.TileMatrix.Get(pos.X, pos.Y)
+
+	//no tile had yet been placed there
+	if t == nil {
+		return
+	}
+
+	// clear out neighbour relationships
+	for i := 0; i < 4; i++ {
+		dir := directions.Direction(i)
+		complimentDir := directions.Compliment[dir]
+		if tl := t.Neighbours[dir]; tl != nil {
+			tl.Neighbours[complimentDir] = nil
+		}
+		t.Neighbours[dir] = nil
+	}
+
+	//remove the tile from the matrix
+	b.TileMatrix.Set(pos.X, pos.Y, nil)
+
+	// add back the vacant position
+	b.OpenPositionsList = append(b.OpenPositionsList, pos)
+	b.OpenPositions[pos] = b.createOpenPositonSignature(pos)
+
+	b.PlacedTileCount--
+	t.Position = util.Point[int]{}
+
+	// remove the vacancies created by this tile, if any,
+	// by looking at the positions around the tile we removed,
+	// if any have no real neighbours, we must remove them, as they are floating
+	hasNeighbours := false
+	for _, pn := range pos.OrthogonalNeighbours() {
+
+		// look though the adjacent tile's neighbours,
+		// if any are set, that open position can remain open
+		for _, p2 := range pn.OrthogonalNeighbours() {
+			matrixTile, err := b.TileMatrix.GetPt(p2)
+
+			if err != nil {
+				continue
+			}
+
+			if matrixTile != nil {
+				hasNeighbours = true
+				break
+			}
+		}
+
+		// if the position has no real neigbours, it must be removed
+		if !hasNeighbours {
+			//remove position from list
+			for i, p := range b.OpenPositionsList {
+				if p != pn {
+					continue
+				}
+				b.OpenPositionsList[i] = b.OpenPositionsList[len(b.OpenPositionsList)-1]
+				b.OpenPositionsList = b.OpenPositionsList[:len(b.OpenPositionsList)-1]
+				break
+			}
+
+			//remove position from map
+			delete(b.OpenPositions, pn)
+		}
+	}
+
+	//clear out all feature links
+	for _, f := range t.Features {
+		for l := range f.Links {
+			delete(l.Links, f)
+			delete(f.Links, l)
+		}
+	}
+
+	fmt.Println("t us:", time.Since(tStart).Microseconds())
+}
+
+func (b *Board) linkNeighbours(t *tile.Tile) {
+	//link neighbours
+	for i := 0; i < 4; i++ {
+		dir := directions.Direction(i)
+		complimentDir := directions.Compliment[dir]
+
+		pt := t.Position.EdgePos(dir)
+
+		if tl, err := b.TileMatrix.GetPt(pt); err == nil {
+			t.Neighbours[dir] = tl
+			if tl != nil {
+				tl.Neighbours[complimentDir] = t
+			}
+		}
+	}
+}
+
 func (b *Board) PlaceTile(pos util.Point[int], t *tile.Tile) {
 	b.TileMatrix.Set(pos.X, pos.Y, t)
 	b.PlacedTileCount++
-
 	t.Position = pos
 
-	//setup neighbours
-	if tl, err := b.TileMatrix.GetPt(pos.North()); err == nil {
-		t.Neighbours.SetNorth(tl)
-	}
-
-	if tl, err := b.TileMatrix.GetPt(pos.East()); err == nil {
-		t.Neighbours.SetEast(tl)
-	}
-
-	if tl, err := b.TileMatrix.GetPt(pos.South()); err == nil {
-		t.Neighbours.SetSouth(tl)
-	}
-
-	if tl, err := b.TileMatrix.GetPt(pos.West()); err == nil {
-		t.Neighbours.SetWest(tl)
-	}
+	b.linkNeighbours(t)
 
 	for d, n := range t.Neighbours {
 		//if neighbour is not there add it as an open position
@@ -116,7 +198,8 @@ func (b *Board) PlaceTile(pos util.Point[int], t *tile.Tile) {
 			continue
 		}
 
-		b.OpenPositionsList = append(b.OpenPositionsList[:i], b.OpenPositionsList[i+1:]...)
+		b.OpenPositionsList[i] = b.OpenPositionsList[len(b.OpenPositionsList)-1]
+		b.OpenPositionsList = b.OpenPositionsList[:len(b.OpenPositionsList)-1]
 		break
 	}
 

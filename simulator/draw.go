@@ -227,7 +227,7 @@ func (sim *Simulator) drawOverlay() {
 	}
 
 	op := &ebiten.DrawTrianglesShaderOptions{
-		FillRule: ebiten.EvenOdd,
+		FillRule: ebiten.FillAll,
 	}
 
 	vs, is := path.AppendVerticesAndIndicesForFilling(nil, nil)
