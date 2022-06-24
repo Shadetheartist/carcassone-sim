@@ -42,6 +42,9 @@ type Engine struct {
 	TileFactory *tile.TileFactory
 
 	TilePlacementManager *TilePlacementManager
+
+	lastRiverTurn int
+	lastRiverTile *tile.Tile
 }
 
 func NewEngine(gameData *data.GameData, boardSize int, numPlayers int) *Engine {
@@ -78,9 +81,8 @@ func (e *Engine) InitGame() {
 	e.CurrentPossibleTilePlacements = nil
 	e.CurrentPlayerIndex = 0
 	e.TurnStage = turnStage.Draw
-
-	lastRiverTurn = 1
-	lastRiverTile = nil
+	e.lastRiverTurn = 1
+	e.lastRiverTile = nil
 }
 
 func (e *Engine) Step() {
@@ -95,15 +97,14 @@ func (e *Engine) Step() {
 	case turnStage.Draw:
 
 		//retry getting possible tiles a few times if we don't have a place to put one
-		for i := 0; i < 4; i++ {
-			if i == 4 {
-				panic("Game cannot continue, nowhere to place tile, tried 3 times.")
-			}
+		for i := 0; i < 3; i++ {
 
 			rtg, tileTakeErr := e.TakeNextTile()
 
 			if tileTakeErr != nil {
-				panic("Attempted to take a tile from an empty deck.")
+				//attempted to take a tile from an empty deck, so end the game
+				e.EndGame()
+				return
 			}
 
 			e.HeldRefTileGroup = rtg
@@ -125,6 +126,13 @@ func (e *Engine) Step() {
 			}
 
 			break
+		}
+
+		if len(e.CurrentPossibleTilePlacements) < 1 {
+			//"nowhere to place tile, tried 3 times, just remove tile completely" (take and do not place)
+			e.TakeNextTile()
+
+			return
 		}
 
 		e.TurnStage++
@@ -165,10 +173,10 @@ func (e *Engine) PlaceTile(placement Placement) {
 	e.GameBoard.PlaceTile(placement.Position, newTile)
 
 	if newTile.Reference.EdgeSignature.Contains(tile.River) {
-		lastRiverTile = newTile
+		e.lastRiverTile = newTile
 
 		if newTile.Reference.EdgeSignature.Curving() {
-			lastRiverTurn = newTile.Reference.Orientation
+			e.lastRiverTurn = newTile.Reference.Orientation
 		}
 	}
 
@@ -209,9 +217,6 @@ func (e *Engine) EndGame() {
 	e.GameOver = true
 }
 
-var lastRiverTurn = 1
-var lastRiverTile *tile.Tile = nil
-
 func (e *Engine) restictRiverPlacement() ([]Placement, error) {
 
 	permittedPlacements := make([]Placement, 0)
@@ -226,7 +231,7 @@ func (e *Engine) restictRiverPlacement() ([]Placement, error) {
 			connectedTilePos := placement.Position.EdgePos(dir)
 
 			//must be connected to the last tile placed
-			if connectedTilePos != lastRiverTile.Position {
+			if connectedTilePos != e.lastRiverTile.Position {
 				continue
 			}
 
@@ -241,13 +246,13 @@ func (e *Engine) restictRiverPlacement() ([]Placement, error) {
 			if cf.FeatureA.ParentRefenceTileGroup.Orientations[0].EdgeSignature.Curving() {
 
 				//this is the first curve of the river, it can go either way
-				if lastRiverTurn == 1 {
+				if e.lastRiverTurn == 1 {
 					permittedPlacements = append(permittedPlacements, placement)
 					continue
 				}
 
 				//next piece must be 180 degrees out of phase with the last
-				nextCurveOrientation := (lastRiverTurn + 180) % 360
+				nextCurveOrientation := (e.lastRiverTurn + 180) % 360
 
 				if placement.ReferenceTile.Orientation != nextCurveOrientation {
 					continue

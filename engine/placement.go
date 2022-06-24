@@ -66,8 +66,8 @@ func NewTilePlacementAgent(e *Engine) *TilePlacementAgent {
 
 	tpa.engine = e
 	tpa.orientationBuffer = make([]*tile.ReferenceTile, 4)
-	tpa.placementBuffer = make([]Placement, 0, 128)
-	tpa.connectionsBuffer = make([]Connection, 0, 128)
+	tpa.placementBuffer = make([]Placement, 0, 256)
+	tpa.connectionsBuffer = make([]Connection, 0, 256)
 
 	return tpa
 }

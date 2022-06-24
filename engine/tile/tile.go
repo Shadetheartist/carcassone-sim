@@ -44,3 +44,13 @@ func (rtg *ReferenceTileGroup) IsRiverTile() bool {
 func (rtg *ReferenceTileGroup) IsRiverTerminus() bool {
 	return rtg.Name == "RiverTerminus"
 }
+
+func (t *Tile) HasFeature(f *Feature) bool {
+	for _, tf := range t.Features {
+		if tf == f {
+			return true
+		}
+	}
+
+	return false
+}

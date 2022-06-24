@@ -30,7 +30,7 @@ func NewBoard(size int) *Board {
 
 func (b *Board) OpenPositionsList() []util.Point[int] {
 	b.openPositionsList = b.openPositionsList[:0]
-	for k, _ := range b.OpenPositions {
+	for k := range b.OpenPositions {
 		b.openPositionsList = append(b.openPositionsList, k)
 	}
 
