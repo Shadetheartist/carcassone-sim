@@ -18,7 +18,7 @@ import (
 	"golang.org/x/image/font/opentype"
 )
 
-const TILE_SIZE int = 8
+const TILE_SIZE int = 7
 
 type DrawData struct {
 	font font.Face
@@ -43,7 +43,8 @@ type DrawData struct {
 
 	redrawBoard bool
 
-	blackShader *ebiten.Shader
+	blackShader          *ebiten.Shader
+	transparentRedShader *ebiten.Shader
 }
 
 func (sim *Simulator) initDraw() {
@@ -70,6 +71,7 @@ func (sim *Simulator) initDraw() {
 	sim.drawData.redrawBoard = true
 
 	sim.drawData.blackShader = loadShader("./simulator/shaders/black.kage")
+	sim.drawData.transparentRedShader = loadShader("./simulator/shaders/transparent_red.kage")
 }
 
 func (sim *Simulator) Draw(screen *ebiten.Image) {
@@ -177,7 +179,37 @@ func (sim *Simulator) drawBoard() {
 	}
 }
 
-func (sim *Simulator) drawOverlay() {
+func (sim *Simulator) drawOpenPositions() {
+	var path vector.Path
+
+	s := float64(sim.drawData.hdScale)
+
+	for _, pt := range sim.Engine.GameBoard.OpenPositionsList() {
+
+		x := pt.X
+		y := pt.Y
+
+		tSize := float32(float64(TILE_SIZE) * s)
+		tx, ty := float32(float64(x*TILE_SIZE)*s), float32(float64(y*TILE_SIZE)*s)
+
+		path.MoveTo(tx, ty)
+		path.LineTo(tx+tSize, ty)
+		path.LineTo(tx+tSize, ty+tSize)
+		path.LineTo(tx, ty+tSize)
+		path.LineTo(tx, ty)
+	}
+
+	op := &ebiten.DrawTrianglesShaderOptions{
+		FillRule: ebiten.FillAll,
+	}
+
+	vs, is := path.AppendVerticesAndIndicesForFilling(nil, nil)
+
+	sim.drawData.overlayImg.DrawTrianglesShader(vs, is, sim.drawData.transparentRedShader, op)
+
+}
+
+func (sim *Simulator) drawFeatureLinks() {
 	var path vector.Path
 
 	drawnFeatures := make(map[*tile.Feature]*tile.Feature)
@@ -233,6 +265,12 @@ func (sim *Simulator) drawOverlay() {
 	vs, is := path.AppendVerticesAndIndicesForFilling(nil, nil)
 
 	sim.drawData.overlayImg.DrawTrianglesShader(vs, is, sim.drawData.blackShader, op)
+}
+
+func (sim *Simulator) drawOverlay() {
+	sim.drawData.overlayImg.Clear()
+	sim.drawOpenPositions()
+	sim.drawFeatureLinks()
 }
 
 func (sim *Simulator) drawPossibleTilePlacements() {
@@ -295,6 +333,7 @@ func (sim *Simulator) drawUI(screen *ebiten.Image) {
 			" TPS: ", int(ebiten.CurrentTPS()),
 			" CAM_POS: (X: ", int(sim.drawData.cameraOffset.X), ", Y: ", int(sim.drawData.cameraOffset.Y), ")",
 			" CUR_POS: (X: ", cursorX, ", Y: ", cursorY, ")",
+			" STEP: ", sim.Engine.TurnCounter, "-", sim.Engine.TurnStage,
 		),
 		sim.drawData.font,
 		2,

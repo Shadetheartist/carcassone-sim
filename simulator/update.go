@@ -3,6 +3,7 @@ package simulator
 import (
 	"beeb/carcassonne/util"
 	"fmt"
+	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -64,6 +65,7 @@ func (sim *Simulator) Update() error {
 		}
 
 		rMouseDown = true
+		time.Sleep(sim.playSpeed)
 	} else {
 		//for holding down
 		rMouseDown = false

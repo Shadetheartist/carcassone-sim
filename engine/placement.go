@@ -51,7 +51,7 @@ func (tpm *TilePlacementManager) PossibleTilePlacements(rtg *tile.ReferenceTileG
 		return tpm.defaultPlacements(rtg)
 	}
 
-	return tpm.agents[0].PossibleTilePlacements(nil, rtg, tpm.engine.GameBoard.OpenPositionsList)
+	return tpm.agents[0].PossibleTilePlacements(nil, rtg, tpm.engine.GameBoard.OpenPositionsList())
 }
 
 type TilePlacementAgent struct {

@@ -3,21 +3,23 @@ package simulator
 import (
 	"beeb/carcassonne/data"
 	"beeb/carcassonne/engine"
+	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
 type Simulator struct {
-	Engine   *engine.Engine
-	GameData *data.GameData
-
-	drawData *DrawData
+	Engine    *engine.Engine
+	GameData  *data.GameData
+	drawData  *DrawData
+	playSpeed time.Duration
 }
 
 func NewSimulator(engine *engine.Engine) *Simulator {
 	sim := &Simulator{}
 	sim.Engine = engine
 	sim.drawData = &DrawData{}
+	sim.playSpeed = 25 * time.Millisecond
 	sim.initDraw()
 
 	return sim

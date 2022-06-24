@@ -5,16 +5,15 @@ import (
 	"beeb/carcassonne/matrix"
 	"beeb/carcassonne/util"
 	"beeb/carcassonne/util/directions"
-	"fmt"
 	"image"
-	"time"
+	"sort"
 )
 
 type Board struct {
 	TileMatrix        *matrix.Matrix[*tile.Tile]
 	PlacedTileCount   int
 	OpenPositions     map[util.Point[int]]*tile.EdgeSignature
-	OpenPositionsList []util.Point[int]
+	openPositionsList []util.Point[int]
 	EdgePixReference  [][]util.Point[int]
 }
 
@@ -23,15 +22,31 @@ func NewBoard(size int) *Board {
 
 	board.TileMatrix = matrix.NewMatrix[*tile.Tile](size)
 	board.OpenPositions = make(map[util.Point[int]]*tile.EdgeSignature, 128)
-	board.OpenPositionsList = make([]util.Point[int], 0, 128)
+	board.openPositionsList = make([]util.Point[int], 0, 128)
 	board.EdgePixReference = edgePix(image.Rect(0, 0, 7, 7))
 
 	return board
 }
 
-func (b *Board) RemoveTileAt(pos util.Point[int]) {
-	tStart := time.Now()
+func (b *Board) OpenPositionsList() []util.Point[int] {
+	b.openPositionsList = b.openPositionsList[:0]
+	for k, _ := range b.OpenPositions {
+		b.openPositionsList = append(b.openPositionsList, k)
+	}
 
+	matrixSize := b.TileMatrix.Size()
+
+	//for determinism
+	sort.Slice(b.openPositionsList, func(i, j int) bool {
+		p1 := (b.openPositionsList[i].X + b.openPositionsList[i].Y*matrixSize)
+		p2 := (b.openPositionsList[j].X + b.openPositionsList[j].Y*matrixSize)
+		return p1 < p2
+	})
+
+	return b.openPositionsList
+}
+
+func (b *Board) RemoveTileAt(pos util.Point[int]) {
 	t := b.TileMatrix.Get(pos.X, pos.Y)
 
 	//no tile had yet been placed there
@@ -53,7 +68,6 @@ func (b *Board) RemoveTileAt(pos util.Point[int]) {
 	b.TileMatrix.Set(pos.X, pos.Y, nil)
 
 	// add back the vacant position
-	b.OpenPositionsList = append(b.OpenPositionsList, pos)
 	b.OpenPositions[pos] = b.createOpenPositonSignature(pos)
 
 	b.PlacedTileCount--
@@ -62,8 +76,8 @@ func (b *Board) RemoveTileAt(pos util.Point[int]) {
 	// remove the vacancies created by this tile, if any,
 	// by looking at the positions around the tile we removed,
 	// if any have no real neighbours, we must remove them, as they are floating
-	hasNeighbours := false
 	for _, pn := range pos.OrthogonalNeighbours() {
+		hasNeighbours := false
 
 		// look though the adjacent tile's neighbours,
 		// if any are set, that open position can remain open
@@ -80,19 +94,7 @@ func (b *Board) RemoveTileAt(pos util.Point[int]) {
 			}
 		}
 
-		// if the position has no real neigbours, it must be removed
 		if !hasNeighbours {
-			//remove position from list
-			for i, p := range b.OpenPositionsList {
-				if p != pn {
-					continue
-				}
-				b.OpenPositionsList[i] = b.OpenPositionsList[len(b.OpenPositionsList)-1]
-				b.OpenPositionsList = b.OpenPositionsList[:len(b.OpenPositionsList)-1]
-				break
-			}
-
-			//remove position from map
 			delete(b.OpenPositions, pn)
 		}
 	}
@@ -104,8 +106,6 @@ func (b *Board) RemoveTileAt(pos util.Point[int]) {
 			delete(f.Links, l)
 		}
 	}
-
-	fmt.Println("t us:", time.Since(tStart).Microseconds())
 }
 
 func (b *Board) linkNeighbours(t *tile.Tile) {
@@ -140,11 +140,6 @@ func (b *Board) PlaceTile(pos util.Point[int], t *tile.Tile) {
 			//don't add neighbours which are out of bounds
 			if !b.TileMatrix.IsInBounds(edgePos.X, edgePos.Y) {
 				continue
-			}
-
-			//add position to list, if it's not already in the map
-			if _, exists := b.OpenPositions[edgePos]; !exists {
-				b.OpenPositionsList = append(b.OpenPositionsList, edgePos)
 			}
 
 			//add position to map
@@ -190,17 +185,6 @@ func (b *Board) PlaceTile(pos util.Point[int], t *tile.Tile) {
 			}
 
 		}
-	}
-
-	//remove position from list
-	for i, p := range b.OpenPositionsList {
-		if p != pos {
-			continue
-		}
-
-		b.OpenPositionsList[i] = b.OpenPositionsList[len(b.OpenPositionsList)-1]
-		b.OpenPositionsList = b.OpenPositionsList[:len(b.OpenPositionsList)-1]
-		break
 	}
 
 	//remove position from map

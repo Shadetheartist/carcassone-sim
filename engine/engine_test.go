@@ -9,7 +9,7 @@ import (
 
 func BenchmarkEngine(b *testing.B) {
 
-	rand.Seed(3)
+	rand.Seed(4)
 
 	gameData := data.LoadGameData("../data/bitmaps", "../data/standard_deck.yml")
 

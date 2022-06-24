@@ -78,6 +78,9 @@ func (e *Engine) InitGame() {
 	e.CurrentPossibleTilePlacements = nil
 	e.CurrentPlayerIndex = 0
 	e.TurnStage = turnStage.Draw
+
+	lastRiverTurn = 1
+	lastRiverTile = nil
 }
 
 func (e *Engine) Step() {
@@ -92,7 +95,11 @@ func (e *Engine) Step() {
 	case turnStage.Draw:
 
 		//retry getting possible tiles a few times if we don't have a place to put one
-		for i := 0; i < 3; i++ {
+		for i := 0; i < 4; i++ {
+			if i == 4 {
+				panic("Game cannot continue, nowhere to place tile, tried 3 times.")
+			}
+
 			rtg, tileTakeErr := e.TakeNextTile()
 
 			if tileTakeErr != nil {
@@ -123,14 +130,15 @@ func (e *Engine) Step() {
 		e.TurnStage++
 
 	case turnStage.PlaceTile:
+
 		selectedPlacement := player.DeterminePlacement(e.CurrentPossibleTilePlacements, e)
 
 		if selectedPlacement == nil {
-			e.CurrentPossibleTilePlacements = e.TilePlacementManager.PossibleTilePlacements(e.HeldRefTileGroup)
 			panic("No Placement Determined By Player")
 		}
 
 		e.PlaceTile(*selectedPlacement)
+
 		e.CurrentPossibleTilePlacements = nil
 		e.HeldRefTileGroup = nil
 		e.TurnStage++
@@ -161,10 +169,6 @@ func (e *Engine) PlaceTile(placement Placement) {
 
 		if newTile.Reference.EdgeSignature.Curving() {
 			lastRiverTurn = newTile.Reference.Orientation
-		}
-	} else {
-		if e.TurnCounter != 0 && e.TurnCounter%3 == 0 {
-			//e.GameBoard.RemoveTileAt(placement.Position)
 		}
 	}
 
