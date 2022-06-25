@@ -1,6 +1,8 @@
 package tile
 
-import "github.com/google/uuid"
+import (
+	"github.com/google/uuid"
+)
 
 type FeatureType int
 
@@ -21,7 +23,7 @@ var featureTypeScoreMap []int = []int{
 	2, //"Castle",
 	0, //"Cloister",
 	0, //"River",
-	1, //"Shield",
+	2, //"Shield",
 }
 
 const (
@@ -48,8 +50,10 @@ type Feature struct {
 	ParentTile             *Tile
 	ParentRefenceTileGroup *ReferenceTileGroup
 	ParentFeature          *Feature
+
 	//both key and value are the same
-	Links map[*Feature]*Feature
+	Links           map[*Feature]*Feature
+	AttachedMeeples []interface{}
 }
 
 func (f *Feature) String() string {

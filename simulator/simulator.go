@@ -19,7 +19,7 @@ func NewSimulator(engine *engine.Engine) *Simulator {
 	sim := &Simulator{}
 	sim.Engine = engine
 	sim.drawData = &DrawData{}
-	sim.playSpeed = 0 * time.Millisecond
+	sim.playSpeed = 100 * time.Millisecond
 	sim.initDraw()
 
 	return sim

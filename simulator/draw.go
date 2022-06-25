@@ -45,6 +45,7 @@ type DrawData struct {
 
 	blackShader          *ebiten.Shader
 	transparentRedShader *ebiten.Shader
+	colorShader          *ebiten.Shader
 }
 
 func (sim *Simulator) initDraw() {
@@ -72,6 +73,7 @@ func (sim *Simulator) initDraw() {
 
 	sim.drawData.blackShader = loadShader("./simulator/shaders/black.kage")
 	sim.drawData.transparentRedShader = loadShader("./simulator/shaders/transparent_red.kage")
+	sim.drawData.colorShader = loadShader("./simulator/shaders/color.kage")
 }
 
 func (sim *Simulator) Draw(screen *ebiten.Image) {
@@ -80,6 +82,7 @@ func (sim *Simulator) Draw(screen *ebiten.Image) {
 	if sim.drawData.redrawBoard {
 		sim.drawBoard()
 		sim.drawOverlay()
+
 		sim.drawData.redrawBoard = false
 	}
 
@@ -267,10 +270,58 @@ func (sim *Simulator) drawFeatureLinks() {
 	sim.drawData.overlayImg.DrawTrianglesShader(vs, is, sim.drawData.blackShader, op)
 }
 
+func (sim *Simulator) drawMeeples() {
+	players := sim.Engine.Players
+
+	s := float32(sim.drawData.hdScale)
+
+	for _, p := range players {
+		var path vector.Path
+
+		for _, m := range p.Meeples {
+			if m.Feature == nil {
+				continue
+			}
+
+			var meepleScale float32 = float32(s) * 2
+
+			f := m.Feature
+			t := f.ParentTile
+
+			avg := t.Reference.AvgFeaturePos[f.ParentFeature]
+
+			x := float32(t.Position.X*TILE_SIZE) * s
+			y := float32(t.Position.Y*TILE_SIZE) * s
+
+			x += float32(avg.X) * s
+			y += float32(avg.Y) * s
+
+			path.MoveTo(x, y)
+			path.LineTo(x+(0.5*meepleScale), y+(0.5*meepleScale))
+			path.LineTo(x+(0*meepleScale), y+(1*meepleScale))
+			path.LineTo(x-(0.5*meepleScale), y+(0.5*meepleScale))
+			path.LineTo(x-(0*meepleScale), y+(0*meepleScale))
+		}
+
+		op := &ebiten.DrawTrianglesShaderOptions{
+			FillRule: ebiten.FillAll,
+		}
+
+		op.Uniforms = make(map[string]interface{})
+		r, g, b, a := p.Color.RGBA()
+		op.Uniforms["RGBA"] = []float32{float32(r) / 65535, float32(g) / 65535, float32(b) / 65535, float32(a) / 65535}
+
+		vs, is := path.AppendVerticesAndIndicesForFilling(nil, nil)
+		sim.drawData.overlayImg.DrawTrianglesShader(vs, is, sim.drawData.colorShader, op)
+	}
+
+}
+
 func (sim *Simulator) drawOverlay() {
 	sim.drawData.overlayImg.Clear()
-	sim.drawOpenPositions()
-	sim.drawFeatureLinks()
+	//sim.drawOpenPositions()
+	//sim.drawFeatureLinks()
+	sim.drawMeeples()
 }
 
 func (sim *Simulator) drawPossibleTilePlacements() {
@@ -339,6 +390,17 @@ func (sim *Simulator) drawUI(screen *ebiten.Image) {
 		2,
 		12,
 		color.Black,
+	)
+
+	text.Draw(
+		screen,
+		fmt.Sprint(
+			"Player:", sim.Engine.CurrentPlayer().Name,
+		),
+		sim.drawData.font,
+		2,
+		24,
+		sim.Engine.CurrentPlayer().Color,
 	)
 
 	screenMaxX := float64(screen.Bounds().Dx())

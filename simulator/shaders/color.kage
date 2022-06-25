@@ -1,0 +1,8 @@
+package main
+
+// Uniform variables.
+var RGBA vec4
+
+func Fragment(position vec4, texCoord vec2, color vec4) vec4 {
+	return RGBA
+}

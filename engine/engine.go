@@ -22,16 +22,17 @@ var PLAYER_COLOR_LIST = [...]color.RGBA{
 }
 
 type Engine struct {
-	Deterministic                 bool
-	BoardSize                     int
-	GameOver                      bool
-	GameBoard                     *board.Board
-	GameData                      *data.GameData
-	Players                       []*Player
-	CurrentPlayerIndex            int
-	TilePlacedThisTurn            *tile.Tile
-	HeldRefTileGroup              *tile.ReferenceTileGroup
-	CurrentPossibleTilePlacements []Placement
+	Deterministic                  bool
+	BoardSize                      int
+	GameOver                       bool
+	GameBoard                      *board.Board
+	GameData                       *data.GameData
+	Players                        []*Player
+	CurrentPlayerIndex             int
+	TilePlacedThisTurn             *tile.Tile
+	DecidedMeeplePlacementThisTurn *MeeplePlacement
+	HeldRefTileGroup               *tile.ReferenceTileGroup
+	CurrentPossibleTilePlacements  []Placement
 
 	TurnCounter int
 	TurnStage   turnStage.TurnStage
@@ -77,10 +78,12 @@ func (e *Engine) InitGame() {
 	e.GameOver = false
 	e.TurnCounter = 0
 	e.TilePlacedThisTurn = nil
+	e.DecidedMeeplePlacementThisTurn = nil
 	e.HeldRefTileGroup = nil
 	e.CurrentPossibleTilePlacements = nil
 	e.CurrentPlayerIndex = 0
 	e.TurnStage = turnStage.Draw
+
 	e.lastRiverTurn = 1
 	e.lastRiverTile = nil
 }
@@ -95,6 +98,11 @@ func (e *Engine) Step() {
 
 	switch e.TurnStage {
 	case turnStage.Draw:
+
+		e.TilePlacedThisTurn = nil
+		e.DecidedMeeplePlacementThisTurn = nil
+		e.HeldRefTileGroup = nil
+		e.CurrentPossibleTilePlacements = nil
 
 		//retry getting possible tiles a few times if we don't have a place to put one
 		for i := 0; i < 3; i++ {
@@ -131,7 +139,6 @@ func (e *Engine) Step() {
 		if len(e.CurrentPossibleTilePlacements) < 1 {
 			//"nowhere to place tile, tried 3 times, just remove tile completely" (take and do not place)
 			e.TakeNextTile()
-
 			return
 		}
 
@@ -139,19 +146,21 @@ func (e *Engine) Step() {
 
 	case turnStage.PlaceTile:
 
-		selectedPlacement := player.DeterminePlacement(e.CurrentPossibleTilePlacements, e)
+		selectedTilePlacement, meeplePlacement := player.DeterminePlacement(e.CurrentPossibleTilePlacements, e)
+		e.DecidedMeeplePlacementThisTurn = meeplePlacement
 
-		if selectedPlacement == nil {
+		if selectedTilePlacement == nil {
 			panic("No Placement Determined By Player")
 		}
 
-		e.PlaceTile(*selectedPlacement)
+		e.TilePlacedThisTurn = e.PlaceTile(*selectedTilePlacement)
 
 		e.CurrentPossibleTilePlacements = nil
 		e.HeldRefTileGroup = nil
 		e.TurnStage++
 
 	case turnStage.PlaceMeeple:
+		e.PlaceMeepleOnFeature()
 		e.TurnStage++
 
 	case turnStage.Score:
@@ -168,7 +177,41 @@ func (e *Engine) Step() {
 	}
 }
 
-func (e *Engine) PlaceTile(placement Placement) {
+//the feature selected by the player is only theoretical, the actual tile will have a different feature entirely
+func (e *Engine) PlaceMeepleOnFeature() {
+
+	t := e.TilePlacedThisTurn
+	mp := e.DecidedMeeplePlacementThisTurn
+
+	if t == nil {
+		return
+	}
+
+	if mp == nil {
+		return
+	}
+
+	if mp.SelectedMeeple == nil {
+		return
+	}
+
+	var newTileFeature *tile.Feature
+
+	for _, f := range t.Features {
+		if f.ParentFeature == mp.ParentFeature {
+			newTileFeature = f
+		}
+	}
+
+	if newTileFeature == nil {
+		panic("new tile does not have a corresponding feature to place a meeple on")
+	}
+
+	mp.SelectedMeeple.Feature = newTileFeature
+	newTileFeature.AttachedMeeples = append(newTileFeature.AttachedMeeples, mp.SelectedMeeple)
+}
+
+func (e *Engine) PlaceTile(placement Placement) *tile.Tile {
 	newTile := e.TileFactory.NewTileFromReference(placement.ReferenceTile)
 	e.GameBoard.PlaceTile(placement.Position, newTile)
 
@@ -180,6 +223,7 @@ func (e *Engine) PlaceTile(placement Placement) {
 		}
 	}
 
+	return newTile
 }
 
 func (e *Engine) TakeNextTile() (*tile.ReferenceTileGroup, error) {

@@ -1,6 +1,7 @@
 package simulator
 
 import (
+	"beeb/carcassonne/engine/turnStage"
 	"beeb/carcassonne/util"
 	"fmt"
 	"time"
@@ -50,14 +51,14 @@ func (sim *Simulator) Update() error {
 	}
 
 	if !rMouseDown && ebiten.IsMouseButtonPressed(ebiten.MouseButtonRight) {
-		tileCount := sim.Engine.GameBoard.PlacedTileCount
 
 		steps := 1 //(sim.Engine.RiverDeck.Remaining() + sim.Engine.Deck.Remaining()) * 5
 		for i := 0; i < steps; i++ {
+			stage := sim.Engine.TurnStage
+
 			sim.Engine.Step()
 
-			//a tile was added this step, we need to redraw
-			if tileCount != sim.Engine.GameBoard.PlacedTileCount {
+			if stage == turnStage.PlaceTile || stage == turnStage.PlaceMeeple {
 				sim.drawData.redrawBoard = true
 				sim.Engine.ExportEngineState()
 			}
