@@ -164,6 +164,7 @@ func (e *Engine) Step() {
 		e.TurnStage++
 
 	case turnStage.Score:
+		e.ScoreFinishedFeature()
 		e.TurnStage++
 
 	case turnStage.Pass:
@@ -175,6 +176,49 @@ func (e *Engine) Step() {
 
 		e.TurnStage = turnStage.Draw
 	}
+}
+
+func (e *Engine) ScoreFinishedFeature() {
+	mp := e.DecidedMeeplePlacementThisTurn
+
+	if mp == nil {
+		return
+	}
+
+	playerMeepleCountMap := make(map[*Player]int)
+
+	for _, m := range mp.ReturnedMeeples {
+
+		//fast-remove meeple from feature list
+		for i, am := range m.Feature.AttachedMeeples {
+			if am == m {
+				l := len(m.Feature.AttachedMeeples) - 1
+				m.Feature.AttachedMeeples[i] = m.Feature.AttachedMeeples[l]
+				m.Feature.AttachedMeeples = m.Feature.AttachedMeeples[:l]
+			}
+		}
+
+		//setting the meeples feature to nil returns it to the pool
+		m.Feature = nil
+
+		playerMeepleCountMap[m.ParentPlayer]++
+	}
+
+	mostPlayersOnFeature := 0
+	for _, c := range playerMeepleCountMap {
+		if c > mostPlayersOnFeature {
+			mostPlayersOnFeature = c
+		}
+	}
+
+	if mp.ScoreGained > 0 {
+		for p, c := range playerMeepleCountMap {
+			if c == mostPlayersOnFeature {
+				p.Score += mp.ScoreGained
+			}
+		}
+	}
+
 }
 
 //the feature selected by the player is only theoretical, the actual tile will have a different feature entirely
@@ -259,6 +303,10 @@ func (e *Engine) GoToNextTurn() error {
 
 func (e *Engine) EndGame() {
 	e.GameOver = true
+
+	for _, p := range e.Players {
+		fmt.Println(p.Name, ": ", p.Score)
+	}
 }
 
 func (e *Engine) restictRiverPlacement() ([]Placement, error) {

@@ -14,8 +14,8 @@ func main() {
 
 func runSimulator() {
 	rand.Seed(0)
-	gameData := data.LoadGameData("./data/bitmaps", "./data/mega_deck.yml")
-	engine := engine.NewEngine(gameData, 24, 4)
+	gameData := data.LoadGameData("./data/bitmaps", "./data/standard_deck.yml")
+	engine := engine.NewEngine(gameData, 32, 4)
 	sim := simulator.NewSimulator(engine)
 	sim.Simulate()
 }

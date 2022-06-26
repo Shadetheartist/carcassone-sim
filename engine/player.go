@@ -17,17 +17,17 @@ type Player struct {
 	Evaluation Evaluation
 }
 
+var MAX_MEEPLES int = 7
+
 func NewPlayer(name string, color color.Color) *Player {
 	player := &Player{}
 
-	meepleCount := 7
-
 	player.Id = uuid.New()
 	player.Name = name
-	player.Meeples = make([]*Meeple, meepleCount)
+	player.Meeples = make([]*Meeple, MAX_MEEPLES)
 	player.Color = color
 
-	for i := 0; i < meepleCount; i++ {
+	for i := 0; i < MAX_MEEPLES; i++ {
 		player.Meeples[i] = &Meeple{
 			Id:           uuid.New(),
 			ParentPlayer: player,
@@ -39,16 +39,44 @@ func NewPlayer(name string, color color.Color) *Player {
 	return player
 }
 
-func (p *Player) remainingMeeples() int {
-	remainingMeeples := 0
+func (p *Player) scoreMeepleCostEval(meepleCostEval MeepleCostEvaluation, e *Engine) float32 {
+
+	var playerRiskFactor float32 = 0.75
+
+	var directScoreFactor float32 = 1
+	var potentialScoreFactor float32 = 0.35
+
+	numMeeplesRemaining := p.numRemainingMeeples()
+	var meeplesRemainingFactor float32 = 2 - (float32(numMeeplesRemaining) / float32(MAX_MEEPLES))
+
+	//see if we even have a meeple with enough power to do this
+	selectedMeeple := e.CurrentPlayer().GetAvailableMeepleWithPower(meepleCostEval.MeepleCost)
+
+	//we can't place a meeple, but maybe we can worsen someone else's position?
+	//if we can't extend ours...
+	if selectedMeeple == nil {
+		//spiteFactor = 0.5
+	}
+
+	directScore := (directScoreFactor * float32(meepleCostEval.DirectScore))
+	potentialScore := (playerRiskFactor * potentialScoreFactor * float32(meepleCostEval.PotentialScore))
+
+	//for each meeple we dont have in our pool, we like the direct score a little more
+	directScore *= meeplesRemainingFactor
+
+	return directScore + potentialScore
+}
+
+func (p *Player) numRemainingMeeples() int {
+	c := 0
 
 	for _, m := range p.Meeples {
 		if m.Feature == nil {
-			remainingMeeples++
+			c++
 		}
 	}
 
-	return remainingMeeples
+	return c
 }
 
 func (p *Player) GetAvailableMeepleWithPower(power int) *Meeple {
@@ -61,21 +89,11 @@ func (p *Player) GetAvailableMeepleWithPower(power int) *Meeple {
 	return nil
 }
 
-func (p *Player) scoreMeepleCostEval(meepleCostEval MeepleCostEvaluation) float64 {
-	//remainingMeeples := p.remainingMeeples()
-
-	//low meeples increases spite play
-	//low meeples increases desire get meeples back
-	//low meeples deter placement when points not great
-
-	baseScore := meepleCostEval.Score
-
-	return float64(baseScore)
-}
-
 type MeeplePlacement struct {
-	ParentFeature  *tile.Feature
-	SelectedMeeple *Meeple
+	ParentFeature   *tile.Feature
+	SelectedMeeple  *Meeple
+	ReturnedMeeples []*Meeple
+	ScoreGained     int
 }
 
 func (p *Player) DeterminePlacement(placementOptions []Placement, e *Engine) (*Placement, *MeeplePlacement) {
@@ -83,8 +101,8 @@ func (p *Player) DeterminePlacement(placementOptions []Placement, e *Engine) (*P
 		return nil, nil
 	}
 
-	var bestScore float64 = 0
-	var bestScoreMeepleCost int = 0
+	var bestScore float32 = 0
+	var bestMeepleCostEval MeepleCostEvaluation
 	var bestParentFeature *tile.Feature
 	var bestPlacement *Placement
 
@@ -92,12 +110,12 @@ func (p *Player) DeterminePlacement(placementOptions []Placement, e *Engine) (*P
 		eval := p.EvaluatePlacement(pl, e)
 		for _, featureEval := range eval.EvaluatedFeatures {
 			for _, meepleCostEval := range featureEval.EvaluatedMeepleCosts {
-				calculatedScore := p.scoreMeepleCostEval(meepleCostEval)
+				calculatedScore := p.scoreMeepleCostEval(meepleCostEval, e)
 				if calculatedScore > bestScore {
 					bestPlacement = &placementOptions[i]
-					bestScoreMeepleCost = meepleCostEval.MeepleCost
 					bestParentFeature = featureEval.Feature.ParentFeature
 					bestScore = calculatedScore
+					bestMeepleCostEval = meepleCostEval
 				}
 			}
 		}
@@ -108,21 +126,29 @@ func (p *Player) DeterminePlacement(placementOptions []Placement, e *Engine) (*P
 		return &placementOptions[randN], nil
 	}
 
-	selectedMeeple := e.CurrentPlayer().GetAvailableMeepleWithPower(bestScoreMeepleCost)
+	selectedMeeple := e.CurrentPlayer().GetAvailableMeepleWithPower(bestMeepleCostEval.MeepleCost)
 
-	if selectedMeeple == nil {
-		return bestPlacement, nil
+	if selectedMeeple != nil {
+
+		//case for adding then removing the meeple on the same step
+		if bestMeepleCostEval.DirectScore != 0 && len(bestMeepleCostEval.MeeplesReturned) < 1 {
+			bestMeepleCostEval.MeeplesReturned = append(bestMeepleCostEval.MeeplesReturned, selectedMeeple)
+		}
 	}
 
 	return bestPlacement, &MeeplePlacement{
-		SelectedMeeple: selectedMeeple,
-		ParentFeature:  bestParentFeature,
+		SelectedMeeple:  selectedMeeple,
+		ParentFeature:   bestParentFeature,
+		ReturnedMeeples: bestMeepleCostEval.MeeplesReturned,
+		ScoreGained:     bestMeepleCostEval.DirectScore,
 	}
 }
 
 type MeepleCostEvaluation struct {
-	Score      int
-	MeepleCost int
+	PotentialScore  int
+	DirectScore     int
+	MeepleCost      int
+	MeeplesReturned []*Meeple
 }
 
 type FeatureEvaluation struct {
@@ -166,26 +192,37 @@ func (p *Player) EvaluatePlacement(placement Placement, e *Engine) Evaluation {
 			continue
 		}
 
+		meeplesOnChain := meeplesOnFeatureChain(chain)
+		myMeeplesOnChain := p.myMeeplesOnChain(meeplesOnChain)
+		otherPlayersMeeples := p.meeplesPerOtherPlayer(meeplesOnChain)
+		mostMeeplesByOtherPlayers := mostPlayerMeeples(otherPlayersMeeples)
+
+		//if this player controls the most meeples then we have no reason to add another one
+		if len(myMeeplesOnChain) > mostMeeplesByOtherPlayers {
+			continue
+		}
+
 		featureEval := FeatureEvaluation{}
 		featureEval.Feature = f
 		featureEval.EvaluatedMeepleCosts = make([]MeepleCostEvaluation, 0, 4)
 
-		meeplesOnChain := meeplesOnFeatureChain(chain)
+		featureIsCompleted := isFeatureChainComplete(chain)
 
-		if len(meeplesOnChain) < 1 {
-			featureEval.EvaluatedMeepleCosts = append(featureEval.EvaluatedMeepleCosts, MeepleCostEvaluation{
-				MeepleCost: 1,
-				Score:      chainScore,
-			})
-		} else {
-			otherPlayersMeeples := meeplesPerOtherPlayer(meeplesOnChain, p)
-			mostMeeplesByOtherPlayers := mostPlayerMeeples(otherPlayersMeeples)
-
-			featureEval.EvaluatedMeepleCosts = append(featureEval.EvaluatedMeepleCosts, MeepleCostEvaluation{
-				MeepleCost: mostMeeplesByOtherPlayers + 1,
-				Score:      chainScore,
-			})
+		var meeplesReturned []*Meeple
+		directScoreFactor := 0
+		potentialScoreFactor := 1
+		if featureIsCompleted {
+			directScoreFactor = 1
+			potentialScoreFactor = 0
+			meeplesReturned = meeplesOnChain
 		}
+
+		featureEval.EvaluatedMeepleCosts = append(featureEval.EvaluatedMeepleCosts, MeepleCostEvaluation{
+			MeepleCost:      mostMeeplesByOtherPlayers + 1,
+			DirectScore:     directScoreFactor * chainScore,
+			PotentialScore:  chainScore * potentialScoreFactor,
+			MeeplesReturned: meeplesReturned,
+		})
 
 		eval.EvaluatedFeatures[f] = featureEval
 
@@ -207,6 +244,27 @@ func (p *Player) EvaluatePlacement(placement Placement, e *Engine) Evaluation {
 type FeatureChain struct {
 	TilesVisited    map[*tile.Tile]struct{}
 	FeaturesVisited map[*tile.Feature]struct{}
+}
+
+// if all the tiles' edges that are part of this feature are connected
+// to something, the feature must be complete, so for each edge the feature touches,
+// there must be a corresponding link
+func isFeatureChainComplete(chain FeatureChain) bool {
+	for f := range chain.FeaturesVisited {
+
+		featureEdgeCount := 0
+		for _, ef := range f.ParentTile.EdgeFeatures {
+			if ef == f {
+				featureEdgeCount++
+			}
+		}
+
+		if len(f.Links) != featureEdgeCount {
+			return false
+		}
+	}
+
+	return true
 }
 
 func visitFeatureLinks(feature *tile.Feature) FeatureChain {
@@ -259,12 +317,25 @@ func mostPlayerMeeples(meeplesPerPlayer map[*Player][]*Meeple) int {
 	return most
 }
 
-func meeplesPerOtherPlayer(meeples []*Meeple, currentPlayer *Player) map[*Player][]*Meeple {
+func (p *Player) myMeeplesOnChain(chainMeeples []*Meeple) []*Meeple {
+	playerMeeples := make([]*Meeple, 0, 2)
+
+	for _, m := range chainMeeples {
+		//the current player
+		if m.ParentPlayer == p {
+			playerMeeples = append(playerMeeples, m)
+		}
+	}
+
+	return playerMeeples
+}
+
+func (p *Player) meeplesPerOtherPlayer(meeples []*Meeple) map[*Player][]*Meeple {
 	meeplesPerPlayer := make(map[*Player][]*Meeple)
 
 	for _, m := range meeples {
 		//not the current player
-		if m.ParentPlayer == currentPlayer {
+		if m.ParentPlayer == p {
 			continue
 		}
 
