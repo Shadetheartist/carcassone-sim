@@ -60,7 +60,10 @@ func (sim *Simulator) Update() error {
 
 			if stage == turnStage.PlaceTile || stage == turnStage.PlaceMeeple {
 				sim.drawData.redrawBoard = true
-				sim.Engine.ExportEngineState()
+			}
+
+			if sim.Engine.GameOver {
+				sim.drawData.redrawBoard = true
 			}
 
 		}

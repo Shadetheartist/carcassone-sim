@@ -17,6 +17,30 @@ type Player struct {
 	Evaluation Evaluation
 }
 
+type Evaluation struct {
+	EvaluatedFeatures map[*tile.Feature]FeatureEvaluation
+}
+
+type FeatureEvaluation struct {
+	Feature              *tile.Feature
+	EvaluatedMeepleCosts []MeepleCostEvaluation
+}
+
+type MeepleCostEvaluation struct {
+	PotentialScore    int
+	DirectScore       int
+	MeepleCost        int
+	MeeplesReturned   []*Meeple
+	PlayerScoreChange map[*Player]int
+}
+
+type MeeplePlacement struct {
+	ParentFeature   *tile.Feature
+	SelectedMeeple  *Meeple
+	ReturnedMeeples []*Meeple
+	ScoreGained     int
+}
+
 var MAX_MEEPLES int = 7
 
 func NewPlayer(name string, color color.Color) *Player {
@@ -89,13 +113,6 @@ func (p *Player) GetAvailableMeepleWithPower(power int) *Meeple {
 	return nil
 }
 
-type MeeplePlacement struct {
-	ParentFeature   *tile.Feature
-	SelectedMeeple  *Meeple
-	ReturnedMeeples []*Meeple
-	ScoreGained     int
-}
-
 func (p *Player) DeterminePlacement(placementOptions []Placement, e *Engine) (*Placement, *MeeplePlacement) {
 	if len(placementOptions) == 0 {
 		return nil, nil
@@ -144,22 +161,6 @@ func (p *Player) DeterminePlacement(placementOptions []Placement, e *Engine) (*P
 	}
 }
 
-type MeepleCostEvaluation struct {
-	PotentialScore  int
-	DirectScore     int
-	MeepleCost      int
-	MeeplesReturned []*Meeple
-}
-
-type FeatureEvaluation struct {
-	Feature              *tile.Feature
-	EvaluatedMeepleCosts []MeepleCostEvaluation
-}
-
-type Evaluation struct {
-	EvaluatedFeatures map[*tile.Feature]FeatureEvaluation
-}
-
 func (p *Player) EvaluatePlacement(placement Placement, e *Engine) Evaluation {
 
 	eval := Evaluation{}
@@ -176,29 +177,28 @@ func (p *Player) EvaluatePlacement(placement Placement, e *Engine) Evaluation {
 			continue
 		}
 
-		chain := visitFeatureLinks(f)
+		featureChain := newFeatureChain(f)
 
 		//support to avoid re-evaluating features later
-		for f := range chain.FeaturesVisited {
+		for f := range featureChain.FeaturesVisited {
 			if t.HasFeature(f) {
 				visitedFeaturesOfTile[f] = struct{}{}
 			}
 		}
 
-		chainScore := calculateChainScore(f, chain)
+		featureChain.computeScore()
 
 		//quick exit if the score is irrelevent
-		if chainScore < 1 {
+		if featureChain.score < 1 {
 			continue
 		}
 
-		meeplesOnChain := meeplesOnFeatureChain(chain)
-		myMeeplesOnChain := p.myMeeplesOnChain(meeplesOnChain)
-		otherPlayersMeeples := p.meeplesPerOtherPlayer(meeplesOnChain)
-		mostMeeplesByOtherPlayers := mostPlayerMeeples(otherPlayersMeeples)
+		featureChain.computeMeeples()
+		featureChain.computePlayerMeeplesMap()
+		featureChain.computeOwners()
 
-		//if this player controls the most meeples then we have no reason to add another one
-		if len(myMeeplesOnChain) > mostMeeplesByOtherPlayers {
+		//just don't add to features that are owned, but not by you
+		if featureChain.hasOwner() && !featureChain.isOwner(p) {
 			continue
 		}
 
@@ -206,31 +206,32 @@ func (p *Player) EvaluatePlacement(placement Placement, e *Engine) Evaluation {
 		featureEval.Feature = f
 		featureEval.EvaluatedMeepleCosts = make([]MeepleCostEvaluation, 0, 4)
 
-		featureIsCompleted := isFeatureChainComplete(chain)
-
 		var meeplesReturned []*Meeple
-		directScoreFactor := 0
-		potentialScoreFactor := 1
-		if featureIsCompleted {
-			directScoreFactor = 1
-			potentialScoreFactor = 0
-			meeplesReturned = meeplesOnChain
+		if featureChain.isComplete {
+			meeplesReturned = featureChain.meeples
 		}
 
-		featureEval.EvaluatedMeepleCosts = append(featureEval.EvaluatedMeepleCosts, MeepleCostEvaluation{
-			MeepleCost:      mostMeeplesByOtherPlayers + 1,
-			DirectScore:     directScoreFactor * chainScore,
-			PotentialScore:  chainScore * potentialScoreFactor,
-			MeeplesReturned: meeplesReturned,
-		})
+		meepleCost := 1
+
+		if featureChain.isOwner(p) {
+			meepleCost = 0
+		}
+
+		meepleCostEval := MeepleCostEvaluation{
+			MeepleCost:        meepleCost,
+			DirectScore:       featureChain.direct(),
+			PotentialScore:    featureChain.potential(),
+			MeeplesReturned:   meeplesReturned,
+			PlayerScoreChange: make(map[*Player]int),
+		}
+
+		for _, p := range featureChain.owners {
+			meepleCostEval.PlayerScoreChange[p] = featureChain.score
+		}
+
+		featureEval.EvaluatedMeepleCosts = append(featureEval.EvaluatedMeepleCosts, meepleCostEval)
 
 		eval.EvaluatedFeatures[f] = featureEval
-
-		//calculate score if a meeple exists
-
-		//calculate score if x meeples placed? Where X is remaining meeples
-
-		//determine if the feature becomes complete (you get meeple back intantly)
 
 		//estimate chance of meeple returning before the game ends
 
@@ -239,137 +240,4 @@ func (p *Player) EvaluatePlacement(placement Placement, e *Engine) Evaluation {
 	e.GameBoard.RemoveTileAt(placement.Position)
 
 	return eval
-}
-
-type FeatureChain struct {
-	TilesVisited    map[*tile.Tile]struct{}
-	FeaturesVisited map[*tile.Feature]struct{}
-}
-
-// if all the tiles' edges that are part of this feature are connected
-// to something, the feature must be complete, so for each edge the feature touches,
-// there must be a corresponding link
-func isFeatureChainComplete(chain FeatureChain) bool {
-	for f := range chain.FeaturesVisited {
-
-		featureEdgeCount := 0
-		for _, ef := range f.ParentTile.EdgeFeatures {
-			if ef == f {
-				featureEdgeCount++
-			}
-		}
-
-		if len(f.Links) != featureEdgeCount {
-			return false
-		}
-	}
-
-	return true
-}
-
-func visitFeatureLinks(feature *tile.Feature) FeatureChain {
-
-	fc := FeatureChain{}
-	fc.FeaturesVisited = make(map[*tile.Feature]struct{})
-	fc.TilesVisited = make(map[*tile.Tile]struct{})
-
-	stack := make([]*tile.Feature, 0, 16)
-	stack = append(stack, feature)
-
-	var f *tile.Feature
-	for len(stack) > 0 {
-		f, stack = stack[len(stack)-1], stack[:len(stack)-1]
-
-		for l := range f.Links {
-			if _, exists := fc.FeaturesVisited[l]; !exists {
-				stack = append(stack, l)
-			}
-		}
-
-		fc.FeaturesVisited[f] = struct{}{}
-		fc.TilesVisited[f.ParentTile] = struct{}{}
-	}
-
-	return fc
-}
-
-func meeplesOnFeatureChain(fc FeatureChain) []*Meeple {
-	meeplesOnChain := make([]*Meeple, 0, 4)
-	for f := range fc.FeaturesVisited {
-		for _, mi := range f.AttachedMeeples {
-			m := mi.(*Meeple)
-			meeplesOnChain = append(meeplesOnChain, m)
-		}
-	}
-	return meeplesOnChain
-}
-
-func mostPlayerMeeples(meeplesPerPlayer map[*Player][]*Meeple) int {
-	most := 0
-
-	for _, m := range meeplesPerPlayer {
-		n := len(m)
-		if n > most {
-			most = n
-		}
-	}
-
-	return most
-}
-
-func (p *Player) myMeeplesOnChain(chainMeeples []*Meeple) []*Meeple {
-	playerMeeples := make([]*Meeple, 0, 2)
-
-	for _, m := range chainMeeples {
-		//the current player
-		if m.ParentPlayer == p {
-			playerMeeples = append(playerMeeples, m)
-		}
-	}
-
-	return playerMeeples
-}
-
-func (p *Player) meeplesPerOtherPlayer(meeples []*Meeple) map[*Player][]*Meeple {
-	meeplesPerPlayer := make(map[*Player][]*Meeple)
-
-	for _, m := range meeples {
-		//not the current player
-		if m.ParentPlayer == p {
-			continue
-		}
-
-		if _, exists := meeplesPerPlayer[m.ParentPlayer]; exists {
-			meeplesPerPlayer[m.ParentPlayer] = append(meeplesPerPlayer[m.ParentPlayer], m)
-		} else {
-			playerMeeples := make([]*Meeple, 0, 4)
-			playerMeeples = append(playerMeeples, m)
-			meeplesPerPlayer[m.ParentPlayer] = playerMeeples
-		}
-	}
-
-	return meeplesPerPlayer
-}
-
-func calculateChainScore(f *tile.Feature, chain FeatureChain) int {
-	chainLenTiles := len(chain.TilesVisited)
-
-	switch f.Type {
-	case tile.Road:
-		return f.Type.Score() * chainLenTiles
-	case tile.Castle:
-		//add base castle value
-		score := f.Type.Score() * chainLenTiles
-
-		//add shields
-		for vf := range chain.FeaturesVisited {
-			if vf.Type == tile.Shield {
-				score += f.Type.Score()
-			}
-		}
-
-		return score
-	}
-
-	return 0
 }
