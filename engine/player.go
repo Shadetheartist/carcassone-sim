@@ -12,7 +12,7 @@ type Player struct {
 	Score   int
 	Meeples []*Meeple
 
-	AI *PlayerAI
+	AI PlayerAI
 }
 
 var MaxMeeples int = 7
@@ -34,7 +34,7 @@ func NewPlayer(name string, color color.Color) *Player {
 		}
 	}
 
-	player.AI = &PlayerAI{
+	player.AI = &BasicPlayerAI{
 		Player:     player,
 		Evaluation: Evaluation{},
 	}

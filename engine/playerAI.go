@@ -5,7 +5,12 @@ import (
 	"math/rand"
 )
 
-type PlayerAI struct {
+type PlayerAI interface {
+	DeterminePlacement(e *Engine, placementOptions []Placement) (*Placement, *MeeplePlacement)
+}
+
+// BasicPlayerAI a simple AI which has incentives to create roads and castles
+type BasicPlayerAI struct {
 	Player     *Player
 	Evaluation Evaluation
 }
@@ -34,7 +39,7 @@ type MeeplePlacement struct {
 	ScoreGained     int
 }
 
-func (p *PlayerAI) scoreMeepleCostEval(meepleCostEval MeepleCostEvaluation, e *Engine) float32 {
+func (p *BasicPlayerAI) scoreMeepleCostEval(meepleCostEval MeepleCostEvaluation, e *Engine) float32 {
 
 	var playerRiskFactor float32 = 0.75
 
@@ -62,7 +67,7 @@ func (p *PlayerAI) scoreMeepleCostEval(meepleCostEval MeepleCostEvaluation, e *E
 	return directScore + potentialScore
 }
 
-func (p *PlayerAI) DeterminePlacement(e *Engine, placementOptions []Placement) (*Placement, *MeeplePlacement) {
+func (p *BasicPlayerAI) DeterminePlacement(e *Engine, placementOptions []Placement) (*Placement, *MeeplePlacement) {
 	if len(placementOptions) == 0 {
 		return nil, nil
 	}
@@ -110,7 +115,7 @@ func (p *PlayerAI) DeterminePlacement(e *Engine, placementOptions []Placement) (
 	}
 }
 
-func (p *PlayerAI) EvaluatePlacement(placement Placement, e *Engine) Evaluation {
+func (p *BasicPlayerAI) EvaluatePlacement(placement Placement, e *Engine) Evaluation {
 
 	eval := Evaluation{}
 	eval.EvaluatedFeatures = make(map[*tile.Feature]FeatureEvaluation)
