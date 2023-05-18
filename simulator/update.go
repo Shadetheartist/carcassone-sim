@@ -52,8 +52,8 @@ func (sim *Simulator) Update() error {
 
 	if !rMouseDown && ebiten.IsMouseButtonPressed(ebiten.MouseButtonRight) {
 
-		//steps := (sim.Engine.RiverDeck.Remaining() + sim.Engine.Deck.Remaining()) * 5 // steps in game
-		steps := 5 // steps per turn
+		steps := (sim.Engine.RiverDeck.Remaining() + sim.Engine.Deck.Remaining()) * 5 // steps in game
+		//steps := 5 // steps per turn
 		for i := 0; i < steps; i++ {
 			stage := sim.Engine.TurnStage
 

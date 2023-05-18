@@ -151,7 +151,7 @@ func (e *Engine) Step() {
 
 	case turnStage.PlaceTile:
 
-		selectedTilePlacement, meeplePlacement := player.DeterminePlacement(e.CurrentPossibleTilePlacements, e)
+		selectedTilePlacement, meeplePlacement := player.DeterminePlacement(e, e.CurrentPossibleTilePlacements)
 		e.DecidedMeeplePlacementThisTurn = meeplePlacement
 
 		if selectedTilePlacement == nil {
@@ -310,7 +310,6 @@ func (e *Engine) GoToNextTurn() error {
 func (e *Engine) EndGame() {
 	e.GameOver = true
 
-	return
 	for _, p := range e.Players {
 		fmt.Println(p.Name, ": ", p.Score)
 	}
