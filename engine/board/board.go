@@ -67,8 +67,11 @@ func (b *Board) RemoveTileAt(pos util.Point[int]) {
 	//remove the tile from the matrix
 	b.TileMatrix.Set(pos.X, pos.Y, nil)
 
-	// add back the vacant position
-	b.OpenPositions[pos] = b.createOpenPositonSignature(pos)
+	// special case, the first tile placement can be placed in unconnected areas
+	if b.PlacedTileCount > 1 {
+		// add back the vacant position
+		b.OpenPositions[pos] = b.createOpenPositonSignature(pos)
+	}
 
 	b.PlacedTileCount--
 	t.Position = util.Point[int]{}
@@ -151,11 +154,11 @@ func (b *Board) PlaceTile(pos util.Point[int], t *tile.Tile) {
 			pix := b.EdgePixReference[dir]
 			complimentPix := b.EdgePixReference[complimentDir]
 
-			matrix := t.Reference.FeatureMatrix
+			fMatrix := t.Reference.FeatureMatrix
 			neighbourFarmMatrix := n.Reference.FeatureMatrix
 
 			for i := range pix {
-				referenceFeature, err := matrix.GetPt(pix[i])
+				referenceFeature, err := fMatrix.GetPt(pix[i])
 
 				if err != nil {
 					panic(err)

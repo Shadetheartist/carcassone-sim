@@ -13,7 +13,7 @@ func BenchmarkEngine(b *testing.B) {
 
 	gameData := data.LoadGameData("../data/bitmaps", "../data/standard_deck.yml")
 
-	e1 := engine.NewEngine(gameData, 32, 4)
+	e1 := engine.NewEngine(gameData, 16, 4)
 
 	steps := (e1.RiverDeck.Remaining() + e1.Deck.Remaining()) * 5
 

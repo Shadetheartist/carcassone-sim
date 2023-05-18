@@ -118,6 +118,10 @@ func (p *Player) DeterminePlacement(placementOptions []Placement, e *Engine) (*P
 		return nil, nil
 	}
 
+	// just place randomly
+	// r := rand.Intn(len(placementOptions))
+	// return &placementOptions[r], nil
+
 	var bestScore float32 = 0
 	var bestMeepleCostEval MeepleCostEvaluation
 	var bestParentFeature *tile.Feature

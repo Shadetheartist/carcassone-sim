@@ -48,7 +48,7 @@ func NewTilePlacementManager(e *Engine) *TilePlacementManager {
 func (tpm *TilePlacementManager) PossibleTilePlacements(rtg *tile.ReferenceTileGroup) []Placement {
 
 	if tpm.engine.GameBoard.PlacedTileCount < 1 {
-		return tpm.defaultPlacements(rtg)
+		return tpm.firstTilePlacement(rtg)
 	}
 
 	return tpm.agents[0].PossibleTilePlacements(nil, rtg, tpm.engine.GameBoard.OpenPositionsList())
@@ -142,22 +142,45 @@ func (tpa *TilePlacementAgent) getPlaceableOrientations(openPosKey util.Point[in
 	}
 }
 
-func (tpm *TilePlacementManager) defaultPlacements(rtg *tile.ReferenceTileGroup) []Placement {
+func (tpm *TilePlacementManager) firstTilePlacement(rtg *tile.ReferenceTileGroup) []Placement {
 	e := tpm.engine
 	placements := make([]Placement, 0, len(e.GameBoard.OpenPositions))
 
 	middle := e.GameBoard.TileMatrix.Size() / 2
+	quarter := e.GameBoard.TileMatrix.Size() / 4
+	// for each quadrant to start it
 	for i := 0; i < 4; i++ {
-		placements = append(placements,
-			Placement{
-				Position: util.Point[int]{
-					X: middle,
-					Y: middle,
+		top := i < 2     //true, true, false, false
+		left := i%2 == 0 //true, false, true, false
+
+		y := middle
+		if top {
+			y -= quarter
+		} else {
+			y += quarter
+		}
+
+		x := middle
+		if left {
+			x -= quarter
+		} else {
+			x += quarter
+		}
+
+		dirs := directions.Inner(top, left)
+		for _, d := range dirs {
+			placements = append(placements,
+				Placement{
+					Position: util.Point[int]{
+						X: x,
+						Y: y,
+					},
+					ReferenceTile:     rtg.Orientations[d],
+					ConnectedFeatures: make([]Connection, 0),
 				},
-				ReferenceTile:     rtg.Orientations[i],
-				ConnectedFeatures: make([]Connection, 0),
-			},
-		)
+			)
+		}
+
 	}
 
 	return placements

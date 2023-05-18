@@ -22,7 +22,19 @@ func (sig *EdgeSignature) Compatible(otherSig *EdgeSignature) bool {
 	return true
 }
 
-func (sig *EdgeSignature) Curving() bool {
+// IsRiverCurving
+// probably not a good impl.
+func (sig *EdgeSignature) IsRiverCurving() bool {
+	numRivers := 0
+	for i := 0; i < 4; i++ {
+		if sig[i] == River {
+			numRivers++
+		}
+	}
+
+	if numRivers < 2 {
+		return false
+	}
 
 	for i := 0; i < 4; i++ {
 		if sig[i] == River {

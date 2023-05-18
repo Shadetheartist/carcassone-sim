@@ -44,15 +44,17 @@ func (gd *GameData) loadDeckInfo(deckFilePath string) {
 		panic(err)
 	}
 
-	for _, tileName := range gd.TileNames {
-		if _, exists := di.Deck[tileName]; !exists {
-			panic(fmt.Sprint("Mismapped Deck/Bitmap Name ", tileName))
+	for deckFileTileName, _ := range di.Deck {
+		bitmapExists := false
+		for _, bitmapTileName := range gd.TileNames {
+			if deckFileTileName == bitmapTileName {
+				bitmapExists = true
+				break
+			}
 		}
-	}
 
-	for _, tileName := range gd.TileNames {
-		if _, exists := di.Deck[tileName]; !exists {
-			panic(fmt.Sprint("Mismapped Deck/Bitmap Name ", tileName))
+		if !bitmapExists {
+			panic(fmt.Sprint("Missing bmp file for deck tile: ", deckFileTileName))
 		}
 	}
 
